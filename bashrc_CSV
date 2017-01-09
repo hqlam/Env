@@ -1,0 +1,2723 @@
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
+
+export PS1="\u@\h:\w\\$ "
+
+export NODE_ENV="dev_local"
+#export NODE_ENV="baymax_development"
+#export NODE_PATH=${HOME}/checkouts
+#export LOG_FILE=baymax-server.log
+export LOG_LEVEL=debug
+
+# to edit "git commit" -m 
+export EDITOR=vim
+
+export NVM_DIR="/Users/hlam001c/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
+
+### HELPERS
+
+line () {  n=$1; n=${n:-50}; echo `seq  -f = -s '' $n ` ; }
+ech2 () {  echo;echo $* ; }
+alias h='  hostname|egrep  -C1 [a-z]+'
+alias hn=' h; ifconfig|gip '
+
+# Grep on History of cmd lines
+alias ht='   history|tail -40 '
+alias hist=' HISTTIMEFORMAT=%c'
+fgh  ()  {   HISTTIMEFORMAT=%c ; history | egrep $*  ; }
+
+# Kill Process using Pkill: #fkpp () { pgrep -lf $1 ;pkill $1    ; }
+fkp  () {    r=`ps -ef | grep $1 | grep -v grep |awk '{print $2}' ` ; if [ ! -z "$r" ]; then sudo kill  $r; fi ; }
+
+# Grep on file .Bashrc
+fgb  ()  {   egrep -i "$1" $2 $3 $4  $HOME/.bashrc ; }
+
+alias vic='  vi        $HOME/.bashrc'
+alias soc='  h; source $HOME/.bashrc'
+socjv () {   h; sed -i -- 's/cowsay/echo/g'   ~/.bashrc;  unalias -a && source $HOME/.bashrc  ; }
+socjb () {   h; cd; awk   '!/--color|cowsay/' ~/.bashrc > .tb; yes|mv .tb .bashrc; unalias -a && source $HOME/.bashrc  ; }
+alias soc2=' unalias -a && source $HOME/.bashrc '
+alias teb='  te        $HOME/.bashrc'
+
+alias grep=' grep    --color=auto'
+alias egrep='egrep   --color=auto'
+#alias grepstrong='GREP_COLOR="1;34;46" \grep --color'
+#alias vi='   vim'
+#alias vifilerc='sudo vi /usr/share/vim/vimrc'
+
+vibc () {    filename=$1; old="$2"; new=$3; vi -bc ":%s/$old/$new/c|:q" $filename ; }
+vid  () {    filename=$1; pat="$2";         vi -bc ":g/$pat/d|:q"       $filename ; }
+
+vin  () {    filename=$1; num=$2;           vi      +$num               $filename ; }
+vis  () {    filename=$1; pat=$2;           vi      +/$pat              $filename ; }
+
+vics () {    vis $HOME/.bashrc $* ; }
+vih  () {    cmd=$*; bash $HOME/proj/shell/hterm.sh basic  vis $cmd ; }
+
+# Timing
+alias t1='   starttime=$(date +"%s")'
+alias t2='   date; echo seconds=$(($(date +"%s")-$starttime)) | egrep "=[0-9]+" '
+alias dateT='date    "+%FT%T"'
+alias dateU='date -u "+%FT%T"'
+datems () {  node -e 'console.log(new Date().getTime())' ; }
+alias now='  echo UTC: `dateU`|cat09; echo Now: `dateT`|cat09 '
+#lastm () {  m=$1; m=${m:-10}; sshds "date +'%x:%H:%M:%S';  date -d '$m minutes ago' +'%x:%H:%M:%S' " ; }
+# date in sec: $ date +%s; date in millisec $ date +%s%3N
+
+##  Splunk search help funcs
+#mnow () {   sshjv "date +'%x:%H:%M:%S' " ; }
+#mlast () {  m=$1; m=${m:-10}; sshjv " date -d '-$m minutes' +'%x:%H:%M:%S' " ; }
+#mplus () {  m=$1; m=${m:-10}; sshjv " date -d '+$m minutes' +'%x:%H:%M:%S' " ; }
+#m10 () {    m=$1; m=${m:-10}; l=`mlast $m`; n=`mnow`; date; echo -n  "earliest=$l latest=$n";echo ; }
+s22 () {     m=$2; m=${m:-22};                        date; echo -n  "earliest=-$m"m latest=now ; echo  " index=baymax sourcetype=json source=\"/opt/csv/var/log/*smartconnect_stdout.log\" hostname=\"smartconnectb*\" $1   " ; }
+
+#splu10 () {   earliest=$l latest=$n  index=baymax sourcetype=json source="/opt/csv/var/log/*smartconnect_stdout.log" hostname="smartconnectc*"  ; }
+#spluXOD () { index=baymax sourcetype=json source="/opt/csv/var/log/*smartconnect_stdout*.log" hostname="smartconnectc*" | eval Time=strftime(_time,"%F %T.%3N") | eval EventStream='Time'." - ".'msg' | eval BaymaxId='metadata.baymaxReqId' | eval Source='payload.incident.source' | stats min(_time) AS _time,          values(Source) AS Source,          range(_time) AS Range(sec) BY BaymaxId | search Source=XOD  Source=XOD  ; }
+
+##  Print Json
+alias pjson='python -m json.tool'
+
+
+### NAMING
+
+ds_ip="10.172.52.190"        # aka bb1_ip="bburg1.plaxo.com"
+
+#sonicw="172.20.7.100"    	
+sonic="204.15.241.57"           # aka sonicwall="sslvpn.plaxo.com" # PING sslvpn.plaxo.com (204.15.241.57)
+alias psonic='   oterm "pingf      $sonic |cat09 " ' 
+alias trsonic='  oterm "line;t1;traceroute $sonic|cat09;t2;line" '
+alias pingsw='   watch -t "ping -a -c 2 $sonic&&date" '
+
+jh="10.1.2.3"			       #204.15.243.201  # aka adm1="10.1.2.3"
+
+b41="10.1.47.41"
+b42="10.1.47.42"
+b43="10.1.47.43"
+
+b81="10.1.47.81" # bm-kc-rfnoise01.sjc.i.sv.comcast.com # 8081  to              
+b82="10.1.47.82" # bm-kc-rfnoise02               
+b83="10.1.47.83" # bm-server01                  	# 3000  to 
+b84="10.1.47.84" # bm-server02                   
+b85="10.1.47.85" # bm-dispatcher01               
+b86="10.1.47.86" # bm-dispatcher02               
+b87="10.1.47.87" # bm-redisa01                   	# 26379 to
+b88="10.1.47.88" # bm-redisa02                  	# 26379 to 
+b89="10.1.47.89" # bm-redisa03                  	# 26379 to 
+b90="10.1.47.90" # bm-web01				# 80    to localhost:8888
+b91="10.1.47.91" # bm-stg-server01     #204.15.241.107
+b92="10.1.47.92" # bm-stg-kc-rfnoise01 #204.15.241.108  # 8081  to 
+b93="10.1.47.93" # bm-stg-dispatcher01 #204.15.241.109          
+alias abser='fgb "^b[89]"'
+
+# list of servers needing access to MELD Kafka.
+#hkg-sdev04     hkg-sdev04.plaxo.com            119.9.76.51 	Ronnel
+#hkg-sdev05     hkg-sdev05.plaxo.com            119.9.76.89	Joe
+#hkg-sdev06     hkg-sdev06.plaxo.com            119.9.76.43	Pia
+#hkg-sdev07     hkg-sdev07.plaxo.com            119.9.74.60	Noel
+#hkg-sdev08     hkg-sdev08.plaxo.com            119.9.88.158	John
+
+sdev_ip="172.20.3.178" #sdev=dev93.plaxo.com==plaxo93=                                172.20.3.178
+#                         dev85=plaxo85=                                172.20.3.31
+#relayhost_ip="sdev11.plaxo.com"                                        172.20.3.11
+automs="cacsvmd-12341" #Automation server: cacsvmd-12341.plaxo.com	172.20.4.156 henrylamC2
+
+# SMARTCONNECT.SJC.I.SV.COMCAST.COM             10.1.47.7
+alias servern='curl "http://opsjenkins01.sjc.i.sv.comcast.com/cgi-bin/pool_nodes.py?appname=smartconnect&appenv=prod&location=sjc&protocol=3000&appcluster=next" '
+alias serverc='curl "http://opsjenkins01.sjc.i.sv.comcast.com/cgi-bin/pool_nodes.py?appname=smartconnect&appenv=prod&location=sjc&protocol=3000&appcluster=curr" '
+# baymax-next 10.1.47.4         10.1.47.9       10.1.47.3       10.1.47.12 # Adrian: http://opsjenkins01.sjc.i.sv.comcast.com/cgi-bin/pool_nodes.py?appname=smartconnect&appenv=prod&location=sjc&protocol=3000&appcluster=next
+# baymax-curr 10.1.47.5         10.1.47.6       10.1.47.10      10.1.47.13 # Adrian: http://opsjenkins01.sjc.i.sv.comcast.com/cgi-bin/pool_nodes.py?appname=smartconnect&appenv=prod&location=sjc&protocol=3000&appcluster=curr
+
+# baymax-next 10.1.47.11        10.1.47.1       10.1.47.2       10.1.47.8
+# baymaxkafkab01.sjc.i.sv.comcast.com           #10.1.47.43     KC instances ports 3100, 3200, 3300 RFNoise, Speed Test, Speed Experience
+# baymaxkafkab02.sjc.i.sv.comcast.com           #10.1.47.44
+bmkk1_ip="10.1.47.43"
+bmkk2_ip="10.1.47.44"
+
+PRODSENTINEL_END_POINT21="10.1.47.21:26379"
+PRODSENTINEL_END_POINT22="10.1.47.22:26379"
+PRODSENTINEL_END_POINT23="10.1.47.23:26379"
+
+red21="10.1.47.21"    # Production redis master
+red22="10.1.47.22"
+red23="10.1.47.23"
+
+#redis port 6379
+red59="172.20.2.59"    					# dev smartconndevredis02a - 172.20.2.59
+red60="172.20.2.60"                                     # dev smartconndevredis02b - 172.20.2.60
+red61="172.20.2.61"                                     # dev smartconndevredis02c - 172.20.2.61
+
+red62="172.20.2.62"                     		# stg 173.20.2.62 smartconndevredis01a.plaxo.com
+red63="172.20.2.63"                                     # stg 172.20.2.63 smartconndevredis01b.plaxo.com
+red64="172.20.2.64"   # Staging redis master            # stg 172.20.2.64 smartconndevredis01c.plaxo.com
+
+
+# Jarvis
+
+jv_="http://jarvissc.sv.comcast.com"            #69.252.255.134 aka canonical name = jarvissc.sjc.v.sv.comcast.com 
+jarvis="jarvissc.sv.comcast.com"
+jv_ip="69.252.255.134"
+# ELASTIC SEARCH/ELK stack server (new): http://smartconnect.esapi.sjc.i.sv.comcast.com #10.1.46.232
+
+
+# Baymax-Curr routes
+bc_="http://baymax-curr.csv.comcast.com:3000"   #69.252.255.14  aka  baymax.comcast.com; or baymax.csv.comcast.com http://172.20.4.230:4031/ http://10.172.46.101:4031/
+bc_rd="http://baymax-curr.csv.comcast.com:3000/redisData"
+bc_le="http://baymax-curr.csv.comcast.com:3000/log_stderr?num_lines=300"
+bc_lo="http://baymax-curr.csv.comcast.com:3000/log_stdout?num_lines=300"
+bc_if="http://baymax-curr.csv.comcast.com:3000/info"
+bc_ev="http://baymax-curr.csv.comcast.com:3000/event"
+bc_hb="http://baymax-curr.csv.comcast.com:3000/heartbeat"
+
+# Baymax-Next routes
+bn_="http://baymax-next.csv.comcast.com:3000"   #69.252.255.143
+bn_rd="http://baymax-next.csv.comcast.com:3000/redisData"
+bn_le="http://baymax-next.csv.comcast.com:3000/log_stderr?num_lines=300"
+bn_lo="http://baymax-next.csv.comcast.com:3000/log_stdout?num_lines=300"
+bn_if="http://baymax-next.csv.comcast.com:3000/info"
+bn_ev="http://baymax-next.csv.comcast.com:3000/event"
+bn_hb="http://baymax-next.csv.comcast.com:3000/heartbeat"
+
+# LocalHost routes
+lh_="http://localhost:4031"
+lh_rd="http://localhost:4031/redisData"
+lh_le="http://localhost:4031/log_stderr"
+lh_lo="http://localhost:4031/log_stdout"
+lh_if="http://localhost:4031/info"
+lh_ev="http://localhost:4031/event"
+lh_hb="http://localhost:4031/heartbeat"
+
+bp_="baymax_production"
+bs_="baymax_staging"
+
+prl="$HOME/checkouts/mapping-rules/prod_rules"
+kc="$HOME/checkouts/kafka-consumer"
+mr="$HOME/checkouts/mapping-rules"
+sc="$HOME/checkouts/smartconnect"
+hl="$HOME/checkouts/hl"
+
+bser="$HOME/checkouts/baymax-server"
+bcli="$HOME/checkouts/baymax-client"
+blog="$HOME/checkouts/baymax-logger"
+disp="$HOME/checkouts/dispatcher"
+chor="$HOME/checkouts/choroform"
+orca="$HOME/checkouts/orca"
+cfge="$HOME/checkouts/configie"  
+efac="$HOME/checkouts/event-factory"
+ssc="$HOME/checkouts/scout-soap-client"
+
+#Replace bm stdout log
+stdout_log_path="$HOME/Desktop/smartconnect_stdout.log"
+stderr_log_path="$HOME/Desktop/smartconnect_stderr.log"
+
+
+# Context store servers and ports 3100
+
+# new endpoints, used for XRE.postUrl in redis rules, after post, use Prod Kibana to query event_id
+#http://scwbga-wc-a1p.cable.comcast.com/WebAPI/CDT.WebAPI.ContextStore	#172.28.77.237
+#http://scwbga-wc-a2p.cable.comcast.com/WebAPI/CDT.WebAPI.ContextStore	#172.28.77.238
+#http://scwbga-wc-a3p.cable.comcast.com/WebAPI/CDT.WebAPI.ContextStore	#172.28.77.239
+#http://scwbga-wc-a4p.cable.comcast.com/WebAPI/CDT.WebAPI.ContextStore	#172.28.77.24 
+#http://scwbga-wc-a5p.cable.comcast.com/WebAPI/CDT.WebAPI.ContextStore	#172.28.77.245
+
+
+# k4_uat1_cs="http://sckib-wc-a1u.sys.comcast.net:5601/app/kibana"	# new Kibana 4 for k4_stg1 #172.28.75.160
+# k4_uat2_cs="http://sckib-wc-a2u.sys.comcast.net:5601/app/kibana"	# new Kibana 4 for k4_stg2 #172.28.75.170
+# k4_prod_cs="http://sckib-wc-a1p.sys.comcast.net:5601/app/kibana"	# new Kibana 4 for prod CS #172.28.75.147
+# k4_qa_cs="http://scesc-dt-a1q.ula.comcast.net:5601/" 			# new Kibana 4 for QA_CS   #10.251.153.216
+
+# US752506: Point baymax staging to new UAT environment for CS. 081116.
+#VIP : http://scwbga-po-bp-vip.cable.comcast.com/WebAPI/CDT.WebAPI.ContextStore #10.54.147.241
+#Servers Behind VIP: 	SCWBGA-PO-B1P						#10.54.250.78
+#			SCWBGA-PO-B2P						#10.54.250.79
+#			SCWBGA-PO-B3P						#10.54.250.8
+#			SCWBGA-PO-B4P						#10.54.250.80
+#			SCWBGA-PO-B5P						#10.54.250.81
+
+#FluentD, ElasticSearch and kibana are same as existing UAT environment. 081116.
+#Fluent D :       http://scfltd-wc-a1u.sys.comcast.net:8888/contextstore.ingest #172.28.73.207
+#Elastic Search : http://scesc-wc-a1u.sys.comcast.net:9210, 			#172.28.74.235
+#		  http://scesc-wc-a2u.sys.comcast.net:9210			#172.28.74.234
+#Kibana :         http://sckib-wc-a1u.sys.comcast.net:5601/app/kibana		#172.28.75.160
+
+ok4_all () { echo  " http://sckib-wc-a1u.sys.comcast.net:5601/app/kibana#/visualize/edit/CountEventsBySource?_g=(refreshInterval:(display:Off,pause:!f,value:0),time:(from:now-15m,mode:quick,to:now))&_a=(filters:!(),linked:!f,query:(query_string:(analyze_wildcard:!t,query:'incident.source:%20*')),uiState:(spy:(mode:(fill:!f,name:table)),vis:(legendOpen:!f)),vis:(aggs:!((id:'3',params:(field:incident.source,order:desc,orderBy:'2',size:20),schema:segment,type:terms),(id:'2',params:(),schema:metric,type:count)),listeners:(),params:(addLegend:!t,addTimeMarker:!f,addTooltip:!t,defaultYExtents:!f,mode:stacked,scale:linear,setYExtents:!f,shareYAxis:!t,times:!(),yAxis:()),title:CountEventsBySource,type:histogram)) " ; }
+
+alias ok4_prod_cs='open http://sckib-wc-a1p.sys.comcast.net:5601/app/kibana'	#172.28.75.147
+alias ok4_prod='open    http://sckib-wc-a1p.sys.comcast.net:5601/app/kibana'	#172.28.75.147
+alias ok4_stag='open    http://sckib-wc-a1u.sys.comcast.net:5601/app/kibana'	#172.28.75.160
+alias ok4_stg1_cs='open http://sckib-wc-a1u.sys.comcast.net:5601/app/kibana'	#172.28.75.160
+alias ok4_stg2_cs='open http://sckib-wc-a2u.sys.comcast.net:5601/app/kibana'	#172.28.75.170
+alias ok4_qa_cs='  echo "need to disconnect the Sonicwall (for Plaxo VPN)"; open http://scesc-dt-a1q.ula.comcast.net:5601/'  
+
+# k3 kibana of prod and stag:
+alias okib_prod='open http://sckbrpt-wc-a3p.sys.comcast.net/index.html#/dashboard/file/guided.json'     #172.28.71.102
+alias okib_stag='open http://scelsh-wc-a4u.sys.comcast.net/index.html#/dashboard/file/guided.json'      #172.28.73.210
+
+#alias kib_prod_wget=' wget -O $HOME/logs/kib_prod.log http://sckbrpt-wc-a3p.sys.comcast.net:9200/_all/_search?pretty && pjson $HOME/logs/kib_prod.log  |gvu '
+#alias kib_stag_wget=' wget -O $HOME/logs/kib_stag.log http://scelsh-wc-a4u.sys.comcast.net:9200/_all/_search?pretty  && pjson $HOME/logs/kib_stag.log  |gvu '
+
+alias oqa_pret='  open http://scesc-dt-a1q.ula.comcast.net:5601/_all/_search?pretty'	#10.251.153.216
+alias oprod_pret='open http://sckbrpt-wc-a3p.sys.comcast.net:9200/_all/_search?pretty'	#172.28.71.102
+alias ostag_pret='open http://scelsh-wc-a4u.sys.comcast.net:9200/_all/_search?pretty'	#172.28.73.210
+
+prod_kib="sckbrpt-wc-a3p.sys.comcast.net"                               #172.28.71.102
+stag_kib="scelsh-wc-a4u.sys.comcast.net"                                #172.28.73.210
+
+UAT="wgtapp-po-1u.cable.comcast.com"                                    #172.28.99.249
+#stag_cs="wgtapp-wc-1u.cable.comcast.com"      				#172.28.69.212 #retired 081516, US752506 
+stag_cs="scwbga-po-bp-vip.cable.comcast.com"                            #10.54.147.241
+
+prod_cs="widgetexternal-a.g.cable.comcast.com"                          #172.24.17.35
+
+dev_cs="wgtapp-dt-1d.cable.comcast.com"                                 #10.252.113.56
+qa_cs="wgtapp-dt-1q.cable.comcast.com"                                  #10.252.113.57
+int_cs="wgtapp-dt-1i.cable.comcast.com"                                 #10.252.113.58
+
+new_cs="scwbga-wc-ap-vip.cable.comcast.com"				#172.24.96.196
+vipa="scwbga-wc-ap-vip"                            #vipa_cs		#172.24.96.196
+vipb="scwbgb-wc-ap-vip"                            #vipb_cs		#172.24.96.242
+vipc="scwbgc-wc-ap-vip"                            #vipc_cs		#172.24.96.243
+
+# ftp://cxsdb-wc-1p.cable.comcast.com/external_data/XH_UI/              #172.24.235.154 timeline:Zobrih72  XH.UI.Messaging/Comcast@123
+# device poller: cm2-pol-vip.sys.comcast.net				#10.54.147.146
+
+lh_cs="localhost:5000"                                                  #127.0.0.1:5000
+lh_ms="localhost:5002"                                                  #127.0.0.1:5002
+
+# MELD servers
+
+prod_me="scelsh-wc-a4u.sys.comcast.net"                                 #172.28.130.31
+stag_me="a-96-119-176-116.sys.comcast.net"                              #96.119.176.116
+loho_me="a-96-119-180-161.sys.comcast.net"                              #96.119.180.161 
+
+#PROD MELD Kafka   http://meld-kafka.g.comcast.net:8080/                #172.28.130.31
+#DEV  MELD Kafka   http://a-96-119-176-116.sys.comcast.net:8081/        #96.119.176.116
+#prod      Kafka Consumer baymaxkafka-prodcurr-tip.sjc.i.sv.comcast.com #10.1.4.86
+#stag      Kafka Consumer baymaxkafka-prodnext-tip.sjc.i.sv.comcast.com #10.1.4.87
+
+
+##  Pings
+
+#alias pingstag_cs='ping -c 2 172.28.69.212 |cat09'    # wgtapp-wc-1u.cable.comcast.com 
+alias pingstag_cs='ping -c 2 10.54.147.241 |cat09'     # scwbga-po-bp-vip.cable.comcast.com 
+alias pingprod_cs='ping -c 2 172.24.17.35  |cat09'     # widgetexternal-a.g.cable.comcast.com
+alias ping_dev_cs='ping -c 2 10.252.113.56 |cat09'     # wgtapp-dt-1d.cable.comcast.com
+alias ping_qa_cs=' ping -c 2 10.252.113.57 |cat09'     # wgtapp-dt-1q.cable.comcast.com
+alias ping_int_cs='ping -c 2 10.252.113.58 |cat09'     # wgtapp-dt-1i.cable.comcast.com
+
+alias pingstag='   ping -a -c 2 baymax-next.csv.comcast.com |cat09'
+alias pingprod='   ping -a -c 2 baymax.comcast.com |cat09'
+
+alias pingbmkk1='  ping -a -c 2 10.1.47.43'
+alias pingbmkk2='  ping -a -c 2 10.1.47.44'
+
+pingn () { oterm "line;echo Pinging baymax-next.csv.comcast.com; line; pingstag;line" ; }
+pingc () { oterm "line;echo Pinging baymax-curr.csv.comcast.com; line; pingstag;line" ; }
+
+alias pingscout='  pingf 10.22.92.180 |cat09'          # soap client: i   networkscout.g.comcast.net
+alias pingdp='     pingf 10.54.184.205|cat09'          # dp: data poller: osstools-po-01.sys.comcast.net
+alias pinggdg='    pingf global-datagrid-service-prd-wc.g3.app.cloud.comcast.net|cat09' # 172.24.68.246, 172.24.68.250
+alias pingrfn='    ech2 Scout...; pingscout; ech2 dp data poller... ; pingdp; ech2 GDG datagrid...; pinggdg '
+
+# RFNoise service scout
+scoutService="http://networkscout.g.comcast.net/Scout_Core_Services-14.02/docsisvideoservice.wsdl"
+alias abscout='ab -n 100 -c 10 $scoutService '
+
+
+# RFNoise service D3P
+# old: dpmac () { m=$1; m=${m:-6C:CA:08:A2:67:98}; c=$2; c=${c:-open}; date; echo "$c device poller for mac=$m ..."; $c "http://cm2-pol-vip.sys.comcast.net/devicepoller/json/dp/pollDevice?cmts=cable-upstream&mac=$m" ; }
+# old: http://cm2-pol-vip.sys.comcast.net/devicepoller/json/dp/pollDevice?cmts=cable-upstream&mac=6C:CA:08:A2:67:98
+# new: US758136: http://osstools-po-01.sys.comcast.net:8080/dcc/json/dp/pollDevice?cmts=acr07.denver.co.denver.comcast.net&mac=10:05:b1:fe:d5:aa  
+dpcm () {    m=$2; m=${m:-10:05:b1:fe:d5:aa}; c=$1; c=${c:-acr07.denver.co.denver.comcast.net}; curl $3 -H "Content-Type:application/json"   "http://osstools-po-01.sys.comcast.net:8080/dcc/json/dp/pollDevice?cmts=$c&mac=$m" ; }
+# dpcm ; dpcm|pjson;echo ; dpcm acr07.denver.co.denver.comcast.net 70:85:C6:33:9F:09  -i
+
+dpmac () {  m=$1; m=${m:-10:05:b1:fe:d5:aa}; c=$2; c=${c:-open}; date; echo "$c device poller for mac=$m ..."; $c "http://osstools-po-01.sys.comcast.net:8080/dcc/json/dp/pollDevice?cmts=acr07.denver.co.denver.comcast.net&mac=$m" ; }
+# dpmac $qa54 curl
+
+dpmac2 () { m=$1; m=${m:-00:1d:d1:7c:44:a2}; c=$2; c=${c:-open}; date; echo "$c device poller for mac=$m ..."; $c "http://osstools-po-01.sys.comcast.net:8080/dcc/json/dp/pollDevice?cmts=acr02.sterling.va.richmond.comcast.net&mac=$m" ; }
+# old: dpmac2 () { m=$1; m=${m:-00:1d:d1:7c:44:a2}; c=$2; c=${c:-open}; date; echo "$c device poller for mac=$m ..."; $c "http://cm2-pol-vip.sys.comcast.net/devicepoller/json/dp/pollDevice?cmts=acr02.sterling.va.richmond.comcast.net&mac=$m" ; }
+# old: http://cm2-pol-vip.sys.comcast.net/devicepoller/json/dp/pollDevice?cmts=acr02.sterling.va.richmond.comcast.net&mac=00:1d:d1:7c:44:a2
+
+# RFNoise service DCC
+# curl -i "http://osstools-po-01.sys.comcast.net:8080/dcc/json/dcc/channelChange?appKey=baymax&appCreds=b3tam@x&mac=10:05:b1:fe:d5:aa&cmts=acr07.denver.co.denver.comcast.net&targetChannelName=..."
+
+
+# RFNoise service GDG  
+#datagrid () { a=$1; a=${a:-$qa54}; curl "https://global-datagrid-service-prd-wc.g3.app.cloud.comcast.net/api/gdg/customer/data/$a.json" | python -m json.tool |egrep "deviceType|mtaMacAddress" ; }
+# https://global-datagrid-service-prd-wc.g3.app.cloud.comcast.net/api/gdg/customer/data/8499101410192154.json
+# for i in $qa54 $qa29 0166824206303 8512100050423484 0950753293005 8155100140021662 ; do echo -ne "$i: "; curl "https://global-datagrid-service-prd-wc.g3.app.cloud.comcast.net/api/gdg/customer/data/$i.json" | python -m json.tool |egrep "deviceType|mtaMacAddress" ; done
+gdg () { a=$1; a=${a:-$qa54}; curl -i -H  "Content-Type:application/json"  "https://global-datagrid-service-prd-wc.g3.app.cloud.comcast.net/api/gdg/customer/data/$a.json" ; echo ; }
+
+# check heartbeat kafka services
+# $ sshjv "curl -s http://10.1.47.43:3100/status;echo" 
+alias chbk='sshjv "hostname;date;k="http://10.1.47.43:3100/status";echo "$k"; curl -s http://10.1.47.43:3100/status;echo" '
+#hbk () { s=$1; s=${s:-10.1.47.43}; p=$2; p={p:-3100}; sshjv -t -Y "curl -s  http://$s:$p/status;echo" ; }
+#alias hbk1='hbk 10.1.47.43 3200'
+#alias hbk2='hbk 10.1.47.44 3300'
+
+
+### ALIASES_AND_FUNCTIONS
+
+# Verify all Baymax-Production routes
+alias vlh='    open $lh_hb $lh_rd $lh_le $lh_lo $lh_if $lh_ev'
+alias vbc='    open $bc_hb $bc_rd $bc_le $bc_lo $bc_if '
+alias vbn='    open $bn_hb $bn_rd $bn_le $bn_lo $bn_if $bn_ev'
+
+alias loStag=' open $bn_lo?num_lines=300'
+alias leStag=' open $bn_le?num_lines=300'
+alias loProd=' open $bc_lo?num_lines=300'
+alias leProd=' open $bc_le?num_lines=300'
+
+#hlam001c@dev93:$HOME$ nmap -Pn -A  10.1.47.46
+#kc: 10.1.47.45 10.1.47.46
+
+#ex: $ ss $b93 bash -ic mon
+sst () {       hterm homebrew "ssh -t 10.1.2.3 ssh $* " ; }
+alias sst91='  sst $b91 '
+alias sst92='  sst $b92 '
+alias sst93='  sst $b93 '
+#alias sst93=' ssh -t 10.1.2.3 ssh $b93'
+#alias sst93h='hterm homebrew sst93'
+
+alias sshb41=' ssh hlam001c@10.1.47.41'
+ssb () {       ip=$1;ssh hlam001c@$ip ; }
+alias ssb91='  ssb $b91'
+alias ssb92='  ssb $b92'
+alias ssb93='  ssb $b93'
+
+alias ssbs='   ssb $b91'
+alias ssbk='   ssb $b92'
+alias ssbd='   ssb $b93'
+
+alias sshds='  ssh hlam001c@10.172.52.190'
+
+alias sshadm=' ssh adm1 '
+alias sshjb='  ssh 10.1.2.3'
+
+alias ssh2='   ssh-add $HOME/.ssh/id_rsa.comcast '
+
+alias sshjv='  ssh -o ServerAliveInterval=30 -o ServerAliveCountMax=1  $jv_ip  '
+alias sshsdev='ssh -o TCPKeepAlive=yes  172.20.3.178'
+
+alias sshautom='ssh      hlam@cacsvmd-12341'
+alias sshautoms='ssh henrylam@cacsvmd-12341'
+alias automwar='ssh  henrylam@172.20.4.156   "ls -l Downloads/*war; ls -l /Users/pbarve/Public/*war" '
+
+# hterm ssh
+alias ssh93='  bash $HOME/proj/shell/hterm.sh novel    sshsdev '
+alias ssh134=' bash $HOME/proj/shell/hterm.sh ocean    sshjv'
+alias ssh190=' bash $HOME/proj/shell/hterm.sh grass    sshds'
+alias ssh123=' bash $HOME/proj/shell/hterm.sh homebrew sshjb'
+alias sshadm1='bash $HOME/proj/shell/hterm.sh homebrew sshadm'
+
+# scp rsync cmds
+# hlam001c@CACSVML-15870:~$ rsync -av -e "ssh 10.1.2.3 ssh" 10.1.47.93:~/bm-stg-dispatcher01-deploy-dispatcher.sh ~/
+# $ rsy  $b93 bm-stg-dispatcher01-deploy-dispatcher.sh 
+rsy () {       mid=$3; mid=${mid:-10.1.2.3}; tarhost=$1; f=$2; rsync -av -e "ssh $mid ssh" $tarhost:~/$f  ~/ ; }
+
+rsy2sdev () {  f=$1; p=$2; rsync -v $f  172.20.3.178:~/$p   ; }
+
+scpfsdev () {  pf=$*;      scp   -r hlam001c@172.20.3.178:~/$pf   . ; }
+rsyfsdev () {  pf=$*;      rsync -v hlam001c@172.20.3.178:~/$pf   . ; }
+rsyfjv ()   {  pf=$*;      rsync -v hlam001c@69.252.255.134:~/$pf . ; }
+rsyfjb ()   {  pf=$*;      rsync -v hlam001c@10.1.2.3:$pf         . ; }
+rsyfds ()   {  pf=$*;      rsync -v hlam001c@172.20.3.40:$pf      . ; }
+
+scp2sdev () {  f=$1; p=$2; scp   -r $f  172.20.3.178:~/$p   ; }
+scp2jv () {    f=$1; p=$2; scp   -r $f  69.252.255.134:~/$p ; }
+scp2jb () {    f=$1; p=$2; scp   -r $f  10.1.2.3:~/$p ; }
+scp2ds () {    f=$1; p=$2; scp   -r $f  10.172.52.190:~/$p  ; }
+
+scpfds () {    pf=$*;      scp   -r hlam001c@172.20.3.40:$pf . ; }
+# hlam001c@CACSVML-15870:~$ scpfds /backup/hl/missing_files_vx.tar.gz
+# hlam001c@CACSVML-15870:~$ scp   -r   hlam001c@172.20.3.40:/backup/hl/missing_files_vx.tar.gz .
+
+# webshare at http://host_ip_addr:5777
+# @resosurce host server: pwd;ipaddr; webshare 51234. Then, @end-user server: open http://host_ip_addr:51234
+# to monitor if sharing is going on: $w; or fispydone; or ps -ef|grep python; Example: CACSVML-15870:~$ sshsdev fispydone; CACSVML-15870:~$ sshsdev w
+#webshare () { p=$1; p=${p:-5777}; python -c "from SimpleHTTPServer import test; import sys; sys.argv = [None,$p]; test()" ; }
+webshare () {  p=$1; p=${p:-5777}; ech2 `ipad`:$p; python -m SimpleHTTPServer $p ; }
+alias pyshare='python -m SimpleHTTPServer 8888 & '
+
+alias ipdrop='python $HOME/proj/py/iDropped.py '
+ipdr () {     python -c 'import socket; print ("IP=", socket.gethostbyname(socket.gethostname()) , "If IP==127.0.0.1, Then Internet connection was dropped."  ) ' ; }
+ipad () {     python -c 'import socket; print (socket.gethostbyname(socket.gethostname())); ' ; }
+#idr () {     python -c 'import urllib; try: urllib.urlopen("http://google.com"); except: print("NOT connected"); ' ; } 
+
+# C2A update .bashrc
+alias C293='   scp   $HOME/.bashrc      172.20.3.178:~   '
+alias C2jv='   scp   $HOME/.bashrc      69.252.255.134:~ '
+alias C2jb='   scp   $HOME/.bashrc      10.1.2.3:~ '
+alias C2ds='   scp   $HOME/.bashrc      10.172.52.190:~  '
+C2b () { b=$1; scp   $HOME/.bashrc      hlam001c@$b:~ ; }
+
+alias C2A='    ech2 ***DS:;C2ds; ech2 ***SDEV:;C293; ech2 ***adm1:;C2b adm1; ech2 ***JV:;C2jv '
+alias C2B='    ech2 ***b91:;C2b $b91; ech2 ***b92:;C2b $b92; ech2 ***b93:;C2b $b93 '
+
+# cd cmds
+alias cdthum='  cd /Volumes && ls -ltr '
+alias cdapps='  cd /Applications/'
+
+alias cddesk='  cd $HOME/Desktop/'
+alias cddocs='  cd $HOME/Documents/'
+alias cddown='  cd $HOME/Downloads/'
+alias cddrop='  cd $HOME/Dropbox/'
+alias cdhelp='  cd $HOME/Help/'
+alias cdpy='    cd $HOME/proj/py'
+alias cdsh='    cd $HOME/proj/shell'
+#alias cdnode='  cd $HOME/proj/nodejs'
+
+alias cdbmx='   cd $HOME/checkouts/bmx-qa/bmx '
+#alias cdmrs='   cd $HOME/checkouts/mapping-rules-server'
+#alias cdau='    cd $HOME/checkouts/AdminUI'
+alias cdkc='    cd $kc'
+alias cdmr='    cd $HOME/checkouts/mapping-rules ; h '
+alias cdsc='    cd $sc ; h '
+
+alias cdbser='  cd $bser;h'
+alias cdbcli='  cd $bcli'
+alias cdblog='  cd $blog'
+alias cddisp='  cd $disp'
+alias cdchor='  cd $chor'
+alias cdorca='  cd $orca'
+alias cdcfge='  cd $cfge '
+alias cdefac='  cd $efac '
+alias cdssc='   cd $ssc'
+
+alias cdco='    cd $HOME/checkouts;h'
+alias cdhl='    cd $HOME/checkouts/hl; llr '
+alias cdsplu='  cd $HOME/checkouts/hl/splunk/ '
+
+alias cdrules=' cd $HOME/checkouts/mapping-rules/prod_rules'
+alias cdtd='    cd test/test_data/'
+
+alias cdepload='cd $HOME/checkouts/smartconnect/test/test_data/enriched_payloads/'
+alias cdotload='cd $HOME/checkouts/smartconnect/test/test_data/other_payloads/ '
+alias cdmcload='cd $HOME/checkouts/smartconnect/test/test_data/mobileCallback_payloads/'
+alias cdxhload='cd $HOME/checkouts/smartconnect/test/test_data/xh_payloads/ '
+alias cddcload='cd $HOME/checkouts/smartconnect/test/test_data/dotcom_payloads/'
+alias cdrfload='cd $HOME/checkouts/smartconnect/test/test_data/rfNoise_payloads/'
+alias cdisload='cd $HOME/checkouts/smartconnect/test/test_data/internet_speed_experience/'
+alias cddoload='cd $HOME/checkouts/smartconnect/test/test_data/device_optimization_payloads/'
+alias cdmaload='cd $HOME/checkouts/smartconnect/test/test_data/moves_assistant_payload/'
+
+alias cdxoload='cd $HOME/checkouts/smartconnect/test/test_data/xod_payloads/'
+alias cdxreload='cd $HOME/checkouts/smartconnect/test/test_data/xre_payloads/'
+alias cdxrload='cd $HOME/checkouts/smartconnect/test/test_data/xray_payloads/'
+
+alias cdtvload='cd $HOME/checkouts/smartconnect/test/test_data/tvns_payloads/ '
+alias cdfrload='cd $HOME/checkouts/smartconnect/test/test_data/ivr_payloads/'
+alias cdxml='   cd $HOME/checkouts/smartconnect/test/test_data/xml_payloads/  '
+
+alias cdhbload='cd $HOME/checkouts/smartconnect/test/test_data/heartbeatData/  '
+
+alias cdmotest='cd $HOME/checkouts/smartconnect/test/integration'
+
+
+##  RALIO commands https://github.com/oesmith/ralio; $ npm install -g ralio; $ ralio configure
+#rshow () { ralio show     $1 ; }
+#rfini () { ralio finish   $1 ; }
+# hlam001c@CACSVML-15870:~/checkouts$ ralio point US651150 1
+
+
+### TIG_COMMANDS
+
+# $ brew install tig; tig --help; tig //current branch;
+# $ tig grep hlam; --all //allbranches; develop //a specific branch; ; test..develop //diff between; i
+# on specific file: tig US733009-dotcom-support..develop -- smartconnect.js //revisions bw 2 dates of a specific file; blame file //history of changes; tig --all  --since=1.week -- rfNoiseCalls.js //any line changed in last (1) week
+# tig refs //all references like branches, remotes and tags
+# $ git show |tig; git log | tig;
+
+### GIT_COMMANDS
+
+# git refspec
+
+gsc="https://github.comcast.com/Baymax/smartconnect"
+gmr="https://github.comcast.com/Baymax/mapping-rules"
+
+#gmrs="https://github.comcast.com/Baymax/mapping-rules-server"
+#gkc="https://github.comcast.com/Baymax/kafka-consumer"
+#gau="https://github.comcast.com/Baymax/AdminUI"       
+
+gbser="https://github.comcast.com/Baymax/baymax-server" 
+gbcli="https://github.comcast.com/Baymax/baymax-client" 
+gblog="https://github.comcast.com/Baymax/baymax-logger" 
+gdisp="https://github.comcast.com/Baymax/dispatcher"    
+gchor="https://github.comcast.com/Baymax/choroform"    
+gorca="https://github.comcast.com/Baymax/orca"    
+
+gconfigie="https://github.comcast.com/Baymax/configie"      
+gefac="https://github.comcast.com/Baymax/event-factory" 
+gssc="https://github.comcast.com/Baymax/scout-soap-client"
+
+gdd="https://github.comcast.com/Baymax/ds-data"       
+gda="https://github.comcast.com/Baymax/ds-algo"       
+
+githelp () {      git help $* ; }
+
+# Save fragments: git stash; then later:  git stash pop; list; drop
+
+# Review history
+
+# git show --color --pretty=format:%b     efe1243
+gitshowc () {     commit=$1; git show --color --pretty=format:%b $commit ; }
+alias d_m='       echo ****Develop: `git show develop|grep Date:`; echo ****Master : `git show master|grep Date:` '
+
+# git log --no-merges -p 1.12.0..v1.13.0 |egrep -A4 "^commit" # git log --since="2 days ago"
+gitlastcom () {   commit=$1; commit=${commit:-1}; git log -p -$commit ; }
+git1line () {                                     git log --oneline --graph ; }
+gitoneline () {                                   git log --pretty=oneline ; }
+gitgl () {                                        git log |egrep -i -C10 $* ; }
+gitfilehist () {  f=$1 ;                          git log -p -- $f ; }
+alias gitfilehist2='                              git log -p --since="7 days ago" '
+alias gitll='     echo "*LATEST LOG ... :";       git log |head -7;  echo '
+
+# tig command
+tigfilehist () {  f=$1 ; tig blame        $f ; }
+alias catt='      tigfilehist '
+
+
+# Diff the commit to its parents: git diff efe1243^! ; OR git diff --staged;
+gitdif () {       f=$1 ; git diff      $f ; }
+alias gitdiff='          git diff HEAD HEAD^1 ; git diff HEAD HEAD^1 --stat'
+alias gitmod='           git diff `git status|grep modified:|cut: -f2` '
+gitdirty () {     topic=$1;                             echo $topic; upstr=$2; git diff --name-status $topic $upstr ; }
+gitdirty1 () {    topic=`git branch|grep "*"|cuts -f2`; echo $topic; upstr=$1; git diff --name-status $topic $upstr ; }
+
+gitdirhist () {   for f in `ls`; do echo  `gitfilehist $f|head -5|grep Date` $f ; done ; }
+gitdirsort ()   { gitdirhist > ~/fh; cat ~/fh | sort ; rm -f ~/fh ; }
+#gitdirsort ()  { for f in `ls`; do echo  `gitfilehist $f|head -5|grep Date|cut: -f2` $f ; done > ~/fh; cat ~/fh|sort ; }
+
+alias gits='      echo "****STATUS:";     git status; echo '
+alias gitst='     echo "****BRANCH ...:"; git status; echo; git branch -vv; ech2 "****THE LATEST LOG ... :"; git log |head -7;  echo '
+alias gitb='      echo -ne "****BRANCH: \t ";               git branch; echo '
+alias cbr='                                                 git branch | grep "*" | cuts -f2'
+alias gitallb='   echo "All branches: "; git pull;          git branch -av; pwd'
+
+alias gitp='      t1;  git pull;  t2 '
+fgitp () {        soc;cddisp; for d in `ls ..`; do echo -n "**** $d : "; cd ../$d; gitp ; done ; }
+fgitb () {        soc;cddisp; for d in `ls ..`; do echo -n "**** $d : "; cd ../$d; cbr  ; done ; }
+
+# reset upstream: git branch mamobile_fields_ivr --set-upstream-to origin/develop
+# git rebase upstream/master
+# alias gitpm='   git pull origin master'
+# alias gitpd='   git pull origin develop'
+alias gitpusho='  git push origin ' 
+
+# Branch create/checkout/delete 
+createdev2b () {  git checkout -b $1 origin/develop ; }
+
+alias co_reset='  git reset --hard; date; gitst '
+reset_b () {      bORc=$1; git reset --hard  $bORc; git pull; date; gitst ; }
+delete_b () {     bORc=$1; git branch -d     $bORc; date; gitst ; }
+
+co_b () {         bORc=$1; bORc=${bORc:-master} && git checkout $bORc; date && echo ___NEW_PULL__&& git pull ; }
+alias co_d='      co_b develop '
+alias co_m='      co_b master '
+
+# Refactor filenames: rm, mv; #git mv [file-ori] [file-renamed]
+alias gitrm='     git rm --cached '
+
+# List files # git ls-files --other --ignored --exclude-standard
+alias gitlist='   git ls-files'
+
+# Open github ogh
+# all $gs= (pulls; commits; branches; releases; tags; compare; contributors; issues )
+# branches/all; branches/yours; branches/active; tree/develop;  pull/3/files; pull/3/commits; pull/new/develop; compare/develop...csv_082316; 
+oghlib () {                                                  open https://github.comcast.com/Baymax/smartconnect/tree/master/lib ; }
+oghtd  () {                                                  open https://github.comcast.com/Baymax/smartconnect/tree/master/test/test_data ; }
+oghhl  () {                                                  open https://github.comcast.com/hlam001c/bmx-qa ; } 
+
+# Open ogh
+ogh  () {                     rt=$1; rt=${rt:-smartconnect}; open https://github.comcast.com/Baymax/$rt/$2 ; }
+# ogh orca "compare/master...develop"; ogh orca "pull/1/files"; 
+
+#ogc () {                     rt=$1; rt=${rt:-smartconnect}; open https://github.comcast.com/Baymax/$rt/commits ; }
+#ogcp () {                    rt=$1; rt=${rt:-smartconnect}; open https://github.comcast.com/Baymax/$rt/compare ; }
+ogr  () {                     rt=$1; rt=${rt:-smartconnect}; open https://github.comcast.com/Baymax/$rt/releases ; }
+ogt  () {                     rt=$1; rt=${rt:-smartconnect}; open https://github.comcast.com/Baymax/$rt/tags ; }
+ogp  () {                     rt=$1; rt=${rt:-smartconnect}; open https://github.comcast.com/Baymax/$rt/pulls ; }
+ogb  () {                     rt=$1; rt=${rt:-smartconnect}; open https://github.comcast.com/Baymax/$rt/branches ; }
+
+# open ogh branches
+oab () {                      rt=$1; rt=${rt:-smartconnect}; open https://github.comcast.com/Baymax/$rt/branches/active ; }
+oby () {                      rt=$1; rt=${rt:-smartconnect}; open https://github.comcast.com/Baymax/$rt/branches/yours ; }
+
+# open ogh tree
+otb  () { b=$2;b=${b:-master};rt=$1; rt=${rt:-smartconnect}; open https://github.comcast.com/Baymax/$rt/tree/$b ; }
+otd  () {                     rt=$1; rt=${rt:-smartconnect}; open https://github.comcast.com/Baymax/$rt/tree/develop ; }
+otm  () {                     rt=$1; rt=${rt:-smartconnect}; open https://github.comcast.com/Baymax/$rt/tree/master ; }
+
+# open ogh pull
+opr  () { pr=$2;              rt=$1; rt=${rt:-smartconnect}; open https://github.comcast.com/Baymax/$rt/pull/$pr ; }
+oprf () { pr=$2;              rt=$1; rt=${rt:-smartconnect}; open https://github.comcast.com/Baymax/$rt/pull/$pr/files ; }
+oprc () { pr=$2;              rt=$1; rt=${rt:-smartconnect}; open https://github.comcast.com/Baymax/$rt/pull/$pr/commits ; }
+
+# open ogh commit
+ogc  () { commit=$2;          rt=$1; rt=${rt:-smartconnect}; open https://github.comcast.com/Baymax/$rt/commit/$commit?diff=split ; }
+
+# open ogh compare
+cpbran () { branch=$2;        rt=$1; rt=${rt:-smartconnect}; open https://github.comcast.com/Baymax/$rt/compare/$branch  ; }
+ogcp  () {                     rt=$1; rt=${rt:-smartconnect}; open https://github.comcast.com/Baymax/$rt/compare/$2...$3 ; }
+#ocp    develop  master' ;ocp    1.12.0   v1.13.0 #https://github.comcast.com/Baymax/smartconnect/compare/1.12.0...v1.13.0
+
+# Install git: https://mac.github.com; or https://windows.github.com; 
+
+# Create/migrate repos: git init [project]; clone [url]
+
+# git config --global/--get user.name/user.email
+# smartconnect $ cat .git/config url = git@github.comcast.com:Baymax/smartconnect.git
+# migrate: git clone --bare https://github.csv.comcast.com/hlam001c/bmx-qa; open https://github.comcast.com/hlam001c/; create a new bmx-qa repos; git push --mirror https://github.comcast.com/hlam001c/bmx-qa
+alias clonesc93=' git clone git@github.comcast.com:Baymax/smartconnect.git'
+gcln () { repo=$1;git clone git@github.comcast.com:Baymax/$repo ; } 
+
+gitcln () {       repo=$1; repo=${repo:-smartconnect}; git clone https://github.comcast.com/Baymax/$repo ; }
+alias clonesc='   cdco && gcln smartconnect.git  '
+alias clonemr='   cdco && gcln mapping-rules.git '
+#alias clonemrs=' cdco && gcln mapping-rules-server.git '
+#alias clonekc='  cdco && gcln kafka-consumer.git'
+#alias cloneau='  cdco && gcln AdminUI.git'
+
+alias clonedisp=' cdco && gcln dispatcher'
+alias clonebser=' cdco && gcln baymax-server'
+alias clonebcli=' cdco && gcln baymax-client'
+#alias cloneblog='cdco && gcln baymax-logger'
+#alias clonechor='cdco && gcln choroform'
+#alias clonecfge='cdco && gcln configie'
+#alias cloneefac='cdco && gcln event-factory'
+#alias clonessc=' cdco && gcln scout-soap-client.git'
+
+#alias clonebmx=' cdco && git clone https://github.comcast.com/hlam001c/bmx-qa      '
+#alias cloneds='cd $HOME/checkouts/DataScience && git clone https://github.comcast.com/bburg200/dataserver   '
+
+#alias clonerediscp='git clone https://github.comcast.com/jbrown088/Baymax-redis-copy'
+alias rediscp='   cd $HOME/checkouts/Baymax-redis-copy/; node index.js; echo Done_copy_redisDB_of_staging_to_local'  
+
+alias insdep='    npm install'
+
+alias renewsc='   cdco && [[ -d smartconnect ]]   && sudo mv -f smartconnect   hl/smartconnect_$(date '+%Y.%m.%d.%H.%M.%s')   && clonesc && cdsc && date; git branch -vv ; git log |head -7 '
+alias renewmr='   cdco && [[ -d mapping-rules ]]  && sudo mv -f mapping-rules  hl/mapping-rules_$(date '+%Y.%m.%d.%H.%M.%s')  && clonemr && cdmr && date; git branch -vv ; git log |head -7 '
+
+#alias renewmrs='  cdco && [[ -d mapping-rules-server ]]  && sudo mv -f mapping-rules-server  hl/mapping-rules-server$(date '+%Y.%m.%d.%H.%M.%s')  && clonemrs && cdmrs && date; git branch -vv ; git log |head -7 '
+alias renewkc='   cdco && [[ -d kafka-consumer ]] && sudo mv -f kafka-consumer hl/kafka-consumer_$(date '+%Y.%m.%d.%H.%M.%s') && clonekc && cdkc && date; git branch -vv ; git log |head -7 '
+#alias renewau='   cdco && [[ -d AdminUI ]] && sudo mv -f AdminUI hl/AdminUI_$(date '+%Y.%m.%d.%H.%M.%s')  && cloneau && cdau && date; git branch -vv ; git log |head -7 '
+
+alias cdredis='   cd /usr/local/bin/redis; ls -ltr '
+# make avail $ rpm -qf /usr/local/bin/redis/redis.conf
+alias startredis='redis-server   /usr/local/bin/redis/redis.conf     & '
+alias startsenti='redis-sentinel /usr/local/bin/redis/sentinel.conf  & '
+alias pingredis=' echo "redis-cli ping, and PONG ? " && redis-cli ping '
+alias startr='    hterm pro startredis'
+
+# sdev startredis; sudo systemctl start redis.service; sudo systemctl status redis.service
+alias status_serv='      service redis status '
+
+alias startredis_serv='  sudo service redis start '
+alias startsenti_serv='  sudo service redis-sentinel start '
+alias startredis_3='cd ${HOME}/redis-3.2.3; src/redis-server redis.conf '
+
+
+#alias gredis='    egrep "^db|connected|role|mem|REDIS" '
+#alias gisource='  egrep "event.incident.source" '
+
+#alias starthapp=' cd $HOME/WebstormProjects/henry_starter_project/henry_app; pwd; ls; npm start & '
+
+#alias startt_l='  NODE_ENV=test_local ' 
+#alias starttmo='  startt_l mocha test/integration/testEnrichment_MockCS'
+#alias startmms='  cdsc && pwd && startt_l node MockMELDServer.js | bunyan -L & ' 
+#alias omms='      open http://localhost:5002/'
+#alias vmms='      curl -s  http://localhost:5002 |catco '
+
+alias startsc_l=' cdsc && pwd && NODE_ENV=dev_local      node smartconnect.js    | bunyan -o short -l debug -L & '
+#alias startsc_l='cdsc && pwd && NODE_ENV=dev_local      node smartconnect.js   | bunyan -o short -l debug    & '
+# /usr/local/bin/node --debug-brk=62963 --nolazy smartconnect.js
+# bash -c cd smartconnect && NODE_ENV=dev_local nohup npm run sd 2>&1 > smartconnect.log &
+alias startl='    hterm pro startsc_l'
+
+alias stopsc='    fkp smartconnect '
+alias stopnode='  fkp node'
+alias stopredis=' fkp redis-server  ; fkp redis-sentinel'
+
+alias stopall='   stopredis ; sleep 2; stopnode ; sleep 2 '
+alias mon='       ech2                     "Monitor process status and jobs running ..."; ps -ef|egrep "node|npm|mocha|redis|bin\/start.js|smartconnect.js|x-serv|x-clie|x-disp|tail"; jobs; date '
+
+alias startcsng=' cd $HOME/checkouts/context-store-ng; date; pwd; ./bin/www | bunyan -L '
+
+alias startdisp=' cddisp; now; pwd;            node bin/baymax-dispatcher  | bunyan -L '
+alias startbser=' cdbser; now; pwd; . .bashrc; node bin/baymax-server      | bunyan -L '
+alias startbcli=' cdbcli; now; pwd; . .bashrc; node bin/baymax-client     -t rfnoise -r test_rules_05.json | bunyan -L '
+alias startgeo='  cdchor; now; npm install &&  node upload_geodata.js '
+
+alias tailbser='  cdbser; now; pwd;  tail -n100 -F baymax-server.log | bunyan -L -o short '
+alias tailbcli='  cdbcli; now; pwd;  tail -n100 -F baymax-client.log | bunyan -L -o short '
+alias taildisp='  cddisp; now; pwd;  tail -n100 -F dispatcher.log    | bunyan -L -o short '
+
+alias sdisp=' sshsdev "bash -ic startdisp " '
+alias sbser=' sshsdev "bash -ic startbser " '
+alias sbcli=' sshsdev "bash -ic startbcli " '
+alias sgeo='  sshsdev "bash -ic startgeo  " '
+
+alias tbser=' sshsdev "bash -ic tailbser" '
+alias tbcli=' sshsdev "bash -ic tailbcli" '
+alias tdisp=' sshsdev "bash -ic taildisp" '
+alias tredm=' sshsdev "bash -ic redismo " '
+
+# hlam001c@dev93:~/checkouts/smartconnect$ sshsdev "tail -n100 -F $HOME/checkouts/baymax-server/baymax-server.log|bunyan"
+tbser93 () {  bash $HOME/proj/shell/hterm.sh novel   "sshsdev 'tail -n100 -F /home/hlam001c/checkouts/baymax-server/baymax-server.log |bunyan' " ; }
+tbcli93 () {  bash $HOME/proj/shell/hterm.sh novel   "sshsdev 'tail -n100 -F /home/hlam001c/checkouts/baymax-client/baymax-client.log ' " ; }
+tdisp93 () {  bash $HOME/proj/shell/hterm.sh novel   "sshsdev 'tail -n100 -F /home/hlam001c/checkouts/dispatcher/dispatcher.log|bunyan -L -o short ' " ; }
+tredm93 () {  bash $HOME/proj/shell/hterm.sh novel   "sshsdev 'bash -ic redismo ' " ; }
+mon93 () {    bash $HOME/proj/shell/hterm.sh novel   "sshsdev 'bash -ic mon ' " ; }
+
+
+##  Get JSON values of keys, subkeys
+
+pjkey () {                python -c "import json,sys; print json.load(sys.stdin)$1 " ; }
+#                         python -c "import json,sys;                      print json.load(sys.stdin)['payload'] "
+#                         python -c "import json,sys;                        obj=json.load(sys.stdin);print obj['payload'] "
+function getJsonVal2 () { python -c "import json,sys;sys.stdout.write(json.dumps(json.load(sys.stdin)$1, sort_keys=True, indent=4))"; }
+function getJsonVal () {  python -c "import json,sys;sys.stdout.write(json.dumps(json.load(sys.stdin)$1))"; }
+# cat ki.json          |  getJsonVal            "['events'][0]['data']['nlTagNum']";echo
+# cat other_enrich.json|  getJsonVal "['payload']['events'][0]['data']['nlTagNum']";echo
+# cat other_enrich.json|  python -c "import json,sys;                          obj=json.load(sys.stdin);print obj['payload']['customer']['data']['xbo_Id']"
+# cat other_enrich.json|  python -c "import json,sys;                        print json.load(sys.stdin)['payload']['customer']['data']['xbo_Id']"
+
+
+##  Curl read redisData
+
+alias v='  curl -s http://baymax-next.csv.comcast.com:3000/heartbeat > $HOME/tem/curlog && pjson $HOME/tem/curlog '
+vulh () {  d=$1; d=${d:-log_stdout};      u=http://localhost:4031/$d &&                 curl -s  $u > $HOME/tem/curlog && pjson $HOME/tem/curlog  ; }
+vu () {    s=$1; d=$2; d=${d:-heartbeat}; u=http://baymax-$s.csv.comcast.com:3000/$d && curl -s  $u > $HOME/tem/curlog && pjson $HOME/tem/curlog  ; }
+alias vun='vu next '
+alias vuc='vu curr '
+
+##  redis keys, value, subkeys 
+
+getkey () {    redis-cli get $1 | python -m json.tool ; }
+# getkey all_map_rules_info ; getkey all_map_rules_info |pjkey "['userInfo']"
+
+getkv () {     k=$1; k=${k:-name}; f=$2; f=${f:-$HOME/checkouts/mapping-rules/prod_rules/rules.json}; grep $k $f -n | cat -n ; }
+# mapping-rules$ for fi in event.incident.source name execMethod; do echo $fi; getkv $fi prod_rules/rules.json ; done
+
+
+# vun redisData>rd.json; python -c "import json; print json.load( open ('rd.json', 'r') )['all_map_rules']"  | tee bn_r
+rl_teekey () { k=$1; vulh redisData > rd.json; python -c "import json; print json.load( open ('rd.json', 'r') )['$k']" | tee lh_$k ; rm -f rd.json ; }
+rn_teekey () { k=$1; vun  redisData > rd.json; python -c "import json; print json.load( open ('rd.json', 'r') )['$k']" | tee bn_$k ; rm -f rd.json ; }
+rc_teekey () { k=$1; vuc  redisData > rd.json; python -c "import json; print json.load( open ('rd.json', 'r') )['$k']" | tee bc_$k ; rm -f rd.json ; }
+
+##  redis keys, count and compare
+rl_key () {    k=$1; vulh redisData > rd.json; python -c "import json; print json.load( open ('rd.json', 'r') )['$k']" > lh_$k ; rm -f rd.json ; }
+rn_key () {    k=$1; vun  redisData > rd.json; python -c "import json; print json.load( open ('rd.json', 'r') )['$k']" > bn_$k ; rm -f rd.json ; }
+rc_key () {    k=$1; vuc  redisData > rd.json; python -c "import json; print json.load( open ('rd.json', 'r') )['$k']" > bc_$k ; rm -f rd.json ; }
+
+ckey () {      k=$1; cd $HOME/logs; rl_key $k && rn_key $k && rc_key $k && echo "Compare word-count of lh_ bn_ bc_ for key=$k:" && wc lh_$k bn_$k bc_$k ; }
+allk () {      redis-cli KEYS "*"  |sort ; }
+cckey () {     for k in `allk`; do echo $k; ckey $k; done ; }
+
+
+##  Pull ERROR from log_stdout
+ERRst="ECONNRESET|ETIMEDOUT|ENETUNREACH|ERROR"
+IWE="INFO|WARN|ERROR"
+sts () {  c=$1; c=${c:-head}; egrep 2016 | $c -1|cut -d"]" -f1 | tr '"[' ' ' ; }
+lon () {  vun  log_stdout >> ~/logs/temln && f=~/logs/temln ; echo Start_time: `cat $f|sts` ; egrep "$ERRst" $f ; echo "End_time  :" `cat $f|sts tail` ; now ; }
+loc () {  vuc  log_stdout >> ~/logs/temlc && f=~/logs/temlc ; echo Start_time: `cat $f|sts` ; egrep "$ERRst" $f ; echo "End_time  :" `cat $f|sts tail` ; now ; }
+
+##  Pull data from redisData
+rl () {             vulh redisData | egrep $* ; }
+rn () {             vun  redisData | egrep $* ; }
+rc () {             vuc  redisData | egrep $* ; }
+
+##  Pull redisData from a string of "IVRBucket", or eventType
+rn_ivrbucket () {   s=$1; vun redisData|egrep -i -C3 "IVRBucket\": \"$s\",?" ; }
+rc_ivrbucket () {   s=$1; vuc redisData|egrep -i -C3 "IVRBucket\": \"$s\",?" ; }
+rn_eventType () {   s=$1; vun redisData|egrep -i -C3 "eventType\": \"$s\"?" ; } 
+rc_eventType () {   s=$1; vuc redisData|egrep -i -C3 "eventType\": \"$s\"?" ; } 
+
+##  Pull redisData map_ivr_itg key from a string of "Primary Key", or csr_description, or display_priority 
+rl_PK () {          s=$1; vulh redisData|egrep -i -B30 -A5 "Primary Key\": \".*$s.*\",?" ; }
+rn_PK () {          s=$1; vun  redisData|egrep -i -B30 -A5 "Primary Key\": \".*$s.*\",?" ; }
+rc_PK () {          s=$1; vuc  redisData|egrep -i -B40 -A9 "Primary Key\": \".*$s.*\",?" ; }
+#rc_csrdesc () {     s=$1; vuc redisData|egrep -i -B30 -A5 "csr_description\": \".*$s.*\",?" ; }
+#rc_displayprio () { s=$1; vuc redisData|egrep -i -B30 -A5 "display_priority\": \".*$s.*\",?" ; }
+rl_ftp () {         s=$1; vulh redisData|egrep -i -C4      "FTP\": \".*$s.*\"?" ; }
+
+
+### REDIS-CLI_COMMANDS
+
+# redis-cli INFO | egrep "^db|connected|role|mem"
+# redis-cli MONITOR
+# redis-cli --version  
+# redis-cli --stat   
+# redis-cli --scan   
+# redis-cli KEYS    map*; redis-cli KEYS rf*; redis-cli KEYS  "*" ; echo keys map*|redis-cli
+# redis-cli DEL     testing_key
+
+# redis-cli TYPE    rfNoise_data:70:85:C6:33:9F:09
+# redis-cli HLEN    rfNoise_data:70:85:C6:33:9F:09 
+# redis-cli HKEYS   rfNoise_data:70:85:C6:33:9F:09 
+# redis-cli HVALS   rfNoise_data:70:85:C6:33:9F:09 
+# redis-cli HGETALL rfNoise_data:70:85:C6:33:9F:09 
+
+# redis-cli HGET    rfNoise_data:70:85:C6:33:9F:09 counter
+# redis-cli HMGET   rfNoise_data:70:85:C6:33:9F:09 counter cmtsValue
+# redis-cli HEXISTS rfNoise_data:70:85:C6:33:9F:09 counter
+
+# redis-cli CONFIG  GET    "*"
+# redis-cli CLIENT  LIST
+# redis-cli SLOWLOG RESET
+# redis-cli SLOWLOG GET    25 
+# redis-cli HMSET   myhash f1 HelloWorld f2 99 f3 -256
+# redis-cli DBSIZE
+# redis-cli BGSAVE
+# redis-cli TIME   
+
+alias oredishelp='     open http://redis.io/commands/hgetall'
+
+# FLUSHALL redis keys:
+# redis-cli -p 6379 keys "*" | awk ' {print $1}' | xargs redis-cli -p 6379 del
+alias flushallkeysstag='redis-cli -h $red64 -p 6379 FLUSHALL  '
+alias flushallkeys='    redis-cli                   FLUSHALL  '
+alias jv_flush='        sshjv "redis-cli            FLUSHALL" '
+
+# Monitor/Info redis keys:
+alias redmo='           redis-cli                   MONITOR   '
+alias redif='           redis-cli                   INFO      '
+
+redismo () {   h=$1; h=${h:-localhost}; p=6379;                     redis-cli -h $h -p $p MONITOR ; }
+redisif () {   h=$1; h=${h:-localhost}; p=6379;                     redis-cli -h $h -p $p INFO    ; }
+alias rif62='  redisif $red62'
+alias rif64='  redisif $red64'
+alias rif21='  redisif $red21'
+
+# All redis keys from redis-cli cmd:
+akeyss () {    h=$1; h=${h:-localhost}; p=6379; echo Redis_keys_$h; redis-cli -h $h -p $p KEYS "*" |sort|cat -n; date ; }
+akh () {       h=$1; h=${h:-localhost}; p=6379;                     redis-cli -h $h -p $p KEYS "*"     ; }
+alias akh62='  akh   $red62'
+alias akh64='  akh   $red64 '
+alias akh21='  akh   $red21 '
+
+# KEYS
+akrh () {      h=$1; h=${h:-localhost}; p=6379;                     redis-cli -h $h -p $p KEYS "rf*"   ; }
+alias akrh62=' akrh $red62'
+alias akrh64=' akrh $red64 '
+alias akrh21=' akrh $red21 '
+
+# HGETALL
+krf () {       rfk=$1; h=$2; h=${h:-localhost}; p=6379; echo $h $p; redis-cli -h $h -p $p HGETALL $rfk ; }
+
+# Tails all keys of rfNoise
+krl () {       n=0; for i in $* ; do ((n++));ech2 "$n ###$i ... " ; krf $i            ; done ; }
+alias krtail=' krl    `akrh|tail|aoneline` '
+
+krn () {       n=0; for i in $* ; do ((n++));ech2 "$n ###$i ... " ; krf $i $red64 6379; done ; }
+alias kr64tail='kr64   `akrh64|tail|aoneline` '
+
+krc () {       n=0; for i in $* ; do ((n++));ech2 "$n ###$i ... " ; krf $i $red21 6379; done ; }
+alias kr21tail='kr21   `akrh21|tail|aoneline` '
+
+# HGET details of counter or cmtsValue or timestamp
+krcm () {     rfk=$1; h=$2; h=${h:-localhost}; p=6379;             redis-cli -h $h -p $p HGET    $rfk cmtsValue ; }
+krco () {     rfk=$1; h=$2; h=${h:-localhost}; p=6379;             redis-cli -h $h -p $p HGET    $rfk counter   ; }
+krts () {     rfk=$1; h=$2; h=${h:-localhost}; p=6379;             redis-cli -h $h -p $p HGET    $rfk timestamp ; }
+
+krd () {      h=$1; h=${h:-localhost}; p=6379; echo redis host= $h $p; akrh $h $p |cut -d "\"" -f2 > ~/logs/krdetails_$h && for line in `cat ~/logs/akr_$h`; do ech2 "RFN key $line"; echo -ne counter = ; krco $line; echo -ne cmtsVal = ; krcm $line; echo -ne timestam= ;krts $line ; done ; }
+
+
+# All keys of map_ types from web routes
+alias kml='vulh redisData| grep map_'
+alias kmn='vun  redisData| grep map_'
+alias kmc='vuc  redisData| grep map_'
+
+Up_IVR () {       b=$1; b=${b:-dev_local}; cdmr ; echo "Upload IVR" ;       NODE_ENV=$b npm start -- --fp prod_rules/ivr_itg.csv          --mptp map_ivr_itg             |bunyan -L ; }
+Up_VOD () {       b=$1; b=${b:-dev_local}; cdmr ; echo "Upload VOD" ;       NODE_ENV=$b npm start -- --fp prod_rules/vod-credit-limit.csv --mptp map_vod_credit_error    |bunyan -L ; }
+Up_TVNS () {      b=$1; b=${b:-dev_local}; cdmr ; echo "Upload TVNS";       NODE_ENV=$b npm start -- --fp prod_rules/tvns.csv             --mptp map_tvns_data           |bunyan -L ; }
+Up_Rules () {     b=$1; b=${b:-dev_local}; cdmr ; echo "Upload Rules" ;     NODE_ENV=$b npm start -- --fp prod_rules/rules.json           --mptp all_map_rules           |bunyan -L ; }
+Up_IVRBucket () { b=$1; b=${b:-dev_local}; cdmr ; echo "Upload IVRBucket" ; NODE_ENV=$b npm start -- --fp prod_rules/ivrbucket.csv        --mptp map_ivrbucket_data      |bunyan -L ; }
+Up_FindRepl () {  b=$1; b=${b:-dev_local}; cdmr ; echo "Upload FindRepl" ;  NODE_ENV=$b npm start -- --fp prod_rules/findreplace_01_03_16.csv --mptp map_findreplace_data|bunyan -L ; }
+Up_XRAY () {      b=$1; b=${b:-dev_local}; cdmr ; echo "Upload XRAY" ;      NODE_ENV=$b npm start -- --fp prod_rules/xray_enrich.csv      --mptp map_xray_data           |bunyan -L ; }
+Up_XRE () {       b=$1; b=${b:-dev_local}; cdmr ; echo "Upload XRE" ;       NODE_ENV=$b npm start -- --fp prod_rules/xre_enrich.csv       --mptp map_xre_data            |bunyan -L ; }
+Up_XHUI () {      b=$1; b=${b:-dev_local}; cdmr ; echo "Upload XHUI" ;      NODE_ENV=$b npm start -- --fp prod_rules/XHUI_08_08_16.csv    --mptp map_xh_ui_data          |bunyan -L ; }
+Up_XOD  () {      b=$1; b=${b:-dev_local}; cdmr ; echo "Upload XOD " ;      NODE_ENV=$b npm start -- --fp prod_rules/XOD_enrichment_20160628.csv --mptp map_xod_data     |bunyan -L ; }
+
+alias Up_IVR_PROD='echo MUST BE JARVIS HOST; cdmr;   NODE_ENV=baymax_production node bin/start.js        --fp prod_rules/ivr_itg.csv          --mptp map_ivr_itg             | bunyan -L '
+alias Up_IVR_stag='Up_IVR baymax_staging '
+
+alias Up_local='   Up_IVR;      Up_VOD;      Up_TVNS;      Up_Rules;      Up_IVRBucket;      Up_FindRepl;      Up_XRAY;      Up_XRE;      Up_XHUI;      Up_XOD '
+alias Up_stag='    Up_IVR $bs_; Up_VOD $bs_; Up_TVNS $bs_; Up_Rules $bs_; Up_IVRBucket $bs_; Up_FindRepl $bs_; Up_XRAY $bs_; Up_XRE $bs_; Up_XHUI $bs_; Up_XOD $bs_ '
+alias Up_PROD='    Up_IVR $bp_; Up_VOD $bp_; Up_TVNS $bp_; Up_Rules $bp_; Up_IVRBucket $bp_; Up_FindRepl $bp_; Up_XRAY $bp_; Up_XRE $bp_; Up_XHUI $bp_; Up_XOD $bp_ '
+
+
+##  grep dups
+gdup () {          trLC|sort|uniq -d ; }
+#alias gdupivr='   cat ivr_itg.csv   | gdup ' ; alias gdupivrb='  cat ivrbucket.csv | gdup '
+
+gdupIVRB () { egrep IVRBucket| trLC | sort | uniq -d ; }
+#alias fdupIVRBl='  vulh redisData | gdupIVRB '; alias fdupIVRBn='  vun  redisData | gdupIVRB '; alias fdupIVRBc='  vuc  redisData | gdupIVRB '
+
+# MAC OSX version of Find Dupplicate Primary Key in /redisData route
+#fdupPK () { b=$1; b=${b:-http://baymax-next.csv.comcast.com:3001/redisData}; curl -s $b |sed 's/},/}\'$'\n/g'|egrep -i "Primary Key\":\""| cut -d"," -f1 | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' 'abcdefghijklmnopqrstuvwxyz'| sort  | uniq -c|grep -v  11 ; }
+#fdupPK () { b=$1; b=${b:-http://baymax-next.csv.comcast.com:3001/redisData}; curl -s $b |sed 's/},/}\'$'\n/g'|egrep -i "Primary Key\":\""| cut -d"," -f1 | trLC| sort | uniq -d ; }
+#alias fdupPKn='    fdupPK '
+#alias fdupPKc='    fdupPK $bc_rd'
+#alias fdupPKl='    fdupPK $lh_rd'
+
+# Linux version of Find Dupplicate Primary Key in /redisData route
+#ldupPK () { b=$1; b=${b:-http://baymax-next.csv.comcast.com:3000/redisData }; curl -s $b |sed 's/},/}\n/g'    |egrep -i "Primary Key\":\""| cut -d"," -f1 | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' 'abcdefghijklmnopqrstuvwxyz'| sort |uniq -d; }
+#alias ldupPKn='    ldupPK '
+#alias ldupPKc='    ldupPK $bc_rd'
+#alias ldupPKl='    ldupPK $lh_rd'
+
+
+##  grep from folders
+fgbmx()   {    egrep -rinH $* $HOME/checkouts/[sm]*/*         | grep -v node_modules ; }
+fgsc ()   {    egrep -rinH $* $HOME/checkouts/smartconnect/*  | grep -v node_modules ; }
+fgmr ()   {    egrep -rinH $* $HOME/checkouts/mapping-rules/* | grep -v node_modules ; }
+#fgcfg()   {    egrep -rinH $* $HOME/checkouts/smartconnect/config/* ; }
+
+# grep config_env
+#alias cfemeld='cd $HOME/checkouts/smartconnect/config;          egrep  -C3 "116|161"        config_env.json'
+#alias cfel='   cd $HOME/checkouts/smartconnect/config;          grep  -A3 dev_local         config_env.json'
+#alias cfes='   cd $HOME/checkouts/smartconnect/config;          grep  -A3 baymax_staging    config_env.json'
+#alias cfep='   cd $HOME/checkouts/smartconnect/config;          grep  -A3 baymax_production config_env.json'
+
+# grep postUrl
+alias cfev='   cd $HOME/checkouts/smartconnect/config; egrep  -A3 "dev_local|baymax_staging|baymax_production" config_env.json; echo -n "LOCAL: "; vipl; echo -n "STAGING: "; vips; echo -n "PRODUCTION: "; vipp '
+alias vipl='   vulh redisData|egrep -A17 "postUrl|vip" '
+alias vips='   vun  redisData|egrep -A17 "postUrl|vip" '
+alias vipp='   vuc  redisData|egrep -A17 "postUrl|vip" '
+
+# grep minGOodSnr
+alias cfecce=' cd   $HOME/checkouts/smartconnect/config; egrep  -C2 "channelChangeEnabled|minGoodSnr"            config_constants.json '
+alias cfer='   grep -A3 minGoodSnr /Users/hlam001c/checkouts/mapping-rules/prod_rules/rules.json'
+minsnr () {    c=$1; c=${c:-rl}; echo "The minGoodSnr_$c sets ...: "; $c -B10 -A2 minGood ; }
+
+##  all load json
+alleploadjson () { cdepload && ls *json   |awk -F. '{print $1}' ; }
+allotloadjson () { cdotload && ls *json   |awk -F. '{print $1}' ; }
+allmcloadjson () { cdmcload && ls *json   |awk -F. '{print $1}' ; }
+allxhloadjson () { cdxhload && ls *json   |awk -F. '{print $1}' ; }
+alldcloadjson () { cddcload && ls *json   |awk -F. '{print $1}' ; }
+allrfloadjson () { cdrfload && ls *json   |awk -F. '{print $1}' ; }
+allisloadjson () { cdisload && ls *json   |awk -F. '{print $1}' ; }
+alldoloadjson () { cddoload && ls *json   |awk -F. '{print $1}' ; }
+allmaloadjson () { cdmaload && ls *json   |awk -F. '{print $1}' ; }
+
+allxoloadjson () { cdxoload && ls *json   |awk -F. '{print $1}' ; }
+allxreloadjson () { cdxreload && ls *json |awk -F. '{print $1}' ; }
+allxrloadjson () { cdxrload && ls *json   |awk -F. '{print $1}' ; }
+
+alltvloadjson () { cdtvload && ls *json   |awk -F. '{print $1}' ; }
+allfrloadjson () { cdfrload && ls *json   |awk -F. '{print $1}' ; }
+allxmlload () {    cdxml    && ls ; }
+
+allmotests () {    cdmotest && ls test*js |awk -F. '{print $1}' ; }
+allrules () {      cdrules  && ls         |awk -F. '{print $1}' ; }
+
+
+### MOCHA_TESTS
+
+mo () {     p=`ebn`; e=$1; e=${e:-$p}; t=$2; t=${t:-testEnrichment}; cdsc ;  cowsay "NODE_ENV=$e test=$t" ;  NODE_ENV=$e mocha --no-timeouts test/integration/$t | egrep -i "NODE_ENV|@Test_|passing|failing|ms)|Error" ; }
+
+mos () {    p=`ebn`; t=$1; t=${t:-testSmartconnect}; mo $p    $t ; }
+alias mos_r='mos testRules.js'
+
+mop () {    t=$1; t=${t:-testSmartconnect};          mo baymax_production $t ; }
+alias mop_r='mop testRules.js'
+
+mol () {    t=$1; t=${t:-testSmartconnect};          mo dev_local         $t ; }
+mot () {    t=$1; t=${t:-testSmartconnect};          mo test_local        $t ; }
+
+mo_log () { p=`ebn`; e=$1; e=${e:-$p}; t=$2; t=${t:-testEnrichment}; cdsc ;  cowsay "NODE_ENV=$e test=$t" ;  NODE_ENV=$e mocha --no-timeouts test/integration/$t | tee -a $HOME/logs/mo_$e_$t_$(date '+%Y.%m.%d').log  ; }
+alias mos_log='mo_log baymax_staging    '
+alias mop_log='mo_log baymax_production '
+alias mol_log='mo_log dev_local '
+alias mot_log='mo_log test_local '
+alias gmo='    egrep -i "NODE_ENV|@Test_|passing|failing|ms)|Error" '
+
+
+##  All mocha tests
+
+allmos () { t1; amt=`allmotests` && p=`ebn` && for t in $amt; do cowsay $p $t ; mo $p                $t ; done ; t2 ; }
+allmop () { t1; amt=`allmotests` &&            for t in $amt; do cowsay $t ;    mo baymax_production $t ; done ; t2 ; }
+
+allmochal () {     t1; p=dev_local ; for t in `cd $HOME/checkouts/smartconnect/test/integration/ && ls test*js|egrep -v "EBIF|Mock"|awk -F. '{print $1}' `; do cowsay "Run mocha $t on $p ..."; cd $HOME/checkouts/smartconnect; NODE_ENV=$p mocha --no-timeouts test/integration/$t | tee -a $HOME/logs/allmochab_l_$(date '+%Y.%m.%d').log ;  done ; t2 ; }
+allmochal_log () { t1; p=dev_local ; for t in `cd $HOME/checkouts/smartconnect/test/integration/ && ls test*js|egrep -v "EBIF|Mock"|awk -F. '{print $1}' `; do cowsay "Run mocha $t on $p ..."; cd $HOME/checkouts/smartconnect; NODE_ENV=$p mocha --no-timeouts test/integration/$t | tee -a $HOME/logs/allmochab_l_$(date '+%Y.%m.%d').log ;  done ; t2 ; }
+
+allmochas () {     t1; p=`ebn`; for t in `cd $HOME/checkouts/smartconnect/test/integration/ && ls test*js|egrep -v "EBIF|Mock|Deployment"|awk -F. '{print $1}' `; do cowsay "Run mocha $t on $p ..."; cd $HOME/checkouts/smartconnect; NODE_ENV=$p mocha --no-timeouts test/integration/$t | egrep -i "NODE_ENV|@Test_|passing|failing|ms)" ;  done ; t2 ; }
+allmochas_log () { t1; p=`ebn`; for t in `cd $HOME/checkouts/smartconnect/test/integration/ && ls test*js|egrep -v "EBIF|Mock|Deployment"|awk -F. '{print $1}' `; do cowsay "Run mocha $t on $p ..."; cd $HOME/checkouts/smartconnect; NODE_ENV=$p mocha --no-timeouts test/integration/$t | tee -a $HOME/logs/allmochab_s_$(date '+%Y.%m.%d').log ;  done ; t2 ; }
+
+allmochap () {     t1; for t in `cd $HOME/checkouts/smartconnect/test/integration/ && ls test*js|egrep -v "EBIF|Mock"|awk -F. '{print $1}' `; do cowsay "Run mocha $t on baymax_production ..."; cd $HOME/checkouts/smartconnect; NODE_ENV=baymax_production mocha --no-timeouts test/integration/$t | egrep -i "NODE_ENV|@Test_|passing|failing|ms)" ;  done ; t2 ; }
+allmochap_log () { t1; for t in `cd $HOME/checkouts/smartconnect/test/integration/ && ls test*js|egrep -v "EBIF|Mock"|awk -F. '{print $1}' `; do cowsay "Run mocha $t on baymax_production ..."; cd $HOME/checkouts/smartconnect; NODE_ENV=baymax_production mocha --no-timeouts test/integration/$t | tee -a $HOME/logs/allmochab_p_$(date '+%Y.%m.%d').log ;  done ; t2 ; }
+
+
+
+### FUNCTIONS_POST_ALL_PAYLOADS
+
+all500 () {     t1; s=$1; s=${s:-$bn_}; cowsay "Run script postJSONEvent all enrichment payloads to Baymax URL: $s/event"; ae=`alleploadjson` && am=`allmcloadjson`  && cd $HOME/checkouts/smartconnect && for e in $ae ; do echo $e ; node scripts/postJSONEvent.js  $s/event test/test_data/enriched_payloads/$e.json |egrep "500|undefined"; done; all500mc; t2 ; }
+all500_log () { t1; s=$1; s=${s:-next}; cowsay "Run script postJSONEvent all enrichment payloads to Baymax URL: http://baymax-$s.csv.comcast.com:3000/event"; ae=`alleploadjson` && cd $HOME/checkouts/smartconnect && for e in $ae; do echo $e ; node scripts/postJSONEvent.js  http://baymax-$s.csv.comcast.com:3000/event test/test_data/enriched_payloads/$e.json |tee -a $HOME/logs/all500_$s_$(date '+%Y.%m.%d').log ; done; t2 ; }
+
+all201 () {     t1; s=$1; s=${s:-next}; cowsay "Run script postJSONEvent all enrichment payloads to Baymax URL: http://baymax-$s.csv.comcast.com:3000/event"; ae=`alleploadjson` && cd $HOME/checkouts/smartconnect && for e in $ae; do echo $e ; node scripts/postJSONEvent.js  http://baymax-$s.csv.comcast.com:3000/event test/test_data/enriched_payloads/$e.json |egrep "_id:|Code:|code:|500|MELD|undefined|Context"; done; t2 ; }
+alias all201n='all201 '
+alias all201c='all201 curr'
+#alias g201='egrep "event_id:|Code:|code:|500|MELD|undefined" '
+
+all201_log () { t1; s=$1; s=${s:-next}; echo "Run script postJSONEvent all enrichment payloads to Baymax URL: http://baymax-$s.csv.comcast.com:3000/event"; ae=`alleploadjson` && cd $HOME/checkouts/smartconnect && for e in $ae; do echo $e ; node scripts/postJSONEvent.js  http://baymax-$s.csv.comcast.com:3000/event test/test_data/enriched_payloads/$e.json | tee -a $HOME/logs/all201_$s_$(date '+%Y.%m.%d').log; done; t2 ; }
+
+all201l () { t1; s="localhost:4031"; echo "Run script postJSONEvent all enrichment payloads to $s"; ae=`alleploadjson` && cd $HOME/checkouts/smartconnect && for e in $ae; do echo $e ; node scripts/postJSONEvent.js  http://$s/event test/test_data/enriched_payloads/$e.json | tee -a $HOME/logs/all201l_$(date '+%Y.%m.%d').log; done; t2 ; }
+alias g500='egrep "500|undefined"'
+alias g201='egrep "type:|correlation_id:|event_id:|accountnum:|Code:|code:|500|MELD|undefined|ingest"'
+alias g201c='egrep "code:.*"'
+alias glog='ftee '
+
+allep () {   s=$1; s=${s:-$bn_ev}; cowsay "Run script postJSONEvent all enrichment payloads to Baymax URL: $s"; am=`alleploadjson`  && cd $HOME/checkouts/smartconnect && for e in $am ; do echo ingest: $e ; node scripts/postJSONEvent.js  $s test/test_data/enriched_payloads/$e.json ; done  ; }
+allep2 () {  s=$1; s=${s:-$bn_ev}; cowsay "Run script postJSONEvent all enrichment payloads to Baymax URL: $s"; am=`alleploadjson`  && cd $HOME/checkouts/smartconnect && for e in $am ; do echo ingest: $e ; cpost                          $s test/test_data/enriched_payloads/$e.json ; echo; done  ; }
+alias allepl='allep $lh_ev'
+alias allepn='allep "$bn_ev" '
+alias allepc='allep "$bc_ev" '
+allep_201 () {     allep $1 | g201   ; }
+allep_500 () {     allep $1 | g500   ; }
+allep_log () {     allep $1 | ftee $2 ; }
+
+apvmc () {   fpx=$1; vx=$2;      cowsay "Run script post, verify  all Mobile Callback payloads to Baymax URL: $s/event"; am=`allmcloadjson`  && cd $HOME/checkouts/smartconnect && for e in $am ; do echo ingest:$e ; node scripts/postJSONEvent.js  $s/event test/test_data/mobileCallback_payloads/$e.json ; done  ; }
+allmc () {   s=$1; s=${s:-$bn_}; cowsay "Run script postJSONEvent all Mobile Callback payloads to Baymax URL: $s/event"; am=`allmcloadjson`  && cd $HOME/checkouts/smartconnect && for e in $am ; do echo ingest:$e ; node scripts/postJSONEvent.js  $s/event test/test_data/mobileCallback_payloads/$e.json ; done  ; }
+alias allmcl='allmc $lh_'
+alias allmcn='allmc "$bn_" '
+alias allmcc='allmc $bc_'
+allmc_201 () {     allmc $1 | g201   ; }
+allmc_500 () {     allmc $1 | g500   ; }
+allmc_log () {     allmc $1 | ftee $2 ; }
+
+allfr () {   s=$1; s=${s:-$bn_}; cowsay "Run script postJSONEvent all findReplace payloads to Baymax URL: $s/event"; am=`allfrloadjson`  && cd $HOME/checkouts/smartconnect && for e in $am ; do echo ingest:$e ; node scripts/postJSONEvent.js  $s/event test/test_data/ivr_payloads/$e.json ; done  ; }
+allfr () {   s=$1; s=${s:-$bn_}; cowsay "Run script postJSONEvent all findReplace payloads to Baymax URL: $s/event"; am=`allfrloadjson`  && cd $HOME/checkouts/smartconnect && for e in $am ; do echo ingest:$e ; node scripts/postJSONEvent.js  $s/event test/test_data/ivr_payloads/$e.json ; done  ; }
+alias allfrl='allfr $lh_'
+alias allfrn='allfr "$bn_" '
+alias allfrc='allfr "$bc_" '
+allfr_201 () {     allfr $1 | g201   ; }
+allfr_500 () {     allfr $1 | g500   ; }
+allfr_log () {     allfr $1 | ftee $2 ; }
+
+allrf () {   s=$1; s=${s:-$bn_}; cowsay "Run script postJSONEvent all rfNoise payloads to Baymax URL: $s/event"; am=`allrfloadjson`  && cd $HOME/checkouts/smartconnect && for e in $am ; do echo ingest:$e ; node scripts/postJSONEvent.js  $s/event test/test_data/rfNoise_payloads/$e.json ; done  ; }
+alias allrfl='allrf $lh_'
+alias allrfn='allrf "$bn_" '
+alias allrfc='allrf "$bc_" '
+allrf_201 () {     allrf $1 | g201   ; }
+allrf_500 () {     allrf $1 | g500   ; }
+allrf_log () {     allrf $1 | ftee $2 ; }
+
+allis () {   s=$1; s=${s:-$bn_}; cowsay "Run script postJSONEvent all internet_speed_experience payloads to Baymax URL: $s/event"; am=`allisloadjson`  && cd $HOME/checkouts/smartconnect && for e in $am ; do echo ingest: $e ; node scripts/postJSONEvent.js  $s/event test/test_data/internet_speed_experience/$e.json ; done  ; }
+alias allisl='allis $lh_'
+alias allisn='allis "$bn_" '
+alias allisc='allis "$bc_" '
+allis_201 () {     allis $1 | g201   ; }
+allis_500 () {     allis $1 | g500   ; }
+allis_log () {     allis $1 | ftee $2 ; } 
+
+alldc () {   s=$1; s=${s:-$bn_}; cowsay "Run script postJSONEvent all Help dotcom payloads to Baymax URL: $s/event"; am=`alldcloadjson`  && cd $HOME/checkouts/smartconnect && for e in $am ; do echo ingest: $e ; node scripts/postJSONEvent.js  $s/event test/test_data/dotcom_payloads/$e.json ; done  ; }
+alias alldcl='alldc $lh_'
+alias alldcn='alldc "$bn_" '
+alias alldcc='alldc "$bc_" '
+alldc_201 () {     alldc $1 | g201   ; }
+alldc_500 () {     alldc $1 | g500   ; }
+alldc_log () {     alldc $1 | ftee $2 ; }
+
+allot () {   s=$1; s=${s:-$bn_}; cowsay "Run script postJSONEvent all other payloads to Baymax URL: $s/event"; am=`allotloadjson`  && cd $HOME/checkouts/smartconnect && for e in $am ; do echo ingest: $e ; node scripts/postJSONEvent.js  $s/event test/test_data/other_payloads/$e.json ; done  ; }
+alias allotl='allot $lh_'
+alias allotn='allot "$bn_" '
+alias allotc='allot "$bc_" '
+allot_201 () {     allot $1 | g201   ; }
+allot_500 () {     allot $1 | g500   ; }
+allot_log () {     allot $1 | ftee $2 ; }
+
+alltv () {   s=$1; s=${s:-$bn_}; cowsay "Run script postJSONEvent all tvns  payloads to Baymax URL: $s/event"; am=`alltvloadjson`  && cd $HOME/checkouts/smartconnect && for e in $am ; do echo ingest: $e ; node scripts/postJSONEvent.js  $s/event test/test_data/tvns_payloads/$e.json ; done  ; }
+alias alltvl='alltv $lh_'
+alias alltvn='alltv "$bn_" '
+alias alltvc='alltv "$bc_" '
+alltv_201 () {     alltv $1 | g201   ; }
+alltv_500 () {     alltv $1 | g500   ; }
+alltv_log () {     alltv $1 | ftee $2 ; }
+
+allxh () {   s=$1; s=${s:-$bn_}; cowsay "Run script postJSONEvent all XH  payloads to Baymax URL: $s/event"; am=`allxhloadjson`  && cd $HOME/checkouts/smartconnect && for e in $am ; do echo ingest: $e ; node scripts/postJSONEvent.js  $s/event test/test_data/xh_payloads/$e.json ; done  ; }
+alias allxhl='allxh $lh_'
+alias allxhn='allxh "$bn_" '
+alias allxhc='allxh "$bc_" '
+allxh_201 () {     allxh $1 | g201   ; }
+allxh_500 () {     allxh $1 | g500   ; }
+allxh_log () {     allxh $1 | ftee $2 ; }
+
+allxo () {   s=$1; s=${s:-$bn_}; cowsay "Run script postJSONEvent all XO  payloads to Baymax URL: $s/event"; am=`allxoloadjson`  && cd $HOME/checkouts/smartconnect && for e in $am ; do echo ingest: $e ; node scripts/postJSONEvent.js  $s/event test/test_data/xod_payloads/$e.json ; done  ; }
+alias allxol='allxo $lh_'
+alias allxon='allxo "$bn_" '
+alias allxoc='allxo "$bc_" '
+allxo_201 () {     allxo $1 | g201   ; }
+allxo_500 () {     allxo $1 | g500   ; }
+allxo_log () {     allxo $1 | ftee $2 ; }
+
+allxre () {   s=$1; s=${s:-$bn_}; cowsay "Run script postJSONEvent all XRE  payloads to Baymax URL: $s/event"; am=`allxreloadjson`  && cd $HOME/checkouts/smartconnect && for e in $am ; do echo ingest: $e ; node scripts/postJSONEvent.js  $s/event test/test_data/xre_payloads/$e.json ; done  ; }
+alias allxrel='allxre $lh_'
+alias allxren='allxre "$bn_" '
+alias allxrec='allxre "$bc_" '
+allxre_201 () {     allxre $1 | g201   ; }
+allxre_500 () {     allxre $1 | g500   ; }
+allxre_log () {     allxre $1 | ftee $2 ; }
+
+allxr () {   s=$1; s=${s:-$bn_}; cowsay "Run script postJSONEvent all XRAY payloads to Baymax URL: $s/event"; am=`allxrloadjson`  && cd $HOME/checkouts/smartconnect && for e in $am ; do echo ingest: $e ; node scripts/postJSONEvent.js  $s/event test/test_data/xray_payloads/$e.json ; done  ; }
+alias allxrl='allxr $lh_'
+alias allxrn='allxr "$bn_" '
+alias allxrc='allxr "$bc_" '
+allxr_201 () {     allxr $1 | g201   ; }
+allxr_500 () {     allxr $1 | g500   ; }
+allxr_log () {     allxr $1 | ftee $2 ; }
+
+allxml () {  s=$1; s=${s:-$bn_}; cowsay "Run script postXmlEvent all XML  payloads to Baymax URL: $s/event"; am=`allxmlload`  && cd $HOME/checkouts/smartconnect && for e in $am ; do echo ingest: $e ; node scripts/postXmlEvent.js  $s/event test/test_data/xml_payloads/$e ; done  ; }
+alias allxmll='allxml $lh_'
+alias allxmln='allxml "$bn_" '
+alias allxmlc='allxml "$bc_" '
+allxml_201 () {     allxml $1 | g201   ; }
+allxml_500 () {     allxml $1 | g500   ; }
+allxml_log () {     allxml $1 | ftee $2 ; }
+
+alldo () {   s=$1; s=${s:-$bn_}; cowsay "Run script postJSONEvent all  DO payloads to Baymax URL: $s/event"; am=`alldoloadjson`  && cd $HOME/checkouts/smartconnect && for e in $am ; do echo ingest: $e ; node scripts/postJSONEvent.js  $s/event test/test_data/device_optimization_payloads/$e.json ; done  ; }
+alias alldol='alldo $lh_'
+alias alldon='alldo "$bn_" '
+alias alldoc='alldo "$bc_" '
+alldo_201 () {     alldo $1 | g201   ; }
+alldo_500 () {     alldo $1 | g500   ; }
+alldo_log () {     alldo $1 | ftee $2 ; }
+
+allma () {   s=$1; s=${s:-$bn_}; cowsay "Run script postJSONEvent all moves_assistant payloads to Baymax URL: $s/event"; am=`allmaloadjson`  && cd $HOME/checkouts/smartconnect && for e in $am ; do echo ingest: $e ; node scripts/postJSONEvent.js  $s/event test/test_data/moves_assistant_payload/$e.json ; done  ; }
+alias allmal='allma $lh_'
+alias allman='allma "$bn_" '
+alias allmac='allma "$bc_" '
+allma_201 () {     allma $1 | g201   ; }
+allma_500 () {     allma $1 | g500   ; }
+allma_log () {     allma $1 | ftee $2 ; }
+
+
+##  Func post and verify all payloads within an event source:
+
+apvep () {   fpx=$1; vx=$2; echo   "Run script post, verify  all enrichment payloads to Bmx URL: $s/event";              am=`alleploadjson`  ; for e in $am ; do t1;ech2 $e.json: ; fpv30 $fpx $e $vx ; t2;done  ; }
+alias apvepl='apvep fpel epc'
+alias apvepn='apvep fpen epc'
+alias apvepc='apvep fpec epc'
+apvmc () {   fpx=$1; vx=$2;      cowsay "Run script post, verify  all Mobile Callback payloads to Baymax URL: $s/event"; am=`allmcloadjson`  ; for e in $am ; do t1;ech2 $e.json: ; fpv30 $fpx $e $vx ; t2;done  ; }
+apvfr () {   fpx=$1; vx=$2;      cowsay "Run script post, verify  all findReplace     payloads to Baymax URL: $s/event"; am=`allfrloadjson`  ; for e in $am ; do t1;ech2 $e.json: ; fpv30 $fpx $e $vx ; t2;done  ; }                                             
+apvrf () {   fpx=$1; vx=$2;      cowsay "Run script post, verify  all rfNoise payloads to Baymax URL: $s/event";         am=`allrfloadjson`  ; for e in $am ; do t1;ech2 $e.json: ; fpv30 $fpx $e $vx ; t2;done  ; }
+alias apvrfl='apvrf fprl epc'
+alias apvrfn='apvrf fprn epc'
+alias apvrfc='apvrf fprc epc'
+apvis () {   fpx=$1; vx=$2;      cowsay "Run script post, verify  all Internet_Speed_Experience payloads to Baymax URL: $s/event"; am=`allisloadjson`  ; for e in $am ; do t1;ech2 $e.json: ; fpv30 $fpx $e $vx ; t2;done  ; }
+apvdc () {   fpx=$1; vx=$2;      cowsay "Run script post, verify  all Help dotcom     payloads to Baymax URL: $s/event"; am=`alldcloadjson`  ; for e in $am ; do t1;ech2 $e.json: ; fpv30 $fpx $e $vx ; t2;done  ; }
+apvot () {   fpx=$1; vx=$2;      cowsay "Run script post, verify  all other           payloads to Baymax URL: $s/event"; am=`allotloadjson`  ; for e in $am ; do t1;ech2 $e.json: ; fpv30 $fpx $e $vx ; t2;done  ; }
+apvtv () {   fpx=$1; vx=$2;      cowsay "Run script post, verify  all TVNS            payloads to Baymax URL: $s/event"; am=`alltvloadjson`  ; for e in $am ; do t1;ech2 $e.json: ; fpv30 $fpx $e $vx ; t2;done  ; }
+apvxh () {   fpx=$1; vx=$2;      cowsay "Run script post, verify  all XH              payloads to Baymax URL: $s/event"; am=`allxhloadjson`  ; for e in $am ; do t1;ech2 $e.json: ; fpv30 $fpx $e $vx ; t2;done  ; }
+apvxo () {   fpx=$1; vx=$2;      cowsay "Run script post, verify  all XO              payloads to Baymax URL: $s/event"; am=`allxoloadjson`  ; for e in $am ; do t1;ech2 $e.json: ; fpv30 $fpx $e $vx ; t2;done  ; }
+apvxre () {  fpx=$1; vx=$2;      cowsay "Run script post, verify  all XRE             payloads to Baymax URL: $s/event"; am=`allxreloadjson` ; for e in $am ; do t1;ech2 $e.json: ; fpv30 $fpx $e $vx ; t2;done  ; }
+apvxr () {   fpx=$1; vx=$2;      cowsay "Run script post, verify  all XRAY            payloads to Baymax URL: $s/event"; am=`allxrloadjson`  ; for e in $am ; do t1;ech2 $e.json: ; fpv30 $fpx $e $vx ; t2;done  ; }
+apvxml () {  fpx=$1; vx=$2;      cowsay "Run script post, verify  all XML             payloads to Baymax URL: $s/event"; am=`allxmlload`     ; for e in $am ; do t1;ech2 $e.json: ; fpv30 $fpx $e $vx ; t2;done  ; }
+apvdo () {   fpx=$1; vx=$2;      cowsay "Run script post, verify  all  DO             payloads to Baymax URL: $s/event"; am=`alldoloadjson`  ; for e in $am ; do t1;ech2 $e.json: ; fpv30 $fpx $e $vx ; t2;done  ; }
+apvma () {   fpx=$1; vx=$2;      cowsay "Run script post, verify  all moves_assistant payloads to Baymax URL: $s/event"; am=`allmaloadjson`  ; for e in $am ; do t1;ech2 $e.json: ; fpv30 $fpx $e $vx ; t2;done  ; }
+
+
+##  get info of 0/local repos git status, 1/build, 2/endpoint, 3/route URLs , 4/result code 201 when posting events, 5/mocha test passed of failed
+
+alias bblinfo='(cdsc; gitst;      hbl;      allepl; allmcl; allotl; allisl; alltvl; allfrl; allrfl; alldcl; allxhl; allxmll; alldol; allmal; allmochal)'
+alias bbninfo='(cdsc; gitst; ibn; hbn; vbn; allepn; allmcn; allotn; allisn; alltvn; allfrn; allrfn; alldcn; allxhn; allxmln; alldon; allman; allmochas)'
+alias bbcinfo='(cdsc; gitst; ibc; hbc; vbc; allepc;         allotc; allisc; alltvc; allfrc; allrfc; alldcc; allxhc; allxmlc; alldoc; allmac;  allmochap)'
+
+alias bbninfo_log='jbfinished; f=$HOME/logs/bbninfo_$(date '+%Y.%m.%d').log; ibn|tee -a $f; hbn|tee -a $f; all201|tee -a $f;  allmochas|tee -a $f '
+alias bbcinfo_log='jbfinished; f=$HOME/logs/bbcinfo_$(date '+%Y.%m.%d').log; ibc|tee -a $f; hbc|tee -a $f; all201c|tee -a $f; allmochap|tee -a $f '
+
+alias bbl='(cdsc; gitst;      hbl;      allmochal; fpv0loho ) | ftee bbl_run  '
+alias bbn='(cdsc; gitst; ibn; hbn; vbn; allmochas; fpv0stag ) | ftee bbn_run  '
+alias bbc='(cdsc; gitst; ibc; hbc; vbc; allmochap; fpv0prod ) | ftee bbc_run  '
+
+fbbl  () { osascript -e 'tell application "Terminal" to do script  "clear;echo hello; bbl     " ' ; }
+fbbn  () { osascript -e 'tell application "Terminal" to do script  "clear;echo hello; bbn     " ' ; }
+fbbc  () { osascript -e 'tell application "Terminal" to do script  "clear;echo hello; bbc     " ' ; }
+
+##  Func post payloads
+
+#fpebn () { pl=$1; pl=${pl:-ParentalControl}; cd ~/checkouts/smartconnect ; e=`node scripts/postJSONEvent.js  http://baymax-next.csv.comcast.com:3000/event test/test_data/enriched_payloads/$pl.json | grep event_id|awk -F"'" '{print $2}'`; echo $e ; }
+#fpebc () { pl=$1; pl=${pl:-ParentalControl}; cd ~/checkouts/smartconnect ; e=`node scripts/postJSONEvent.js  http://baymax-curr.csv.comcast.com:3000/event test/test_data/enriched_payloads/$pl.json | grep event_id|awk -F"'" '{print $2}'`; echo $e ; }
+
+#fpe () { s=$1; pl=$2; pl=${pl:-Bill};           cdsc; node scripts/postJSONEvent.js  http://baymax-$s.csv.comcast.com:3000/event test/test_data/enriched_payloads/$pl.json  ; }
+#alias fpen='fpe next '
+#alias fpec='fpe curr '
+
+gev () {  grep "event_id:"|awk -F"\'" '{print $2}' ; }
+
+fpel () { pl=$1; pl=${pl:-Bill};                cdsc; node scripts/postJSONEvent.js  http://localhost:4031/event                   test/test_data/enriched_payloads/$pl.json ; }
+fpen () { pl=$1; pl=${pl:-Bill};                cdsc; node scripts/postJSONEvent.js  http://baymax-next.csv.comcast.com:3000/event test/test_data/enriched_payloads/$pl.json ; }
+fpec () { pl=$1; pl=${pl:-Bill};                cdsc; node scripts/postJSONEvent.js  http://baymax-curr.csv.comcast.com:3000/event test/test_data/enriched_payloads/$pl.json ; }
+
+fpsl () { pl=$1; pl=${pl:-stb_enrich};          cdsc; node scripts/postJSONEvent.js  $lh_ev  test/test_data/other_payloads/$pl.json  ; }
+fpsn () { pl=$1; pl=${pl:-stb_enrich};          cdsc; node scripts/postJSONEvent.js  $bn_ev  test/test_data/other_payloads/$pl.json  ; }
+fpsc () { pl=$1; pl=${pl:-stb_enrich};          cdsc; node scripts/postJSONEvent.js  $bc_ev  test/test_data/other_payloads/$pl.json  ; }
+
+fpol () { pl=$1; pl=${pl:-stb_enrich};          cdsc; node scripts/postJSONEvent.js  $lh_ev  test/test_data/other_payloads/$pl.json  ; }
+fpon () { pl=$1; pl=${pl:-stb_enrich};          cdsc; node scripts/postJSONEvent.js  $bn_ev  test/test_data/other_payloads/$pl.json  ; }
+fpoc () { pl=$1; pl=${pl:-stb_enrich};          cdsc; node scripts/postJSONEvent.js  $bc_ev  test/test_data/other_payloads/$pl.json  ; }
+
+fpml () { pl=$1; pl=${pl:-CancelService_csp};   cdsc; node scripts/postJSONEvent.js  $lh_ev  test/test_data/mobileCallback_payloads/$pl.json  ; }
+fpmn () { pl=$1; pl=${pl:-CancelService_csp};   cdsc; node scripts/postJSONEvent.js  $bn_ev  test/test_data/mobileCallback_payloads/$pl.json  ; }
+fpmc () { pl=$1; pl=${pl:-CancelService_csp};   cdsc; node scripts/postJSONEvent.js  $bc_ev  test/test_data/mobileCallback_payloads/$pl.json  ; }
+
+fpxhl () { pl=$1; pl=${pl:-TouchscreenOffline}; cdsc; node scripts/postJSONEvent.js  $lh_ev  test/test_data/xh_payloads/$pl.json  ; }
+fpxhn () { pl=$1; pl=${pl:-TouchscreenOffline}; cdsc; node scripts/postJSONEvent.js  $bn_ev  test/test_data/xh_payloads/$pl.json  ; }
+fpxhc () { pl=$1; pl=${pl:-TouchscreenOffline}; cdsc; node scripts/postJSONEvent.js  $bc_ev  test/test_data/xh_payloads/$pl.json  ; }
+
+fpdl () { pl=$1; pl=${pl:-HelpArticleViews};    cdsc; node scripts/postJSONEvent.js  $lh_ev  test/test_data/dotcom_payloads/$pl.json  ; }
+fpdn () { pl=$1; pl=${pl:-HelpArticleViews};    cdsc; node scripts/postJSONEvent.js  $bn_ev  test/test_data/dotcom_payloads/$pl.json  ; }
+fpdc () { pl=$1; pl=${pl:-HelpArticleViews};    cdsc; node scripts/postJSONEvent.js  $bc_ev  test/test_data/dotcom_payloads/$pl.json  ; }
+
+fprl () { pl=$1; pl=${pl:-Test_RNG150};         cdsc; node scripts/postJSONEvent.js  $lh_ev  test/test_data/rfNoise_payloads/$pl.json  ; }
+fprn () { pl=$1; pl=${pl:-Test_RNG150};         cdsc; node scripts/postJSONEvent.js  $bn_ev  test/test_data/rfNoise_payloads/$pl.json  ; }
+fprc () { pl=$1; pl=${pl:-Test_RNG150};         cdsc; node scripts/postJSONEvent.js  $bc_ev  test/test_data/rfNoise_payloads/$pl.json  ; }
+
+fpil () { pl=$1; pl=${pl:-SpeedTest};           cdsc; node scripts/postJSONEvent.js  $lh_ev  test/test_data/internet_speed_experience/$pl.json  ; }
+fpin () { pl=$1; pl=${pl:-SpeedTest};           cdsc; node scripts/postJSONEvent.js  $bn_ev  test/test_data/internet_speed_experience/$pl.json  ; }
+fpic () { pl=$1; pl=${pl:-SpeedTest};           cdsc; node scripts/postJSONEvent.js  $bc_ev  test/test_data/internet_speed_experience/$pl.json  ; }
+
+fpxol () { pl=$1; pl=${pl:-CEMP};               cdsc; node scripts/postJSONEvent.js  $lh_ev  test/test_data/xod_payloads/$pl.json  ; }
+fpxon () { pl=$1; pl=${pl:-CEMP};               cdsc; node scripts/postJSONEvent.js  $bn_ev  test/test_data/xod_payloads/$pl.json  ; }
+fpxoc () { pl=$1; pl=${pl:-CEMP};               cdsc; node scripts/postJSONEvent.js  $bc_ev  test/test_data/xod_payloads/$pl.json  ; }
+
+fpxrel () { pl=$1; pl=${pl:-other_enrich};      cdsc; node scripts/postJSONEvent.js  $lh_ev  test/test_data/xre_payloads/$pl.json  ; }
+fpxren () { pl=$1; pl=${pl:-other_enrich};      cdsc; node scripts/postJSONEvent.js  $bn_ev  test/test_data/xre_payloads/$pl.json  ; }
+fpxrec () { pl=$1; pl=${pl:-other_enrich};      cdsc; node scripts/postJSONEvent.js  $bc_ev  test/test_data/xre_payloads/$pl.json  ; }
+
+fpxrl () { pl=$1; pl=${pl:-System_Refresh};     cdsc; node scripts/postJSONEvent.js  $lh_ev  test/test_data/xray_payloads/$pl.json  ; }
+fpxrn () { pl=$1; pl=${pl:-System_Refresh};     cdsc; node scripts/postJSONEvent.js  $bn_ev  test/test_data/xray_payloads/$pl.json  ; }
+fpxrc () { pl=$1; pl=${pl:-System_Refresh};     cdsc; node scripts/postJSONEvent.js  $bc_ev  test/test_data/xray_payloads/$pl.json  ; }
+
+fptl () { pl=$1; pl=${pl:-tvnsPayload};         cdsc; node scripts/postJSONEvent.js  $lh_ev  test/test_data/tvns_payloads/$pl.json  ; }
+fptn () { pl=$1; pl=${pl:-tvnsPayload};         cdsc; node scripts/postJSONEvent.js  $bn_ev  test/test_data/tvns_payloads/$pl.json  ; }
+fptc () { pl=$1; pl=${pl:-tvnsPayload};         cdsc; node scripts/postJSONEvent.js  $bc_ev  test/test_data/tvns_payloads/$pl.json  ; }
+
+fpfl () { pl=$1; pl=${pl:-findReplace};         cdsc; node scripts/postJSONEvent.js  $lh_ev  test/test_data/ivr_payloads/$pl.json  ; }
+fpfn () { pl=$1; pl=${pl:-findReplace};         cdsc; node scripts/postJSONEvent.js  $bn_ev  test/test_data/ivr_payloads/$pl.json  ; }
+fpfc () { pl=$1; pl=${pl:-findReplace};         cdsc; node scripts/postJSONEvent.js  $bc_ev  test/test_data/ivr_payloads/$pl.json  ; }
+
+fpxml () { pl=$1; pl=${pl:-IVR_OnDemandErrorCode.xml}; cdsc; node scripts/postXmlEvent.js  $lh_ev  test/test_data/xml_payloads/$pl  ; }
+fpxmn () { pl=$1; pl=${pl:-IVR_OnDemandErrorCode.xml}; cdsc; node scripts/postXmlEvent.js  $bn_ev  test/test_data/xml_payloads/$pl  ; }
+fpxmc () { pl=$1; pl=${pl:-IVR_OnDemandErrorCode.xml}; cdsc; node scripts/postXmlEvent.js  $bc_ev  test/test_data/xml_payloads/$pl  ; }
+
+fpdol () { pl=$1; pl=${pl:-deviceOptimization}; cdsc; node scripts/postJSONEvent.js  $lh_ev  test/test_data/device_optimization_payloads/$pl.json  ; }
+fpdon () { pl=$1; pl=${pl:-deviceOptimization}; cdsc; node scripts/postJSONEvent.js  $bn_ev  test/test_data/device_optimization_payloads/$pl.json  ; }
+fpdoc () { pl=$1; pl=${pl:-deviceOptimization}; cdsc; node scripts/postJSONEvent.js  $bc_ev  test/test_data/device_optimization_payloads/$pl.json  ; }
+
+fpmal () { pl=$1; pl=${pl:-sik_event};          cdsc; node scripts/postJSONEvent.js  $lh_ev  test/test_data/moves_assistant_payload/$pl.json  ; }
+fpman () { pl=$1; pl=${pl:-sik_event};          cdsc; node scripts/postJSONEvent.js  $bn_ev  test/test_data/moves_assistant_payload/$pl.json  ; }
+fpmac () { pl=$1; pl=${pl:-sik_event};          cdsc; node scripts/postJSONEvent.js  $bc_ev  test/test_data/moves_assistant_payload/$pl.json  ; }
+
+#vs:  VarSource as of 08182016
+#vs1       'IVR': 			ivrEnrichmentCache,
+#vs2       'XH': 			ivrEnrichmentCache,	#XHUI US731562 
+#vs3       'Internet Speed Experience':	ivrEnrichmentCache,
+#vs4       'dotcom support': 		ivrEnrichmentCache,
+#vs5       'XOD': 				vodEnrichmentCache,
+#vs6       'STB': 				vodEnrichmentCache,
+#vs7       'RFNoise': 			ivrEnrichmentCache,
+#vs8       'XRAY': 				xrayEnrichmentCache,
+#vs9       'moves assistant': 		ivrEnrichmentCache,
+#vs10      ' DO': 			ivrEnrichmentCache,
+#vs11      'XRE': 			ivrEnrichmentCache 	??? # enr should be as non-ivr
+#vs12      FindReplace			ivrEnrichmentCache				
+#vs13      Mobile Callback			enr as non-ivr
+#vs14      TVNS					enr as nothing 
+#vs15      XML                          ivr-like
+#          ITG ???
+
+
+#fpAlgcea ()  cdsc; for p in fpel fpol fpml fpxhl fpdl fprl fpil fpxol fpxrel fpxrl fptl fpfl fpxml fpdol fpmal; do echo "Post_$p";  $p|gceaecho; done ; }
+fp0l () { cdsc; for p in fpel fpol fpml fpxhl fpdl fprl fpil fpxol fpxrel fpxrl fptl fpfl fpxml fpdol fpmal fpel fpol ; do ( ech2 "Post_$p, `date` " &&  $p|gcea && echo )|ftee fp_All_l_gcea; done; ech2 "Post_fpxml, `date` ";fpxml|gceaxm;echo ; }
+fp0n () { cdsc; for p in fpen fpon fpmn fpxhn fpdn fprn fpin fpxon fpxren fpxrn fptn fpfn fpxmn fpdon fpman fpen fpon ; do ( ech2 "Post_$p, `date` " &&  $p|gcea && echo )|ftee fp_All_n_gcea; done; ech2 "Post_fpxmn, `date` ";fpxmn|gceaxm;echo ; }
+fp0c () { cdsc; for p in fpec fpoc fpmc fpxhc fpdc fprc fpic fpxoc fpxrec fpxrc fptc fpfc fpxmc fpdoc fpmac fpec fpoc ; do ( ech2 "Post_$p, `date` " &&  $p|gcea && echo )|ftee fp_All_c_gcea; done; ech2 "Post_fpxmc, `date` ";fpxmc|gceaxm;echo ; }
+
+alias fpAl='date && fpel && fpol && fpml && fpxhl && fpdl && fprl && fpil && fpxol && fpxrel && fpxrl && fptl && fpfl && fpdol && fpmal && fpel && fpol && date  '
+alias fpAn='date && fpen && fpon && fpmn && fpxhn && fpdn && fprn && fpin && fpxon && fpxrel && fpxrn && fptn && fpfn && fpdon && fpman && fpen && fpon && date  '
+alias fpAc='date && fpec && fpoc && fpmc && fpxhc && fpdc && fprc && fpic && fpxoc && fpxrel && fpxrc && fptc && fpfc && fpdoc && fpmac && fpec && fpoc && date  '
+
+alias fploho='(fpAl)|g201 | ftee fpAloho; echo View test results at;  cdlog; llrr '
+alias fpstag='(fpAn)|g201 | ftee fpAstag; echo View test results at;  cdlog; llrr '
+alias fpprod='(fpAc)|g201 | ftee fpAprod; echo View test results at;  cdlog; llrr '
+
+### POST_AND_VERIFy
+#fpv () {    (fpxrel|gcea;echo)|tee ~/logs/cea; sleep 2; while read -r l; do xree $l 200 ; done < ~/logs/cea ; }
+#fpvxre () { p=$1; p=${p:-fpxrel};                  ($p|gcea;echo)|tee ~/logs/cea; sleep 2; while read -r l; do c=`xree $l 200|tee ~/logs/t|wc -l` ; if [[ $c -gt 100 ]] ; then cat ~/logs/t; echo -n Pass; else echo -n FAIL; fi; echo -e "\t test post_$p and verified_$v"; done < ~/logs/cea ; }
+
+# 7/6/16: hlam001c@CACSVML-15870:~/checkouts/smartconnect/test/test_data/internet_speed_experience$ curl -s  -H "Content-Type:application/json" -H "X-consumer-id:RjREOTY4NDItQjhBMi00NTYwLUEyRjktM0ExQkQwNDZDRDJC" "http://scwbgb-wc-ap-vip.cable.comcast.com/WebAPI/CDT.WebAPI.ContextStore/ContextStore/customers/8497404620452729/Incidents/72839d44-9c52-41e1-8582-f1058d571ba3/Events?limit=200&detail=all" |grep f325cb98-8d2d-4181-bb6b-7b0533d45424
+# Wed Jul  6 10:21:51 2016curl -s  -H "Content-Type:application/json" -H "X-consumer-id:RjREOTY4NDItQjhBMi00NTYwLUEyRjktM0ExQkQwNDZDRDJC" "http://scwbgc-wc-ap-vip.cable.comcast.com/WebAPI/CDT.WebAPI.ContextStore/ContextStore/customers/8497404620452729/Incidents/72839d44-9c52-41e1-8582-f1058d571ba3/Events?limit=200&detail=all" |python -m json.tool |egrep -C80 72839d44-9c52-41e1-8582-f1058d571ba3_f325cb98-8d2d-4181-bb6b-7b0533d45424
+fpv3 () {    p=$1; jfile=$2; verEvtId=$3;           ($p $jfile |gcea;echo)|tee ~/logs/cea; sleep 2; while read -r l; do c=`$verEvtId   $l 200|tee ~/logs/t_$p_$jfile |wc -l` ; if [[ $c -gt 100 ]] ; then cat ~/logs/t_$p_$jfile; echo -n Pass; else echo -n FAIL; fi; echo -e "\t`dateT` \t test post_$p and verified_$verEvtId";echo; done < ~/logs/cea ; }
+fpv30 () {   p=$1; jfile=$2; verEvtId=$3;           ($p $jfile |gcea;echo)|tee ~/logs/cea; sleep 2; while read -r l; do c=`$verEvtId   $l 200|tee ~/logs/t_$p_$jfile |wc -l` ; if [[ $c -gt 100 ]] ; then echo -n Pass; else echo -n FAIL; fi; echo -e "\t`dateT` \t test post_$p and verified_$verEvtId";echo; done < ~/logs/cea ; }
+
+fpv0 () {    p=$1; p=${p:-fpil}; v=$2; v=${v:-epn}; ($p    |gcea;echo)|tee ~/logs/cea; sleep 2; while read -r l; do c=`$v   $l 200|tee ~/logs/t_$p |wc -l` ; if [[ $c -gt 100 ]] ; then echo -n Pass; else echo -n FAIL; fi; echo -e "\t`dateT` \t test post_$p and verified_$v"; echo;done < ~/logs/cea ; }
+
+fpv () {     p=$1; p=${p:-fpil}; v=$2; v=${v:-epn}; ($p    |gcea;echo)|tee ~/logs/cea; sleep 2; while read -r l; do c=`$v   $l 200|tee ~/logs/t_$p |wc -l` ; if [[ $c -gt 100 ]] ; then cat ~/logs/t_$p; echo -n Pass; else echo -n FAIL; fi; echo -e "\t`dateT` \t test post_$p and verified_$v"; echo; echo; done < ~/logs/cea ; }
+
+# regression all post and reach CS
+
+#fpvAl () {   cat ~/fl_cmd; while read -r fp; do echo post_$fp ;  fpv   $fp   epn  ; sleep 5; done < ~/fl_cmd ; }
+#fpvAn () {   cat ~/fn_cmd; while read -r fp; do echo post_$fp ;  fpv   $fp   epn  ; sleep 5; done < ~/fn_cmd ; }
+#fpvAc () {   cat ~/fc_cmd; while read -r fp; do echo post_$fp ;  fpv   $fp   epc  ; sleep 5; done < ~/fc_cmd ; }
+
+#fpv0Al () {  cat ~/fl_cmd; while read -r fp; do t1;echo post_$fp;fpv0  $fp   epn  ; t2;sleep 5; done < ~/fl_cmd ; }
+#fpv0An () {  cat ~/fn_cmd; while read -r fp; do t1;echo post_$fp;fpv0  $fp   epn  ; t2;sleep 5; done < ~/fn_cmd ; }
+#fpv0Ac () {  cat ~/fc_cmd; while read -r fp; do t1;echo post_$fp;fpv0  $fp   epc  ; t2;sleep 5; done < ~/fc_cmd ; }
+
+
+# enrivr, dot, xh, int, rfnoise,  do; Others: xod, other(stb), mc, xre, xray, findrep )
+
+fpv0iel () { ech2 -ne "dotcom      src \t\t\t:\t"; fpv0  fpdl       epn ; \
+             echo -ne "XH               src \t\t\t:\t"; fpv0  fpxhl      epn ; \
+             echo -ne "XHUI             src \t\t\t:\t"; fpv30 fpxhl XHUI_Upgrade_CD epn ; \
+             echo -ne "Internet Speed E src \t\t\t:\t"; fpv0  fpil       epn ; \
+             echo -ne " DO              src \t\t\t:\t"; fpv0  fpdol       epn ; \
+             echo -ne "moves assitant   scr \t\t\t:\t"; fpv0  fpmal      epn ; \
+             echo -ne "XML           srcIVR \t\t\t:\t";       fpxml|gceaxm;echo; \
+             echo -ne "FindReplace   srcIVR \t\t\t:\t"; fpv0  fpfl       epc ; \
+             echo -ne "6 CA          srcIVR \t\t\t:\t"; fpv0  fpel       epc ; \
+             echo -ne "IVR           srcIVR \t\t\t:\t"; fpv30 fpel   OMP epc ; \
+             echo -ne "RFNoise          src \t\t\t:\t"; fpv0  fprl       epc ; }
+
+fpv0ien () { echo -ne "Help dotcom      src \t\t\t:\t"; fpv0  fpdn       epn ; \
+             echo -ne "XH               src \t\t\t:\t"; fpv0  fpxhn      epn ; \
+             echo -ne "XHUI             src \t\t\t:\t"; fpv30 fpxhn XHUI_Upgrade_CD epn ; \
+             echo -ne "Internet Speed E src \t\t\t:\t"; fpv0  fpin       epn ; \
+             echo -ne " DO              src \t\t\t:\t"; fpv0  fpdon       epn ; \
+             echo -ne "moves assitant   src \t\t\t:\t"; fpv0  fpman      epn ; \
+             echo -ne "XML           srcIVR \t\t\t:\t";       fpxmn|gceaxm;echo; \
+             echo -ne "FindReplace   srcIVR \t\t\t:\t"; fpv0  fpfn       epc ; \
+             echo -ne "6 CA          srcIVR \t\t\t:\t"; fpv0  fpen       epc ; \
+             echo -ne "IVR           srcIVR \t\t\t:\t"; fpv30 fpen   OMP epc ; \
+             echo -ne "RFNoise          src \t\t\t:\t"; fpv0  fprn       epc ; }
+
+fpv0iec () { echo -ne "Help dotcom      src \t\t\t:\t"; fpv0  fpdc       epc ; \
+             echo -ne "XH               src \t\t\t:\t"; fpv0  fpxhc      epc ; \
+             echo -ne "XHUI             src \t\t\t:\t"; fpv30 fpxhc XHUI_Upgrade_CD epc ; \
+             echo -ne "Internet Speed E src \t\t\t:\t"; fpv0  fpic       epc ; \
+             echo -ne " DO              src \t\t\t:\t"; fpv0  fpdoc       epc ; \
+             echo -ne "moves assitant   src \t\t\t:\t"; fpv0  fpmac      epc ; \
+             echo -ne "XML           srcIVR \t\t\t:\t";       fpxmc|gceaxm;echo; \
+             echo -ne "FindReplace   srcIVR \t\t\t:\t"; fpv0  fpfc       epc ; \
+             echo -ne "6 CA          srcIVR \t\t\t:\t"; fpv0  fpec       epc ; \
+             echo -ne "IVR           srcIVR \t\t\t:\t"; fpv30 fpec   OMP epc ; \
+             echo -ne "RFNoise          src \t\t\t:\t"; fpv0  fprc       epc ; }
+
+
+fpv0oel () { ech2 -ne "XRAY        src \t\t\t:\t"; fpv0  fpxrl      epn ; \
+             echo -ne "XRE              src \t\t\t:\t"; fpv0  fpxrel     xree ;\
+             echo -ne "XOD              src \t\t\t:\t"; fpv0  fpxol      epn ; \
+             echo -ne "Mobile Callback  src \t\t\t:\t"; fpv0  fpml       epn ; \
+             echo -ne "Other srcSTB/CEM/IVR \t\t\t:\t"; fpv0  fpol       epn ; \
+             echo -ne "TVNS     srcSTB/CEMP \t\t\t:\t"; fpv0  fptl       epn ; }
+
+fpv0oen () { ech2 -ne "XRAY        src \t\t\t:\t"; fpv0  fpxrn      epn ; \
+             echo -ne "XRE              src \t\t\t:\t"; fpv0  fpxren     xree ;\
+             echo -ne "XOD              src \t\t\t:\t"; fpv0  fpxon      epn ; \
+             echo -ne "Mobile Callback  src \t\t\t:\t"; fpv0  fpmn       epn ; \
+             echo -ne "Other srcSTB/CEM/IVR \t\t\t:\t"; fpv0  fpon       epn ; \
+             echo -ne "TVNS     srcSTB/CEMP \t\t\t:\t"; fpv0  fptn       epn ; }
+
+fpv0oec () { ech2 -ne "XRAY        src \t\t\t:\t"; fpv0  fpxrc      epc ; \
+             echo -ne "XRE              src \t\t\t:\t"; fpv0  fpxrec     xree ;\
+             echo -ne "XOD              src \t\t\t:\t"; fpv0  fpxoc      epc ; \
+             echo -ne "Mobile Callback  src \t\t\t:\t"; fpv0  fpmc       epc ; \
+             echo -ne "Other srcSTB/CEM/IVR \t\t\t:\t"; fpv0  fpoc       epc ; \
+             echo -ne "TVNS     srcSTB/CEMP \t\t\t:\t"; fpv0  fptc       epc ; }
+
+alias fpv0loho='fpv0iel | ftee fpv_Aivr_l && fpv0oel |ftee fpv_Anonivr_l '
+alias fpv0stag='fpv0ien | ftee fpv_Aivr_n && fpv0oen |ftee fpv_Anonivr_n '
+alias fpv0prod='fpv0iec | ftee fpv_Aivr_c && fpv0oec |ftee fpv_Anonivr_c '
+
+fpviel () {  ech2 -ne "Help dotcom     \t\t\t:\t"; fpv  fpdl       epn ; \
+             echo -ne "XH                   \t\t\t:\t"; fpv  fpxhl      epn ; \
+             echo -ne "XML                  \t\t\t:\t";       fpxml|gceaxm;echo; \
+             echo -ne "Internet Speed Exper \t\t\t:\t"; fpv  fpil       epn ; \
+             echo -ne " DO                  \t\t\t:\t"; fpv  fpdol       epn ; \
+             echo -ne "moves assitant       \t\t\t:\t"; fpv  fpmal      epn ; \
+             echo -ne "FindReplace          \t\t\t:\t"; fpv  fpfl       epc ; \
+             echo -ne "6 CA                 \t\t\t:\t"; fpv  fpel       epc ; \
+             echo -ne "IVR                  \t\t\t:\t"; fpv3 fpel   OMP epc ; \
+             echo -ne "RFNoise              \t\t\t:\t"; fpv  fprl       epc ; }
+
+fpvien () {  echo -ne "Help dotcom          \t\t\t:\t"; fpv  fpdn       epn ; \
+             echo -ne "XH                   \t\t\t:\t"; fpv  fpxhn      epn ; \
+             echo -ne "Internet Speed Exper \t\t\t:\t"; fpv  fpin       epn ; \
+             echo -ne " DO                  \t\t\t:\t"; fpv  fpdon       epn ; \
+             echo -ne "moves assitant       \t\t\t:\t"; fpv  fpman      epn ; \
+             echo -ne "FindReplace          \t\t\t:\t"; fpv  fpfn       epc ; \
+             echo -ne "6 CA                 \t\t\t:\t"; fpv  fpen       epc ; \
+             echo -ne "IVR                  \t\t\t:\t"; fpv3 fpen   OMP epc ; \
+             echo -ne "RFNoise              \t\t\t:\t"; fpv  fprn       epc ; }
+
+fpviec () {  echo -ne "Help dotcom          \t\t\t:\t"; fpv  fpdc       epc ; \
+             echo -ne "XH                   \t\t\t:\t"; fpv  fpxhc      epc ; \
+             echo -ne "Internet Speed Exper \t\t\t:\t"; fpv  fpic       epc ; \
+             echo -ne " DO                  \t\t\t:\t"; fpv  fpdoc       epc ; \
+             echo -ne "moves assitant       \t\t\t:\t"; fpv  fpmac      epc ; \
+             echo -ne "FindReplace          \t\t\t:\t"; fpv  fpfc       epc ; \
+             echo -ne "6 CA                 \t\t\t:\t"; fpv  fpec       epc ; \
+             echo -ne "IVR                  \t\t\t:\t"; fpv3 fpec   OMP epc ; \
+             echo -ne "RFNoise              \t\t\t:\t"; fpv  fprc       epc ; }
+
+
+fpvoel () {  ech2 -ne "XRAY            \t\t\t:\t"; fpv  fpxrl      epn ; \
+             echo -ne "XRE                  \t\t\t:\t"; fpv  fpxrel     xree ;\
+             echo -ne "XOD                  \t\t\t:\t"; fpv  fpxol      epn ; \
+             echo -ne "Other(aka STB)       \t\t\t:\t"; fpv  fpol       epn ; \
+             echo -ne "Mobile Callback      \t\t\t:\t"; fpv  fpml       epn ; \
+             echo -ne "TVNS                 \t\t\t:\t"; fpv  fptl       epn ; }
+
+fpvoen () {  ech2 -ne "XRAY            \t\t\t:\t"; fpv  fpxrn      epn ; \
+             echo -ne "XRE                  \t\t\t:\t"; fpv  fpxren     xree ;\
+             echo -ne "XOD                  \t\t\t:\t"; fpv  fpxon      epn ; \
+             echo -ne "Other(aka STB)       \t\t\t:\t"; fpv  fpon       epn ; \
+             echo -ne "Mobile Callback      \t\t\t:\t"; fpv  fpmn       epn ; \
+             echo -ne "TVNS                 \t\t\t:\t"; fpv  fptn       epn ; }
+
+fpvoec () {  ech2 -ne "XRAY            \t\t\t:\t"; fpv  fpxrc      epc ; \
+             echo -ne "XRE                  \t\t\t:\t"; fpv  fpxrec     xree ;\
+             echo -ne "XOD                  \t\t\t:\t"; fpv  fpxoc      epc ; \
+             echo -ne "Other(aka STB)       \t\t\t:\t"; fpv  fpoc       epc ; \
+             echo -ne "Mobile Callback      \t\t\t:\t"; fpv  fpmc       epc ; \
+             echo -ne "TVNS                 \t\t\t:\t"; fpv  fptc       epc ; }
+
+alias fpvloho='fpviel | ftee fpv_Aivr_l && fpvoel |ftee fpv_Anonivr_l '
+alias fpvstag='fpvien | ftee fpv_Aivr_n && fpvoen |ftee fpv_Anonivr_n '
+alias fpvprod='fpviec | ftee fpv_Aivr_c && fpvoec |ftee fpv_Anonivr_c '
+
+fpvcrep () {  n=$2; n=${n:-3}; p=$1; p=${p:-fpxrec}; for i in `seq $n`; do echo -ne "$i: \t"; fpv0 $p  xree; done ; }
+fpv33 () {   for i in `ls ~/checkouts/smartconnect/test/test_data/xre_payloads|awk -F. '{print $1}' `; do echo -ne "$i: \t"; fpv3 fpxren $i epc; sleep 3; done ; }
+
+fpv33l () {  for i in `ls ~/checkouts/smartconnect/test/test_data/xray_payloads|awk -F. '{print $1}' `; do echo -ne "$i: \t"; fpv3 fpxrl $i epn; sleep 3; done ; }
+fpv33n () {  for i in `ls ~/checkouts/smartconnect/test/test_data/xray_payloads|awk -F. '{print $1}' `; do echo -ne "$i: \t"; fpv3 fpxrn $i epn; sleep 3; done ; }
+
+
+#verify 300 lines, log_stdout
+alias v300='u=http://baymax-next.csv.comcast.com:3000/log_stdout?num_lines=300 && wget $u -O stdout.log && { pjson stdout.log |egrep -C10 -i "Rule\s.*ed:|data_to_context_store:|Enrichment_data:|Request\sto.*:|RESPONSE_FROM_SERVERS:|statusCode|500|source|XRE"; } '
+alias get_lo='u=http://baymax-next.csv.comcast.com:3000/log_stdout?num_lines=300 && wget $u -O $HOME/logs/stdout.log '
+alias gvu='egrep -C10 -i "Rule\s.*ed:|data_to_context_store:|Enrichment_data:|Request\sto.*:|RESPONSE_FROM_SERVERS:|statusCode|500|source|type|event_id|accountnum" '
+
+
+
+# watch /heartbeat route of Baymax next or curr for result
+wrt () { rt=$1; secs=$2; secs=${secs:-60}; watch -n $secs -t " date && curl -s $rt > $HOME/tem/curlog && python -m json.tool $HOME/tem/curlog|grep result" ; }
+alias wrtbn_hb='wrt $bn_hb'
+alias wrtbc_hb='wrt $bc_hb'
+
+# watch /info route of Baymax next or curr for build number and where the baymax points to 
+wib () { rt=$1; watch -n 10 -t " date && curl -s $rt | cut -d: -f2,3,6  " ; }
+alias wibn='watch -n 10 -t " date && curl -s $bn_if | cut -d: -f2,3,6  " '
+alias wibc='wib $bc_if '
+
+alias wihbn='watch -n 10 -t " date && curl -s $bn_if | cut -d: -f2,3,6  && date && curl -s $bn_hb > $HOME/tem/curlog && python -m json.tool $HOME/tem/curlog|grep -C3 result " '	
+alias wihbc='watch -n 10 -t " date && curl -s $bc_if | cut -d: -f2,3,6  && date && curl -s $bc_hb > $HOME/tem/curlog && python -m json.tool $HOME/tem/curlog|grep -C3 result " '
+
+
+# Watch /redisData of Staging (next) for conenctions
+#wrc () { rs=$1; rs=${rs:-62}; watch -n 60 "date && redis-cli -h 172.20.2.$rs -p 6379 info | egrep \"conn|role\" " ; }
+#allwrn () { watch -n 10 "date && echo REDIS___62 && redis-cli -h 172.20.2.62 -p 6379 info|egrep \"conn|role\" && echo REDIS___63 && redis-cli -h 172.20.2.63 -p 6379 info|egrep \"conn|role\" && echo REDIS___64 && redis-cli -h 172.20.2.64 -p 6379 info |egrep \"conn|role\" " ; }
+#allwrc () { watch -n 10 "date && echo REDIS___10.1.47.21 && redis-cli -h 10.1.47.21  -p 6379 info|egrep \"conn|role\" && echo REDIS___10.1.47.22 && redis-cli -h 10.1.47.22  -p 6379 info|egrep \"conn|role\" && echo REDIS___10.1.47.23 && redis-cli -h 12.1.47.23  -p 6379 info |egrep \"conn|role\" " ; }
+
+
+hbl  () { cowsay "local baymax heartbeat: ";      curl -s $lh_hb | python -m json.tool ; }
+chbn () { cowsay "staging baymax heartbeat: ";    curl -s $bn_hb | python -m json.tool ; }
+chbc () { cowsay "production baymax heartbeat: "; curl -s $bc_hb | python -m json.tool ; }
+hb () {   b=$1; b=${b:-next}; cowsay "baymax-$b heartbeat:"; curl -s http://baymax-$b.csv.comcast.com:3000/heartbeat > $HOME/tem/curlog && python -m json.tool $HOME/tem/curlog|egrep -A1 "result|Redis|ContextStore|Heartbeat|Meld|Group" ; }
+alias hbn='hb next'
+alias hbc='hb curr'
+
+#bbn () { curl -s $bn_if > $HOME/tem/build.txt ;  cowsay -f stegosaurus "Baymax-next build number: " && cat $HOME/tem/build.txt| cut -d: -f6|cut -d, -f2  |grep "\d\d\d" ; }
+#bbc () { curl -s $bc_if > $HOME/tem/build.txt ;  cowsay -f turtle      "Baymax-curr build number: " && cat $HOME/tem/build.txt| cut -d: -f6|cut -d, -f2  |grep "\d\d\d" ; }
+
+pbn () { curl -s $bn_if > $HOME/tem/build.txt ;  cowsay "Baymax-next points to: " && cat $HOME/tem/build.txt| cut -d: -f2,3|cut -d, -f1 |grep "baymax.*" ; }
+pbc () { curl -s $bc_if > $HOME/tem/build.txt ;  cowsay "Baymax-curr points to: " && cat $HOME/tem/build.txt| cut -d: -f2,3|cut -d, -f1 |grep "baymax.*"; }
+
+ebn () { curl -s $bn_if | tr '"' ' '|cut -d" " -f9 ; }
+ebc () { curl -s $bc_if | tr '"' ' '|cut -d" " -f9 ; }
+
+ibn () { cowsay -f stegosaurus "Baymax-next info: " && curl -s $bn_if | cut -d: -f2,3,6 | egrep "baymax.*smartconnect" ; }
+ibc () { cowsay "Baymax-curr info: "                && curl -s $bc_if | cut -d: -f2,3,6 | egrep "baymax.*" ; }
+
+rbn () { curl -s $bn_if | tr '"' ' '|cut -d"/" -f10 ; }
+rbc () { curl -s $bc_if | tr '"' ' '|cut -d"/" -f10 ; }
+
+### DEBUGS curl post directly, to debug if Baymax fails to post
+
+#curl -H 'Accept: application/json' -H 'Content-Type: application/json' -d@OMP.json $lh_ev  | python -m json.tool
+cpost () { e=$1; p=$2; curl -s -H 'Accept: application/json' -H 'Content-Type: application/json' "$e" -d@$p  ; }
+cpl () {   p=$1; cpost $lh_ev $p ; }
+cpn () {   p=$1; cpost $bn_ev $p ; }
+cpc () {   p=$1; cpost $bc_ev $p ; }
+
+# debug ivr_itg events
+cpel () {  pl=$1; pl=${pl:-OMP}; cdsc; cpl test/test_data/enriched_payloads/$pl.json  ; }
+cpen () {  pl=$1; pl=${pl:-OMP}; cdsc; cpn test/test_data/enriched_payloads/$pl.json  ; }
+cpec () {  pl=$1; pl=${pl:-OMP}; cdsc; cpc test/test_data/enriched_payloads/$pl.json  ; }
+
+cpfl () {  pl=$1; pl=${pl:-findReplace}; cdsc; cpl test/test_data/ivr_payloads/$pl.json  ; }
+cpfn () {  pl=$1; pl=${pl:-findReplace}; cdsc; cpn test/test_data/ivr_payloads/$pl.json  ; }
+cpfc () {  pl=$1; pl=${pl:-findReplace}; cdsc; cpc test/test_data/ivr_payloads/$pl.json  ; }
+
+cpil () {  pl=$1; pl=${pl:-SpeedTest}; cdsc; cpl test/test_data/internet_speed_experience/$pl.json  ; }
+cpin () {  pl=$1; pl=${pl:-SpeedTest}; cdsc; cpn test/test_data/internet_speed_experience/$pl.json  ; }
+cpic () {  pl=$1; pl=${pl:-SpeedTest}; cdsc; cpc test/test_data/internet_speed_experience/$pl.json  ; }
+
+cpdl () {  pl=$1; pl=${pl:-HelpArticleViews}; cdsc; cpl test/test_data/dotcom_payloads/$pl.json  ; }
+cpdn () {  pl=$1; pl=${pl:-HelpArticleViews}; cdsc; cpn test/test_data/dotcom_payloads/$pl.json  ; }
+cpdc () {  pl=$1; pl=${pl:-HelpArticleViews}; cdsc; cpc test/test_data/dotcom_payloads/$pl.json  ; }
+
+cpxml () { pl=$1; pl=${pl:-IVR_OnDemandErrorCode.xml}; cdsc; cpl test/test_data/xml_payloads/$pl  ; }
+cpxmn () { pl=$1; pl=${pl:-IVR_OnDemandErrorCode.xml}; cdsc; cpn test/test_data/xml_payloads/$pl  ; }
+cpxmc () { pl=$1; pl=${pl:-IVR_OnDemandErrorCode.xml}; cdsc; cpc test/test_data/xml_payloads/$pl  ; }
+
+cprl () {  pl=$1; pl=${pl:-ChannelLatency}; cdsc; cpl test/test_data/rfNoise_payloads/$pl.json  ; }
+cprn () {  pl=$1; pl=${pl:-ChannelLatency}; cdsc; cpn test/test_data/rfNoise_payloads/$pl.json  ; }
+cprc () {  pl=$1; pl=${pl:-ChannelLatency}; cdsc; cpc test/test_data/rfNoise_payloads/$pl.json  ; }
+
+# debug non ivr_itg events
+cpml () {  pl=$1; pl=${pl:-CancelService}; cdsc; cpl test/test_data/mobileCallback_payloads/$pl.json  ; }
+cpmn () {  pl=$1; pl=${pl:-CancelService}; cdsc; cpn test/test_data/mobileCallback_payloads/$pl.json  ; }
+cpmc () {  pl=$1; pl=${pl:-CancelService}; cdsc; cpc test/test_data/mobileCallback_payloads/$pl.json  ; }
+
+cpxol () { pl=$1; pl=${pl:-CEMP}; cdsc; cpl test/test_data/xod_payloads/$pl.json  ; }
+cpxon () { pl=$1; pl=${pl:-CEMP}; cdsc; cpn test/test_data/xod_payloads/$pl.json  ; }
+cpxoc () { pl=$1; pl=${pl:-CEMP}; cdsc; cpc test/test_data/xod_payloads/$pl.json  ; }
+
+cptl () {  pl=$1; pl=${pl:-tvnsPayload}; cdsc; cpl test/test_data/tvns_payloads/$pl.json  ; }
+cptn () {  pl=$1; pl=${pl:-tvnsPayload}; cdsc; cpn test/test_data/tvns_payloads/$pl.json  ; }
+cptc () {  pl=$1; pl=${pl:-tvnsPayload}; cdsc; cpc test/test_data/tvns_payloads/$pl.json  ; }
+
+# debug 4 events
+cpdbg () { l=$1; l=${l:-n}; echo DBG IVR, IS and dotcom; cpe$l; echo cpi$l; echo;cpd$l; ech2;echo DGB XOD andd MC; cpxo$l; echo;cpm$l; echo ; }
+alias cpdbgl='t1; cpdbg l; t2'
+alias cpdbgn='t1; cpdbg  ; t2'
+alias cpdbgc='t1; cpdbg c; t2'
+
+##  curl post and verify
+cpv0 () {   p=$1; p=${p:-cpil}; v=$2; v=${v:-epn}; ($p |gceaxm;echo)|tee ~/logs/cea; sleep 2; while read -r l; do c=`$v   $l 200|tee ~/logs/t_$p |wc -l` ; if [[ $c -gt 100 ]] ; then echo -n Pass; else echo -n FAIL; fi; echo -e "\t`dateT` \t test curl_post_$p and verified_$v"; echo;done < ~/logs/cea ; }
+
+
+qacsl () {  a=$2; c=$1; l=$3; l=${l:-30}; curl -s  -H "Content-Type:application/json" -H "X-consumer-id:RjREOTY4NDItQjhBMi00NTYwLUEyRjktM0ExQkQwNDZDRDJC" "http://wgtapp-dt-1q.cable.comcast.com/WebAPI/CDT.WebAPI.ContextStore/ContextStore/customers/$a/Incidents/$c/Events?limit=$l&detail=all" ; echo ; }
+qacse () {  a=$3; c=$1; e=$2; lim=$4; lim=${lim:-200}; echo Searching event_id $e; qacsl $c $a $lim | python -m json.tool | egrep -C80  "$c.$e"  ; date ; }
+
+
+##  curl get for XRE, send to CS of VIP-groupA
+xrel () {   a=$2; c=$1; l=$3; l=${l:-30}; curl -s  -H "Content-Type:application/json" -H "X-consumer-id:RjREOTY4NDItQjhBMi00NTYwLUEyRjktM0ExQkQwNDZDRDJC" "http://scwbga-wc-ap-vip.cable.comcast.com/WebAPI/CDT.WebAPI.ContextStore/ContextStore/customers/$a/Incidents/$c/Events?limit=$l&detail=all" ; echo ; }
+#xrel () {  a=$2; c=$1; l=$3; l=${l:-30}; curl -s  -H "Content-Type:application/json" -H "X-consumer-id:RjREOTY4NDItQjhBMi00NTYwLUEyRjktM0ExQkQwNDZDRDJC" "http://scwbgb-wc-ap-vip.cable.comcast.com/WebAPI/CDT.WebAPI.ContextStore/ContextStore/customers/$a/Incidents/$c/Events?limit=$l&detail=all" ; echo ; }
+#xrel () {  a=$2; c=$1; l=$3; l=${l:-30}; curl -s  -H "Content-Type:application/json" -H "X-consumer-id:RjREOTY4NDItQjhBMi00NTYwLUEyRjktM0ExQkQwNDZDRDJC" "http://scwbgc-wc-ap-vip.cable.comcast.com/WebAPI/CDT.WebAPI.ContextStore/ContextStore/customers/$a/Incidents/$c/Events?limit=$l&detail=all" ; echo ; }
+xree () {   a=$3; c=$1; e=$2; lim=$4; lim=${lim:-200}; echo Searching event_id $e; xrel $c $a $lim | python -m json.tool | egrep -C80  "$c.$e"  ; date ; }
+
+
+
+##  Curl Web API: given incident.correlation_id=37296838-8ebf-4985-8a8f-aa6bc8381668 && customer.accountnum=8499101410192154: then find event_id
+# staging: (old) wgtapp-wc-1u, (new) 10.54.147.241 scwbga-po-bp-vip
+
+#capis () { a=$2; c=$1; l=$3; l=${l:-30}; curl -s  -H "Content-Type:application/json" -H "X-consumer-id:RjREOTY4NDItQjhBMi00NTYwLUEyRjktM0ExQkQwNDZDRDJC" "http://scwbga-po-bp-vip.cable.comcast.com/WebAPI/CDT.WebAPI.ContextStore/1511/2/0/ContextStore/customers/$a/Incidents/$c/Events?limit=$l&detail=all" ; echo ; }
+capis () {  a=$2; c=$1; l=$3; l=${l:-30}; curl -s  -H "Content-Type:application/json" -H "X-consumer-id:RjREOTY4NDItQjhBMi00NTYwLUEyRjktM0ExQkQwNDZDRDJC" "http://wgtapp-wc-1u.cable.comcast.com/WebAPI/CDT.WebAPI.ContextStore/1511/2/0/ContextStore/customers/$a/Incidents/$c/Events?limit=$l&detail=all" ; echo ; }
+
+# production: widgetexternal-a.g
+#capip () { a=$2; c=$1; l=$3; l=${l:-30}; curl -s  -H "Content-Type:application/json" -H "X-consumer-id:RjREOTY4NDItQjhBMi00NTYwLUEyRjktM0ExQkQwNDZDRDJC" "http://widgetexternal-a.g.cable.comcast.com/WebAPI/CDT.WebAPI.ContextStore/1511/2/0/ContextStore/customers/$a/Incidents/$c/Events?limit=$l&detail=all" ; echo ; }
+capip () {  a=$2; c=$1; l=$3; l=${l:-30}; curl -s  -H "Content-Type:application/json" -H "X-consumer-id:RjREOTY4NDItQjhBMi00NTYwLUEyRjktM0ExQkQwNDZDRDJC" "http://widgetexternal-a.g.cable.comcast.com/WebAPI/CDT.WebAPI.ContextStore/ContextStore/customers/$a/Incidents/$c/Events?limit=$l&detail=all" ; echo ; }
+
+# QA: wgtapp-dt-1q
+capiq () {  a=$1; c=$2; l=$3; l=${l:-30}; curl -s  -H "Content-Type:application/json" -H "X-consumer-id:RjREOTY4NDItQjhBMi00NTYwLUEyRjktM0ExQkQwNDZDRDJC" "http://wgtapp-dt-1q.cable.comcast.com/WebAPI/CDT.WebAPI.ContextStore/1511/2/0/ContextStore/customers/$a/Incidents/$c/Events?limit=$l&detail=all" ; echo ; }
+
+# endpoint vip    
+capiv () {  a=$1; c=$2; l=$3; l=${l:-30}; curl -s  -H "Content-Type:application/json" -H "X-consumer-id:RjREOTY4NDItQjhBMi00NTYwLUEyRjktM0ExQkQwNDZDRDJC" "http://$4.cable.comcast.com/WebAPI/CDT.WebAPI.ContextStore/ContextStore/customers/$a/Incidents/$c/Events?limit=$l&detail=all" ; echo ; }
+
+r_apis () { a=$1; l=$2; l=${l:-30}; curl -s  -H "Content-Type:application/json" -H "X-consumer-id:RjREOTY4NDItQjhBMi00NTYwLUEyRjktM0ExQkQwNDZDRDJC" "http://scwbga-po-bp-vip.cable.comcast.com/WebAPI/CDT.WebAPI.ContextStore/ContextStore/customers/$a/Incidents?limit=$l&detail=all" ; echo ; }
+r_apip () { a=$1; l=$2; l=${l:-30}; curl -s  -H "Content-Type:application/json" -H "X-consumer-id:RjREOTY4NDItQjhBMi00NTYwLUEyRjktM0ExQkQwNDZDRDJC" "http://widgetexternal-a.g.cable.comcast.com/WebAPI/CDT.WebAPI.ContextStore/ContextStore/customers/$a/Incidents?limit=$l&detail=all" ; echo ; }
+
+
+##  Curl Web API: given correlationid , accountnum and limit , then  search event_id in CS
+epn () {    a=$3; c=$1; e=$2; lim=$4; echo Searching event_id $e; capis $c $a $lim | python -m json.tool | egrep -C90  "$c.$e"  ; dateT ; }
+epc () {    a=$3; c=$1; e=$2; lim=$4; echo Searching event_id $e; capip $c $a $lim | python -m json.tool | egrep -C80  "$c.$e"  ; dateT ; }
+epv () {    a=$3; c=$1; e=$2; lim=$4; vip=$5; echo Searching event_id $e; capiv $c $a $lim $vip | python -m json.tool | egrep -C80  "$c.$e"  ; dateT ; }
+
+epva () {   a=$3; c=$1; e=$2;                    echo Searching event_id $e; capiv $c $a 200  $vipa| python -m json.tool | egrep -C80  "$c.$e"  ; date ; }
+epvb () {   a=$3; c=$1; e=$2;                    echo Searching event_id $e; capiv $c $a 200  $vipb| python -m json.tool | egrep -C80  "$c.$e"  ; date ; }
+epvc () {   a=$3; c=$1; e=$2;                    echo Searching event_id $e; capiv $c $a 200  $vipc| python -m json.tool | egrep -C80  "$c.$e"  ; date ; }
+
+gcw () {    tr -s ' ' '\n' | grep $1 $2 ; }
+
+gcea () {   tail -7 |            egrep -A2 correlation_id:|right:|cut -d "'" -f2|    tr '\n'   ' ' ; }
+gceaxm () { tail -1 |tr ',' '\n'|egrep -A2 correlation_id | rev  |cut -d ":" -f1|rev|tr '\n\"' ' ' ; }
+
+#gceaxh () { tail -5 |            grep -A2 correlation_id:|right:|cut -d "'" -f2|    tr '\n'   ' ' ; } 
+#gcea () {   tail -4 |head -3|right:|cut -d"'" -f2|                   tr '\n'   ' ' ; }
+#gceaxh () { tail -5 |head -3|right:|cut -d"'" -f2|                   tr '\n'   ' ' ; }
+#gceaxm () { tail -1 |tr ',' '\n'|sed -ne 2,4p|rev|cut -d ":" -f1|rev|tr '\n\"' ' ' ; }
+
+#alias gcea1='fpil | gcea; echo'
+# fpil|i  tail -4 |head -3|right:|cut -d"'" -f2
+
+# p3=`fpin|gcea;echo`; parr=( $(IFS=" " echo "$p3") );echo `echo ${p[0]}` `echo ${p[1]}` `echo ${p[2]}`
+
+# for e in "${arr_lines[@]}"; do echo $e; done
+
+# read file, store into array $ i=0; while IFS= read -r myarray[i++]; do :; done < t_fpxrec
+# print the arry              $ for line in "${myarray[@]}"; do printf '%s\n' "$line"; done
+
+
+##  End to end using API, query event_id in CS
+# curl post: using API:  /smartconnect$ cpn test/test_data/enriched_payloads/OMP.json        
+# curl get   using API:  /smartconnect$ epn c5e2888b-f897-4d46-82ed-565a77ea80ef 1a01e779-bcdd-40e9-8cf9-c4cf9a95d093 8499101410192154 200
+
+
+headerx="Content-Type:application/xml"
+headerj="Content-Type:application/json"
+idheader="X-consumer-id:RjREOTY4NDItQjhBMi00NTYwLUEyRjktM0ExQkQwNDZDRDJC"
+qa54="8499101410192154"
+qa29="8497404620452729"
+
+##  Curl perf, option -w -o
+#function perf { curl -o /dev/null  -s -w "%{time_connect} + %{time_starttransfer} = %{time_total}\n" "$1" }
+wof="$HOME/Help/curl-format.txt"
+wof2="$HOME/Help/curl-format2.txt"
+
+cwhh () {      curl -w "@$wof"  "$1" -H "$headerj" -H "$idheader" ; }
+# $ oterm cwhh http://scwbga-po-bp-vip.cable.comcast.com/webapi/cdt.webapi.contextstore/ContextStore/Customers/$qa54/Incidents?limit=10&detail=all
+ 
+alias cw='     curl -w "@$wof" ' 
+
+cw2  () {      curl -w "@$HOME/Help/curl-format2.txt" -H "Content-Type:application/json" -H "X-consumer-id:RjREOTY4NDItQjhBMi00NTYwLUEyRjktM0ExQkQwNDZDRDJC" -s "$1" ; }
+
+cws_good  () { a=$1; a=${a:-$qa54}; curl -w "@$wof2"  -H "$headerj" -H "$idheader" -s "http://scwbga-po-bp-vip.cable.comcast.com/webapi/cdt.webapi.contextstore/ContextStore/Customers/$a/Incidents?limit=10&detail=all" ; }
+
+cws  () {      a=$1; a=${a:-$qa54}; ep="http://scwbga-po-bp-vip.cable.comcast.com/webapi/cdt.webapi.contextstore/ContextStore/Customers/$a/Incidents?limit=10&detail=all"; echo "Endpoint: $ep"; echo; curl -w "@$wof2"  -H "$headerj"           -H "$idheader" -s "$ep" ; }
+#  Mon Mar 14 15:48:49 2016cw  http://wgtapp-wc-1u.cable.comcast.com/webapi/cdt.webapi.contextstore/ContextStore/Customers/8499101380346301/Incidents?limit=10&detail=all 
+
+cw_o () {      curl -w "@$HOME/Help/curl-format.txt" -o /dev/null -H "Content-Type:application/json" -H "X-consumer-id:RjREOTY4NDItQjhBMi00NTYwLUEyRjktM0ExQkQwNDZDRDJC" -s "$1" ; }
+
+cpost_stg_cs () { pl=$1; pl=${pl:-no_metadata.json}; a=$2; a=${a:-$qa54}; echo "Payload= $pl , Account= $a , Endpoint= scwbga-po-bp-vip.cable.comcast.com";    curl -w "@$HOME/Help/curl-format2.txt" -X POST -d @$pl -H "Content-Type:application/json" -H "X-consumer-id:RjREOTY4NDItQjhBMi00NTYwLUEyRjktM0ExQkQwNDZDRDJC"  -s "http://scwbga-po-bp-vip.cable.comcast.com/webapi/cdt.webapi.contextstore/ContextStore/Customers/$a/Incidents/Ingest" ; }
+# curl -w "@$HOME/Help/curl-format2.txt" -X POST -d @test.json -H "Content-Type:application/json" -H "X-consumer-id:RjREOTY4NDItQjhBMi00NTYwLUEyRjktM0ExQkQwNDZDRDJC"  -s "http://wgtapp-wc-1u.cable.comcast.com/webapi/cdt.webapi.contextstore/ContextStore/Customers/8499101380346301/Incidents/Ingest"
+
+cpost_new_cs () { pl=$1; pl=${pl:-no_metadata.json}; a=$2; a=${a:-$qa54}; echo "Payload= $pl , Account= $a , Endpoint=scwbga-wc-ap-vip"; curl -w "@$HOME/Help/curl-format2.txt" -X POST -d @$pl -H "Content-Type:application/json" -H "X-consumer-id:RjREOTY4NDItQjhBMi00NTYwLUEyRjktM0ExQkQwNDZDRDJC"  -s "http://scwbga-wc-ap-vip.cable.comcast.com/webapi/cdt.webapi.contextstore/ContextStore/Customers/$a/Incidents/Ingest" ; }
+
+# curl http://baymaxkafkab01.sjc.i.sv.comcast.com:3100/status
+# curl http://baymaxkafkab02.sjc.i.sv.comcast.com:3200/status
+
+
+##  Curl MELD
+
+meldH_char="charset:utf-8"
+meldH_auth_prod="Authorization:Kj8FK3gKyT2yvN7q2FdMZAazW6w2VU"
+meldH_auth_stag="Authorization:36c9af8ed7d846f18f0013f1d5b420f5"
+meldH_auth_devlocal="Authorization:36c9af8ed7d846f18f0013f1d5b420f5"
+meldH_ctype="Content-Type:application/octet-stream"
+
+meldUrl_prod="http://meld-kafka.g.comcast.net:8080/kafka-gw/api/api/kafka/put/cxe_timeline_ivr_v0?access_token=Kj8FK3gKyT2yvN7q2FdMZAazW6w2VU"
+meldUrl_stag="http://a-96-119-176-116.sys.comcast.net:8081/kafka-gw/api/api/kafka/put/cxe_timeline_ivr_v0?access_token=36c9af8ed7d846f18f0013f1d5b420f5"
+alias cmeld=' curl -vvv -X POST  "$meldUrl_stag"   -H "$meldH_ctype" -H "$meldH_auth_stag"  -d@"test/test_data/enriched_payloads/OMP.json" '
+meld_prod () { cdsc; p=$1; p=${p:-Bill}; echo POST $meldUrl_stag ; echo Payload $p.json ; curl -vvv -X POST "$meldUrl_prod"  -w "@$wof2" -H "$meldH_ctype" -H "$meldH_auth_stag" -H "$meldctheadr"  -d@"test/test_data/enriched_payloads/$p.json" ; }
+meld_stag () { cdsc; p=$1; p=${p:-Bill}; echo POST $meldUrl_stag ; echo Payload $p.json ; curl -vvv -X POST "$meldUrl_stag"  -w "@$wof2" -H "$meldH_ctype" -H "$meldH_auth_stag" -H "$meldctheadr"  -d@"test/test_data/enriched_payloads/$p.json" ; }
+
+
+##  CodeBig codebug TA1663903 https://rally1.rallydev.com/#/32352864245/detail/task/53170852856
+
+codeb_stg="https://baymax-ingest-stg.codebig2.net/event"
+codeb_prd="https://baymax-ingest-prod.codebig2.net/event"
+
+alias ocodebsecret='open $HOME/checkouts/hl/codebig/*.txt'
+alias ocodeb='   open https://codebig.comcast.com/secure/tools/codebug/ ;echo $codeb_prd; echo $codeb_stg; ocodebsecret '
+alias ojsv='     open http://codebeautify.org/jsonviewer'
+alias ojsview='  open http://www.jsoneditoronline.org/'
+alias timeu2e='  open http://www.epochconverter.com/'
+
+alias osplupdf=' open $HOME/checkouts/hl/splunk/Splunk-6.3.0-SearchTutorial.pdf'
+alias osplusearch='open $HOME/checkouts/hl/splunk/adrian_searches.txt '
+alias osplunk='  open  http://splunk-search.sjc.i.sv.comcast.com:8080/en-US/app/search/search '
+alias osplulate='open "http://splunk-search.sjc.i.sv.comcast.com:8080/en-US/app/search/baymax_smartconnect?earliest=0&latest=" '
+#alias osplulate='open http://goo.gl/opFiiL'
+#henry_lam@cable/NT ID
+alias oslack='   open https://cim.slack.com/messages/baymax-dev/'
+alias oldap='    open https://github.comcast.com'
+
+alias owebex='   open https://icollaborate.webex.com/meet/henry_lamcable.comcast.com '
+alias owebmail=' open http://webmail.comcast.com'
+alias owebplaxo='open https://webmail2.plaxo.com; echo "username=hlam; email=henry_lam@sv.comcast.com"  '
+
+alias ozqa='     open $HOME/Documents/zqa/checkouts/zebra-qa'
+alias osc='      open $HOME/checkouts/smartconnect/         '
+
+jb_="http://ci2.csv.comcast.com/job/csv-smartconnect-x86_64-rel"
+jbrev () { b=$1; b={$1:-lastBuild}; curl -s http://ci2.csv.comcast.com/job/csv-smartconnect-x86_64-rel/$b/ |tr '[<>/\"]' ' '|egrep  "Revision.*" ; }
+cjb () {   b=$1; b={$1:-lastBuild}; curl -s http://ci2.csv.comcast.com/job/csv-smartconnect-x86_64-rel/$b ; }
+ojb () {   b=$1;                    open    http://ci2.csv.comcast.com/job/csv-smartconnect-x86_64-rel/$b ; }
+
+alias rjblast='  rjb '
+alias ojbconf='  ojb configure '
+alias lastb='    ojb lastBuild '
+
+alias jbfinished='   curl -s $jb_/lastBuild/console |grep Finished: '
+alias lastbconsole=' cjb lastBuild/consoleFull | gjb '
+alias gjb='          egrep "\(origin.*|Revision.*|NODE_ENV=|ERROR|error|Error:|Finished:|failing|failed|FAILURE$" '
+alias glastbconsole='cjb lastBuild/consoleFull | gjb '
+
+# open apps
+#alias ows='     open -a WebStorm'                               # /usr/local/bin/wstorm
+#visu () { f=$1; open -a "Visual Studio Code" --args  "$f" ; }
+alias te='       open -a textedit '
+#alias otvr='     open /Applications/TeamViewer.app '
+#alias ojme='     open /Applications/join.me.app/   '
+#alias opy='      open /Applications/PyCharmCE.app/ '
+#alias ofacet='   open /Applications/FaceTime.app/ '
+alias ophoto='   open /Applications/Photos.app/ '
+alias ocamera='  open /Applications/Photo\ Booth.app/ '
+alias oquickt='  open /Applications/QuickTime\ Player.app/ '
+alias oAVrec='   open /Applications/QuickTime\ Player.app/ '
+
+# open web apps
+alias orally='       open https://rally1.rallydev.com/slm/login.op '
+alias ojira='        open http://jira.csv.comcast.com/secure/Dashboard.jspa '
+alias oconflu='      open http://confluence.csv.comcast.com:8090/ '
+alias orelease='     open https://www.teamccp.com/confluence/pages/viewpage.action?spaceKey=Baymax&title=Release+Notes'
+alias oeinste='      open http://einstein.cable.comcast.com/Einstein/km '
+
+alias obox='         open https://comcast.app.box.com/files/0/f/5443718381/Baymax '
+alias oboxenr='      open https://comcast.app.box.com/files/0/f/3477692940/Einstein_Enrichment_Files '
+alias oboxcsv='      open https://comcast.app.box.com/files/0/f/3446508402/Baymax_csv_files '
+
+alias ovnc='         open vnc://172.20.4.156 '
+alias osmb='         open smb://10.172.52.221/Share'
+
+alias ojenkin='      open http://ci2.csv.comcast.com'
+#alias oautom_cons='  open http://cacsvmd-12341:8080/view/All/job/Baymax%20Tests%20-%20Local%20Server/lastBuild/console'
+#alias oautom_conf='  open http://cacsvmd-12341:8080/view/All/job/Baymax%20Tests%20-%20Local%20Server/configure'
+#alias oautom='       open http://cacsvmd-12341:8080'
+
+alias teelog=' tee -a $HOME/logs/qa_$(date '+%Y.%m.%d').log '
+
+tscout () { b=$1; b=${b:-10.1.47.7};  ssh adm1 ssh $b  "tail -n100 -f /opt/csv/var/log/smartconnect/smartconnect_stdout.log" ; }
+
+tkcout () { b=$1; b=${b:-10.1.47.41}; ssh adm1 ssh $b  "tail -n100 -f /opt/csv/var/log/baymax-kafka-consumer/baymax-kafka-consumer_stdout.log" ; }
+tkcerr () { b=$1; b=${b:-10.1.47.41}; ssh adm1 ssh $b  "tail -n100    /opt/csv/var/log/baymax-kafka-consumer/baymax-kafka-consumer_stderr.log" ; }
+
+tailkcout () { b=$1; b=${b:-10.1.47.41}; tkcout $b | bunyan ; }
+tailkcerr () { b=$1; b=${b:-10.1.47.41}; tkcerr $b | bunyan ; }
+
+alias osys='     ogh; ojb; orally;           osplunk ; okib_prod '
+alias omai='     open http://mail.yahoo.com; open http://www.hotmail.com; open http://gmail.com '
+
+##  Apache Bench
+# ab of 10 requests 10 concurence and get csv output: $ ab -e bc_le.csv -n 10 -c 10 $bc_le
+# Concurently run 5 ab (of 1 request) cmds: ~/logs$ for i in `seq 0 5`; do (ab -n 1  $scoutService | tee -a scout-n1_${i}.log &) ; done
+# t1; time fpmc CancelService; t2
+#/smartconnect$ echo "CURL POST"; t1; time cpc test/test_data/mobileCallback_payloads/CancelService.json ;t2; echo "BAYMAX POST"; t1; time fpmc CancelService; t2; echo "AB OUTPUT"; ab -n10 -c1 $bn_ev
+
+##  Kibana and curl
+
+alias kstg_24h='cat  ~/Help/kib/kstg_24h.cmd; echo "File path:" ; echo "~/Help/kib/kstg_24h.cmd" '
+alias kstg_dis='bash ~/Help/kib/kstg.cmd'
+alias kstg_his='bash ~/Help/kib/kstg_histogram.cmd'
+
+
+
+### TEST_SPECIFIC 
+
+plf="incident|events|customer|resources|source|type|data|correlation_id|event_id|accountnum"
+
+##  3.1 test Customer Alert enrichment
+# enr = incident.data with 5 fields *CustomerAlert*; use ivr_itg.csv file;
+_CA="suppressOverride|IsXHCustomerAlert|XHlink1|IsCustomerAlert|CustomerAlertTitle|CustomerAlertShortDescription|CustomerAlertLongDescription|CustomerAlertMoreURL"
+genrCA () { f=$1; egrep -n "$plf|$_CA" $f; echo -e "***** ENRICHMENTS : 8 CAs"; egrep "$_CA" $f ; }
+#genrCA () { f=$1; _CA="linkLabel|IsCustomerAlert|CustomerAlertTitle|CustomerAlertShortDescription|CustomerAlertLongDescription|CustomerAlertMoreURL" ; egrep -n "$plf|$_CA" $f; echo -e "***** ENRICHMENTS : 6 CAs, linkLabel"; egrep $_CA $f ; }
+
+
+##  3.2 IVR enrichment 
+# enr: if events[0].type = PK from content of Eins IVR CSV  ivr_itg.csv, use rn_PK <the type or PK> for detailed contents of csr_description strings
+# ex:  if type=Bill (matched) then enrich incident.data by retrieve from ivr csv file 5x Customer Alert, linkLabel, csr_description, and display_priority": "9"
+# genr ivr_itg.csv: IVR, 6CA, XH, Help Residential or dotcom, Internet Speed Experience, RFNoise
+#_IVR=""
+#genrIVR () { ; }
+#_IVRB=""
+#genrIVRB () { ; }
+
+# test events[0].data.NLDesc DE139151, Need to run NODE_ENV=baymax_staging for Up_IVRBucket Up_Rules 
+# verify: 1/ only NLDesc, 
+# 2/ switch= if events.type=0/x/null/empty string, then populate values (type, description) from IVRBucket.csv
+# 3/ events.description == its value, if null then use NLDesc value, if this value is null then populate from IVRBucket.csv
+
+gtdn () {  f=$1; egrep "type|nlDesc|NLDesc|description"                       $* ; }
+gdesc () { f=$1; egrep "type|nlDesc|NLDesc|description|$plf|IVRBucket|id_key" $* ; }
+descc () { f=$1; gdesc test/test_data/enriched_payloads/$f.json; fpec $1|gcea;echo ; }
+descn () { f=$1; gdesc test/test_data/enriched_payloads/$f.json; fpen $1|gcea;echo ; }
+desc1 () { f=$1; gdesc test/test_data/enriched_payloads/$f.json; fpel $1|gcea;echo ; }
+desc2 () { epn $* 200 | gdesc ; }
+
+## 3.3 STB enrichment 
+# enr: if events[0].data.statusDesc = status_desc from content of  vod-credit-limit.csv file
+# ex:  if statusDesc=UDB_VALIDATE_PLAY_ELIGIBILITY_ACCOUNT_ON_HOLD (matched) then enrich incident.data by ...
+#_STB=""
+#genrSTB () { ; }
+
+
+## 3.3bis TVNS notif (qa29 "mac_address": "707630DF0258") and  TV's ecmMAC=707630DF0256
+# fptn; vun log_stdout | grep Before
+# 201 +  check TV 'On Demand Error' 'Before your selection can be played, Press help and select troubleshoot. We can walk you through this.'
+gnotTl () { echo Checking TVNS notif...; vulh log_stdout | egrep "Before|transactionId" ; }
+gnotTn () { echo Checking TVNS notif...; vun  log_stdout | egrep "Before|transactionId" ; }
+gnotTc () { echo Checking TVNS notif...; vuc  log_stdout | egrep "Before|transactionId" ; }
+
+
+## 3.4 XRE
+# post new CS group A, B and C
+# edit new (local) rule of XRE, post 2 XRE payloads, get c_e_a numbers run xrel, xree or epc to get event_id back. 
+# (for i in `seq 1 3`; do echo LOCAL && fpxrel|g201 && echo STAGING && fpxren|g201 && echo  ; done ) | ftee xre_newCS_lh_bn352
+# test with viplav: hlam001c@CACSVML-15870:~/checkouts/mapping-rules$ (for i in `seq 1 10`; do echo LOCAL && fpxrel|g201 && echo STAGING && fpxren|g201 && echo  ; done ) | ftee mmmxre_newCS_lh_bn346
+# change XRE postUrl: Rate-limit exceeded failed%: vip 33%, 50%, external 0%, and bgb...vip 100%
+# post the special payload: $ fpxrec X_dataCode; should return 400  data: 'data.code is within filterable values' due to code=OTHER_TIMES_EMPTY_SHINGLE. Expected!
+#_XRETypeX=""
+#genrXRETypeX () { ; }
+
+alias xre_postUrl='vun redisData | egrep "postUrl"  '
+# http500 and 429, dual simultaneously test on local and stg (after modified postUrl of XRE redis rules): echo staging; fpxren|gcea;echo; echo  local; fpxrel|gcea;echo; t2; then xree ...; xree ...;
+# 200x on a1p to a5p endpoints: on local, then on staging: teekeyn all_map_rules | egrep "XRE|a1p" ; t1; (for i in `seq 1 200`; do echo -n STAGING && fpxren|g201c && echo  ; done ) | ftee stag_a1p_xre ; t2
+
+# XRE rm ITG in Prod if refreshStatus=SUCCESSFUL then set incident.data.LaunchItgUri=null (it was like nlTagNum=text) : 
+# grep ki.json for nlTagNum=text and incident.data.LaunchItgUri=null or empty; All other source payloads should be ok.
+# $ for p in empty2_other_enrich empty_other_enrich mismatch_other_enrich missing_other_enrich null2_other_enrich null_other_enrich other_enrich other_no_enrich ; do echo $p ; fpxrec $p|gcea;echo; done
+
+# startkc
+startkc () {   st=$2; st=${st:-kc};ne=$1; ne=${ne:-dev_local}; cdkc; NODE_ENV=$ne node kafka-consumer.js | bunyan | ftee $st  ; }
+startkc_t () { t=$2; t=${t:-15};   ne=$1; ne=${ne:-dev_local}; cdkc; (sleep $t && pkill -f kafka-consumer ) & NODE_ENV=$ne node kafka-consumer.js ; }
+alias btee='bunyan | ftee'
+alias startkc_stg_10='startkc_t  echoComcast_staging 10 | btee ecc_stg_10sec '
+
+# Start KC to test display_priority=10 :: 1.startKC10s, 2.verify KC console, 3.query Kibana, 4.save new enriched json payload  and 5.verify the json.
+#alias startkc_disPri='cdkc; node kafka-consumer.js | bunyan | ftee  kc_disPri ' 
+alias startkc_disPri_loc='if (pgrep -f smartconnect  && echo Running); then startkc_t | btee kc_disPri; else echo "Assert: Smartconnect should be running first"; fi '
+alias startkc_disPri_stg='startkc_t staging    20 | btee kc_stg_disPri '
+alias startkc_disPri_prd='startkc_t production 10 | btee kc_stg_disPri '
+alias getlastkc='  cdlogs; llrr'
+get201 () {   f=$1; egrep -n -B1 -A5 "statusCode\": 201," $f ; }
+vtf2dp10 () { f=$1; egrep -n "payload:|display_priority\": 10|IS_VISIBLE\": true," $f ; }
+vf2dp0 () {   f=$1; egrep -n "payload:|display_priority\": 0|IS_VISIBLE\": false," $f ; }
+
+_disPri_kc () {  f=$1; get201 $f|tail -30; vtf2dp10 $f|tail -30; vf2dp0 $f|tail -30; e=`get201 $f|tail -30|grep event_id|cutdq -f4`; echo "Verify 1 event_id $e on Kibana NOW ..." ; }
+#genrdisPri () { f=$1; echo "ran get201e ...new json file from KC..."; dP=""; egrep  -n  "source\": \"XRE|Launch|display_priority|IS_VISIBLE|IS_STARTUP|data\": {|incident|events|event_id|[Cc]ustomer|accountnum|resources|mamobile" $f ; }
+_XREDisPri="XRE|Launch|display_priority|IS_VISIBLE|IS_STARTUP|mamobile"
+genrXREDisPri () {  f=$1; dP="XRE|Launch|display_priority|IS_VISIBLE|IS_STARTUP|mamobile"; egrep  -n  "$plf|$dP" $f; echo -e "***** ENRICHMENTS display_priority: 6 points"; egrep "$dP" $f ; }
+
+
+## 3.5 ITG
+
+
+## 3.6 XH enrichment 
+# enr: if events[0].type = PK from content of Eins IVR CSV  ivr_itg.csv , use rn_PK <the type or PK> for detailed contents of csr_description strings
+# ex:  if type=Bill (matched) then enrich incident.data by retrieve from ivr csv file 5x Customer Alert, linkLabel, csr_description, and display_priority": "9"
+#genrXH () { ; }
+#gnotT () { ; }
+
+## 3.7 Help Residenttial dotcom enrichment
+# enr: if events[0].type = PK from content of Eins IVR CSV  ivr_itg.csv , use rn_PK <the type or PK> for detailed contents of csr_description strings
+# test US638331 new event From Help&Support or DotCom, source=Help Residential; type=Help Article Views|Activate General; 
+# enr= based on enr csv file, or none applicable
+#grow () {   egrep "speed test|Internet Slow|Internet Modem Exchange|channel latency|Help Article Views|Activate General" $* ; }
+#genrDC () { ; }
+
+
+## 3.8 Internet Speed Experience  enrichment 
+# enr: if events[0].type = PK from content of Eins IVR CSV  ivr_itg.csv , use rn_PK <the type or PK> for detailed contents of csr_description strings
+# ex:  if type=Bill (matched) then enrich incident.data by retrieve from ivr csv file 5x Customer Alert, linkLabel, csr_description, and display_priority": "9"
+genrISE () { genrCA $1 ; }
+
+
+## 3. 9 RFNoise
+#  Start KC to test RFNoise Latency (US645193), source, type, data enr, desc, latency :: 0.startsc_local 1.startKC with eccloc/eccstg/eccprod, 2.verify KC console, 3.check cmCmtsUsBondedFreqData on sc console, find accountnum 4.query Kibana, 5.save new enriched json payload  and 6.verify the json|genrRFNScout. 7.redis rfNoise key counter inscreased
+#alias startkc_eccloc='cdkc;NODE_ENV=echoComcast_local     node kafka-consumer.js | bunyan | ftee kc_eccloc_rfnLat'
+#alias startkc_eccstg='cdkc;NODE_ENV=echoComcast_staging    node kafka-consumer.js | bunyan | ftee kc_eccstg_rfnLat'
+#alias startkc_eccpro='cdkc;NODE_ENV=echoComcast_production node kafka-consumer.js | bunyan | ftee kc_eccpro_rfnLat'
+alias startkc_eccloc='if (pgrep -f smartconnect  && echo Running); then startkc_t echoComcast_local 60 | btee kc_eccloc_rfnLat; else echo "Assert: Smartconnect should be running first"; fi ' 
+alias startkc_eccstg='startkc_t     echoComcast_staging    20 | btee kc_eccstg_rfnLat'
+alias startkc_eccpro='startkc_t     echoComcast_production 10 | btee kc_eccpro_rfnLat'
+
+_rfnLat_kc () { f=$1; get201 $f |tail -30; echo "KC get201 total:"; get201 $f |wc; e=`get201 $f|tail -30|grep event_id|cutdq -f4`; echo "Verify event_id $e on Kibana NOW ..." ; }
+
+_RFNLat="RFNoise|[Ll]atency|mamobile"
+genrRFNLat () { f=$1; rl="RFNoise|[Ll]atency|mamobile"; egrep  -n  "$plf|$rl" $f; echo -e "***** ENRICHMENTS RFNoise Latency: 6 points"; egrep "$rl" $f ; }
+
+# Pull max/minLatency from redisData
+alias MmLatency=' vun redisData| egrep -i "maxlatency|minlatency" '
+
+
+# RFNoise US654573 SCOUT and UrSC654574 D3P and US654574
+# co_b rfNoise branch, git cln new repos scout-soap-client, insdep, new install setscout, insdep sc, 
+# upload all rules Up_Rule, vun/vulh redisData|gruleredis, then post fprl rfNoise; fpen rfNoise; allrf_201, allrf_500, allrf_log. allrfl, allrfn
+# enr= events.data.cmCmts []
+alias setscout='npm install git+ssh://git@github.comcast.com:Baymax/scout-soap-client.git'
+
+_RFNScout="RFNoise|ecmMAC|[Ll]atency|cmCmtsUsBondedFreqData|name|snr|cerunerrored|ceruncorrected|channel|_ratio"
+genrRFNScout () { f=$1; rs="RFNoise|ecmMAC|[Ll]atency|cmCmtsUsBondedFreqData|name|snr|cerunerrored|ceruncorrected|channel|_ratio"; egrep -n "$plf|$rs" $f; echo -e "***** ENRICHMENTS RFNoise Scout: 11  points"; egrep "$rs" $f  ; } 
+
+
+# RFNoise Hash filter % 15=0 
+# then enrich at Baymax (console) the cmCmtsUSBondedFreqData, channel red/green if srn <=/> 27, ratio=(ceruncorrected/cerunerrored) and endup at CS
+# accountnum=0950753293005 8495753921729850  8771300042367510  8495741401019520 8993114440111095 8497101600235005 8771101400121105  
+# acct is not hash %15 right, then just enrich to CS (enr:Latency in range min,Max, ecmMAC, )
+# side facts: if ecmMAC=null, then drop the event
+
+# RFnoise end to end
+#alias startsc_rfn_e2e=' cdsc && NODE_ENV=dev_local          node smartconnect.js   | bunyan | ftee sc_rfn '
+alias startsc_rfn_e2e=' cdsc &&                              node smartconnect.js   | bunyan | ftee sc_rfn '
+alias startkc_rfn_e2e=' cdkc && NODE_ENV=echoComcast_local   node kafka-consumer.js | bunyan | ftee kc_rfn '
+
+# RFNoise DCC
+# o@JV and sdev93: curl 'https://global-datagrid-service-prd-wc.g3.app.cloud.comcast.net/api/gdg/customer/data/0166824206303.json'
+genrRFNDCC () { f=$1; rs="RFNoise|ecmMAC|cmCmtsUsBondedFreqData|name|snr|cerunerrored|ceruncorrected|channel|_ratio|mtaChannelInventory|channelChangeResult|SUCCESSFUL"; egrep -n "$plf|$rs" $f; echo -e "***** ENRICHMENTS RFNoise DCC: 53 points, $rs "; egrep "$rs" $f  ; }
+
+#alias gminSNR='gitb;echo "File: config_constanst.json ..." ; egrep -C3 "minGoodSnr|channelChangeEnabled" ~/checkouts/smartconnect/config/config_constants.json '
+MINGOODSNR="minGoodSnr|channelChangeEnabled|devicesAllowingChannelChange|cmtsesAllowingChannelChange|waitTimeBeforeRetryingDCC"
+minsl () { echo "Local Redis rules: ..." ; vulh redisData |egrep -A3 $MINGOODSNR ; }
+minsn () { echo "Stag  Redis rules: ..." ; vun  redisData |egrep -A3 $MINGOODSNR ; }
+minsc () { echo "Prod  Redis rules: ..." ; vuc  redisData |egrep -A3 $MINGOODSNR ; }
+alias minsa='minsl;minsn;minsc'
+
+# ChannelChange
+
+# RFNoise throttling:  To test RfNoise throttling, you’ll have to send multiple payloads and after 150 events (divided across 4 nodes so approximately 38 events to one instance of Baymax) you should be able to verify the rate-limit.  Basically, Baymax should only cater to 150 RfNoise events / second. So the response for first 150 events should be 201 rest of them will be 429.  Its best to test this locally as on staging you can’t control the incoming events.
+
+## 3.10 Mobile Callback
+
+# US674310
+tmcn () { (ech2 "CURL POST"; t1; time cpn test/test_data/mobileCallback_payloads/CancelService.json|pjson ;t2; echo "BAYMAX POST"; t1; time fpmn CancelService; t2; echo ; ) | ftee MC_posts ; }
+tmc () {  (ech2 "CURL POST"; t1; time cpc test/test_data/mobileCallback_payloads/CancelService.json|pjson ;t2; echo "BAYMAX POST"; t1; time fpmc CancelService; t2; echo ; ) | ftee MC_posts ; }
+tmcc () {  ech2 "CURL POST"; t1; time cpc test/test_data/mobileCallback_payloads/CancelService.json|pjson ;t2; echo ; }
+tmcb () {  echo "BAYMAX POST";    t1; time fpmc CancelService; t2; echo ; }
+logmc () { ftee mc_ ; }
+#genrMC () { ; }
+
+
+## 3.11 XOD test ingest (VOD)/XOD
+# rule $ fpxol CEMP; fpon CEMP (Converged Event Management Platform (formerly VOD Optimization)) 
+# json: with events.source=no/empty/null/CEMP
+# enr= incident.source=events.source=XOD, (there is no csv fil filee) incident.data.LaunchItgURI <<< event[0].nlTagNum; LaunchToolURI <<<< nlTagName  events.name <<< Use vod.error.srm.credit_limit
+
+# egrep "nlTagNum|nlTagName|LaunchItgURI|LaunchToolURI" ki_fpxon_b366.json|cut: -f2|cutdq -f2|sort|uniq -c
+_XOD="XOD|LaunchToolURI|nlTagName|LaunchItgURI|nlTagNum"
+genrXOD () { f=$1; egrep -n "$plf|$_XOD" $f ; }
+
+
+## 3.12 XRAY
+# enr: based on 6 fields within file xray_enrich.csv ; type=System Refresh; evt.data.refreshStatus==SUCCESSFUL; Will send mobile notification
+
+_XRAY="refreshStatus|CustomerAlertLongDescription|CustomerAlertShortDescription|CustomerAlertMoreURL|CustomerAlertTitle|IsCustomerAlert|linkLabel"
+genrXRAY () { ki=$1; xr="refreshStatus|CustomerAlertLongDescription|CustomerAlertShortDescription|CustomerAlertMoreURL|CustomerAlertTitle|IsCustomerAlert|linkLabel"; egrep -n "$plf|$xr" $ki; echo -e "***** ENRICHMENTS XRAY only w SUCCESSFUL evt.data.refreshStatus: 6 CA + 1 points"; egrep "$xr" $ki ;}
+gnotXRAY () { vun log_stdout | grep Before ; }
+
+
+## 3.13 Find Replace
+# enr: if events[0].type = PK from content of file findreplace_01_03_16.csv, or redis key map_findreplace_data: [
+#genrFR
+
+
+## 3.14 XML
+
+
+## 3.15  DO
+# enr: if events[0].type = PK from content of Eins IVR CSV  ivr_itg.csv, use rn_PK <the type or PK> for detailed contents of csr_description strings
+# ex:  if type=Bill (matched) then enrich incident.data by retrieve from ivr csv file 5x Customer Alert, linkLabel, csr_description, and display_priority": "9"
+#genrDO 1/source: DO, 2/incident.data has new string "csr_description": "Customer Device Optimization",
+
+
+## 3.16 moves assitant
+# enr: if events[0].type = PK from content of Eins IVR CSV  ivr_itg.csv, use rn_PK <the type or PK> for detailed contents of csr_description strings
+# ex:  if type=Bill (matched) then enrich incident.data by retrieve from ivr csv file 5x Customer Alert, linkLabel, csr_description, and display_priority": "9"
+#genrMA 1/source:moves assistant , 2/incident.data has new string "csr_description": "Moves Journey Information", 
+
+
+## 3.17 XHUI
+# I have checked-in a test payload in this PR: https://github.comcast.com/Baymax/smartconnect/pull/153
+#To test this:
+#- Ingest the test payload test/test_data/xh_payloads/XHUI_Upgrade_CD.json and verify you get a successful 201 response.
+#- You can also change the metadata.ftpSite in the payload to FTP parameter from map_xh_ui_data and verify that its corresponding events.type value is mapped to events.type in the payload. The resultant event should be enriched as per Einstein csv.
+
+#  628  Thu Jul 28 11:40:13 2016brew install pyenv-virtualenv
+# US731562 XHUI TA1891944:ftp://timeline:Zobrih72@cxsdb-wc-1p.cable.comcast.com  (user/password= timeline/Zobrih72 )
+xhui="ftp://timeline:Zobrih72@cxsdb-wc-1p.cable.comcast.com/external_data/XH_UI"
+#alias ftpxhui1='echo timeline:Zobrih72;      oterm ftp        timeline@cxsdb-wc-1p.cable.comcast.com '
+#alias ftpxhui2='echo XH.UI.Messaging/Comcast@123;  ftp XH.UI.Messaging@cxsdb-wc-1p.cable.comcast.com '
+#alias ftpxhui='  echo XH.UI.Messaging/Comcast@123;  $HOME/proj/tclex/fxh.exp '
+#fxhui () {       echo XH.UI.Messaging/Comcast@123;  expect -c "spawn ftp XH.UI.Messaging@cxsdb-wc-1p.cable.comcast.com;expect \"Password:\";send \"Comcast@123\r\";expect \"ftp>\";send \"ls -ltr\r\";expect \"ftp>\";send \"ls /archive\r\";expect \"ftp>\";send \"ls /XH.UI.Messaging_t2\r\";expect \"ftp>\";interact  "  ; }
+fxhui () {       echo XH.UI.Messaging:Comcast@123;  expect -c "spawn ftp XH.UI.Messaging@cxsdb-wc-1p.cable.comcast.com; expect \"Password:\";send \"Comcast@123\r\";expect \"ftp>\"; send \"ls -ltr\r\";                expect \"ftp>\"; send \"ls /archive\r\";            expect \"ftp>\"; send \"ls /XH.UI.Messaging_t2\r\"; expect \"ftp>\"; interact  "  ; }
+
+#fxh12 () {       echo XH.UI.Messaging:Comcast@123;  expect -c "spawn ftp XH.UI.Messaging@cxsdb-wc-1p.cable.comcast.com;expect \"Password:\";send \"Comcast@123\r\";expect \"ftp>\";send \"ls -ltr\r\";expect \"ftp>\";send \"ls /$1\r\";     expect \"ftp>\";send \"ls /$2\r\";                expect \"ftp>\";interact  "  ; }
+
+alias ofx='    oterm fxhui'
+alias oxhui='  echo XH.UI.Messaging:Comcast@123 timeline:Zobrih72; open ftp://timeline:Zobrih72@cxsdb-wc-1p.cable.comcast.com/external_data/XH_UI'
+
+# set ip [lindex $argv 0]; 
+#siup () {      echo IP + User + Pwd;  expect -c "set timeout 20; set user [lindex $argv 1]; set password [lindex $argv 2]; spawn ssh \"$user\@$ip\"; expect \"Password:\" send \"$password\r\"; interact " ; }
+siup () {      echo IP + User + Pwd;  expect -c "set timeout 20; set user [lindex $argv 1]; set password [lindex $argv 2]; puts \"hello [lindex $argv 1] \"  " ; }
+
+
+##  test new ivr_itg csv enr file 
+# Test new enr csv on Prod: open $bc_rd; cowsay "map_ivr_itg b/w redisData and xls file"; open $HOME/checkouts/mapping-rules/prod_rules/Einstein_enr_file_20151210.csv
+# egrep "outagecheck|Primary" $HOME/checkouts/mapping-rules/prod_rules/ivr_itg.csv ;  cdlogs; wget $bc_rd -O bc_rd.log && pjson bc_rd.log |egrep -C20 "Primary.*outagecheck"
+# vuc redisData ; then Control F to search for outagecheck
+# spell check also
+
+csvLines () {      wc -l $* ; }
+csvCommaCount () { csvf=$1; perl -ne 'print tr/,//, "\n"' < $csvf      | sort -u ; }
+csvSumHorizon () { csvf=$1; perl -ne '@a=split(/,/);  $b=0; foreach $r (1..$#a){ $b+=$a[$r] } print "$a[0],$b\n"' -f $csvf ; }
+# $ cat sample.csv |perl -nle 'print length,"\t",$_ if 17 == length ' ;  OR length > 17 ; OR 18 > length
+
+c2j () {           csvf=$1; python $HOME/proj/py/csv2json/c2j.py $csvf ; echo "Go check $(basename $csvf).json file" ; }
+csv2json () {      python -c "import csv,json;      print json.dumps(list(csv.reader(open('$1'))), sort_keys=True, indent=4, separators=(',', ': ') )" ; }
+
+csvCol () { python $HOME/proj/py/csvcolumn.py $1 ; }
+#python csvcolumn.py < csv2json/sample.csv 2 ; cat csv2json/sample.csv|python csvcolumn.py 2
+# csvCol  < csv2json/sample.csv 2;              cat csv2json/sample.csv | csvCol 2
+
+csvFields () {     f=$1; col=$2; col=${col:-35}; r=$3; r=${r:-3}; for i in `seq $col`; do echo -ne "FIELD $i:  \t"; head -n $r $f |cut -d"," -f $i; done ; }
+csvHdup () {       f=$1; head -1 $f | trUC|tr ',' '\n'|sort|uniq -d ; }      
+csvView () {       f=$1; sed -e 's/,,/, ,/g' $f | column -s, -t | less -#5 -N -S ; }
+#ivrHmis { ; }
+#ivrHext { ; }
+#csvSed () {       sed -e 's/,,/, ,/g'    | column -s, -t | less -#5 -N -S ; }
+
+# $csvCommaCOunt to get 15;  for i in `seq 15`; do echo -ne "$i:  \t"; head vod-credit-limit.csv|cutc -f $i; done
+# prod_rules$ for i in `seq 7`; do echo -ne "$i:  \t"; head xray_enrich.csv|cutc -f $i; done
+# for i in {1..3} ; do echo -ne "$i:  \t"; head findreplace_01_03_16.csv|cutc -f $i; done
+# for i in `seq 10`; do echo -ne "$i:  \t"; head tvns.csv|cutc -f $i; done
+# 
+
+# 050316: 
+#grow () {   egrep "speed test|Internet Networking General|Internet Networking Issue|approaching high|high effort|Password Homenet|Password Internet|ITG532|ITG472|Reception|CustomerAlerti|Internet Modem Exchange|offer convenient self-service|needs to swap out|3.0 Modem Replacements|not determine the reason" $* ; }
+#grow () {   egrep "speed test|Internet Networking General|Internet Networking Issue|approaching high|high effort|Password Homenet|Password Internet|ITG532|ITG472|Reception|CustomerAlert" $* ; }
+#grow () {   egrep -n "ITG194|ITG673|Bill tax" $* ; }
+
+# 051116: line 209
+# grow () {  egrep -n "Customer has a question about their phone service" $1 |grep "speed test" ; }
+
+# 051716, count/compare lines of changes:
+# $ r=ivr_itg.csv;  for x in 68 62 166 193 683 283 383 452 265 336 198 692 673 370 125 168 342 693 691 384 130 703 673 258  ; do echo -ne "$x\t: " ; egrep -c "ITG$x" $r; done;
+# $ r=~/tem/red; vulh redisData > $r;for x in 68 62 166 193 683 283 383 452 265 336 198 692 673 370 125 168 342 693 691 384 130 703 673 258  ; do echo -ne "$x\t: " ; egrep -c "ITG$x" $r; done; echo local/stag/prod
+#grow () {   egrep -n "ITG68|ITG62|ITG166|ITG193|ITG683|ITG283|ITG383|ITG452|ITG265|ITG336|ITG198|ITG692|ITG673|ITG370|ITG125|ITG168|ITG342|ITG693|ITG691|ITG384|ITG130|ITG703|ITG673|ITG258"  $1 ; }
+
+#Einstein_enrichment_file_20160614.csv (skipped)
+#grow () {  egrep -n "SIK" $1 ; }
+
+#Einstein_enrichment_file_20160616.csv
+#grow () {  egrep -n "Optimization|SIK|VOD|linkLabel|Inhibited Set-Top" $1 ; }
+
+#Einstein_enrichment_file_20160628.csv 15
+#grow () {  egrep -n "IsXHCustomerAlert|XHlink1|mismatch|ITG683|ITG690|ITG:XOD|ITG692|ITG715" $1 ; }
+
+#Einstein_enrichment_file_20160718.csv 32
+#grow () {  egrep -n "suppressOverride|XHUI|XH2g|linklabel|IsXHCustomerAlert|XHlink1|mismatch|ITG683|ITG690|ITG:XOD|ITG692|ITG715" $1 ; }
+
+#Einstein_enrichment_file_20160927.csv  32 
+grow () {  egrep -n "ITG764|ITG763|ITG762|ITG761|ITG729|ITG754" $1 ; }
+
+##gmetadata () { egrep "metadata|payload" $* ; }
+
+## test for fields that data type is defined as number 
+gdtn () {   egrep -i "callTime|callDate|duration|ANI|cspIngestTime|unixTime|techETA|apptResch" $* ; }
+gdta () {   egrep -i "callTime|callDate|duration|ANI|cspIngestTime|unixTime|techETA|apptResch|error|code|status|accountnum|CSGAcct|stPercentAvg|advDownSpeed|num_events_hour|num_events_month" $* ; }
+
+
+##  AdminUI $ api=http://172.20.3.31:3000/# ; for a in index home overview dashboard userProfile mapping_rules_crud upload; do echo "##  $api$a "; curl $api$a; done
+##  Test AdminUI $ api=$jv_:3000/# ; for a in index home overview dashboard userProfile mapping_rules_crud upload; do echo "##  $api$a "; open $api$a; done
+# watch -t -n 15 "echo AdminUI; curl  http://172.20.3.31:3000/ ; date"
+
+# $ cat check_db.sql #use test; show tables; select * from user; select count(*) from user; select * from mapping_type; select count(*) from mapping_type; exit
+#hlam001c@smartconnect:~$ mysql -uroot --tee=test_au_mysql < check_db.sql > output.tab
+
+alias oau='        open $jv_:3000 '
+
+# $ cat check_db.sql #use test; show tables; select * from user; select count(*) from user; select * from mapping_type; select count(*) from mapping_type; exit
+#alias jvmdb='      sshjv "mysql -v -uroot < check_db.sql > jvmdb.out ; cat -n jvmdb.out" '
+
+
+##  Event-Factory  sendNotif with new (arch) bser
+# start redis; optional redmon to monitor # stop sc
+# start dispa: node bin/baymax_dispatcher
+# at bser: . .bashrc ; startbser: node bin/baymax_server
+# at bcli: . .bashrc ; startbcli: node bin/baymax-client -t rfnoise -r test_rules_05.json
+# mon
+# accountnum: Sita Panyam 8155100181471461 # Ranjit 8155100140021662 # Henry 8155100521885602 # Flavius 8499100090284083 # Flavius2 8499100022395742 # Kurt 8499102520136487 # Kurt2 8499102520136487
+# at event-fact $ ./bin/uploader-tool -fp test/fixtures/test.csv
+# at sc: post XH like payload
+# check 201 + txt msg
+
+
+
+### DATA_SCIENCE
+
+alias lllog='     ls -lh $HOME/logs/*'
+alias llvx='      ls -lh /var/xfer/*'
+alias llupro='    ls -lh /home/bburg200/data/RAW_RECONNECT_UNPROCESSED/*'
+alias llpro='     ls -lh /home/bburg200/data/RAW_RECONNECT_PROCESSED/*'
+
+alias expy27='    source $HOME/.bash_profile  '
+alias cdupro='    cd     /home/bburg200/data/RAW_RECONNECT_UNPROCESSED; pwd; date'
+alias cdpro='     cd     /home/bburg200/data/RAW_RECONNECT_PROCESSED; pwd; date'
+alias cdvx='      cd     /var/xfer/; pwd; date'
+alias cdvd='      cd     /var/data/; pwd; date'
+alias cdlog='     cd     $HOME/logs; pwd;date'
+alias cdlogs='    cd     $HOME/logs; llrr;pwd;date'
+alias cdrehadoop='cd     /home/bburg200/data/RECONNECT-HADOOP; pwd; date'
+
+#alias pingds=' watch -t "ping -a -c 2 $ds_ip ;date " '
+
+fvxlastdate () {  d=$1; cdvx; ls -lh; date;ls -lh |grep $d ; }
+alias pyE='       cdrehadoop;     python readE.py & '
+alias pyR='       cdrehadoop;     python readR.py & '
+alias pyI='       cd ~/data/RECONNECT-HADOOP/ && y=`bash yest` && python readIVR.py    $y  2>&1 >> /var/data/logs/qa_IVR.log & '
+alias pyS='       cd ~/data/RECONNECT-HADOOP/ && y=`bash yest` && python readSpeedT.py $y  2>&1 >> /var/data/logs/qa_SpeedT.log & '
+alias pypro='     cdrehadoop; t1; python process.py ; t2'
+
+##  if error* and recconect* file sizes are still > 10mb, then rerun readE.py and readR.py
+alias pyEfailed=' e=`find ~/data/RAW_RECONNECT_UNPROCESSED/ -name err* -size -10M -ctime 0 -ls|wc -l` && [ $e -eq 0 ] && cd ~/data/RECONNECT-HADOOP/ && python readE.py 2>&1 >> /var/data/logs/qa.log & '
+
+##  if there exists either IVR* of SpeedT* file size == 12 bytes, then correct them with readIVRFails.py or readSpeedTFails.py
+alias pyIfailed=' i=`find ~/data/RAW_RECONNECT_UNPROCESSED/ -name IVR* -size 12c -ctime 0 -ls|wc -l` && [ $i -gt 0 ] && cd ~/data/RECONNECT-HADOOP/ && python readIVRFails.py    2>&1 >> /var/data/logs/qa_IVR.log & '
+alias pySfailed=' s=`find ~/data/RAW_RECONNECT_UNPROCESSED/ -name Spe* -size 12c -ctime 0 -ls|wc -l` && [ $s -gt 0 ] && cd ~/data/RECONNECT-HADOOP/ && python readSpeedTFails.py 2>&1 >> /var/data/logs/qa_SpeedT.log & '
+
+alias cronlast='  ll /var/spool/ | egrep "K.*\scron" && date && crontab -l  '
+alias todayfiles='cnt=`find ./ -ctime 0 -ls|wc -l` && if [ $cnt -gt 1 ] ; then echo Yes_$cnt ; else echo Nope_$cnt; fi '
+fispydone () {    s=$1; s=${s:-60}; while true; do pgrep -lf "python|RXBI"; pgrep -lf "python|RXBI"|wc -l; date; sleep $s; done; }
+alias rmpro='     rm -f $HOME/data/RAW_RECONNECT_PROCESSED/[erIS]*'
+
+alias ver12='     find ./               -size 12c   -ctime 0 -ls'
+alias ver10m='    find ./               -size -10M  -ctime 0 -ls -name "err*" -or -name "rec*"'
+alias ver10e='    find ./ -name "err*"  -size -10M  -ctime 0 -ls'
+alias ver10r='    find ./ -name "rec*"  -size -10M  -ctime 0 -ls'
+
+#alias wate='      watch -t "ls -ltrh err*|tail && date" '
+#alias watr='      watch -t "ls -ltrh rec*|tail && date" '
+
+ets () {          f=$1; dates `head -2 $f |cutc -f19|cut: -f3`; dates `tail  $f |cutc -f19|cut: -f3` ; }
+
+alias subb='      h; sudo -u bburg200 -s'
+
+#fvds () {      osascript -e 'tell application "Terminal" to do script  "clear;echo hello; vds|ftee vdata " ' ; }
+fvds () {       ssh2; hterm grass "vds|ftee vdata"  ; }
+alias vds='     sshds  "ls  -lh   /var/xfer   | grep `date -v-1d +%m_%d` ; df -h ; du -sh /var/xfer /backup/ " '
+alias vds_log=' sshds  "cat -n    /var/data/logs/qa.log"'
+alias vds_list='sshds "ls  -ltrh /var/data/logs/*"'
+
+fvxs () {       cdvx; d=$1; y=$2 ; ll|egrep "$d";  date; e=err* ; ls -lSh $e|grep -C15 $y; date; i=IVR* ;ls -lSh $i|grep -C15 $y; date; s=SpeedT*.txt; ls -lSh $s|grep -C15 $y; date ; }
+alias fvxs1='   fvxs "Feb 23" 02_2 '
+#vdsvx () {    today=`date|awk '{print $2, $3}' `; yest=`date -d "1 day ago" '+%m_%d' `; ym=`date -d "1 day ago" '+%m`; yd=`date -d "1 day ago" '+%d`;echo "Yesterday=$yest"; echo "Today=$today"; ls -l /var/xfer|egrep "$ym.$yd" > vvx ; cat vvx; c=`wc -l vvx | awk '{print $1}' `; d=`grep -c "${today}" vvx`; y=`grep -c $yest  vvx`; e=`grep -c error vvx`; I=`grep -c IVR vvx` ; rec=`grep -c reconnect vvx`; S=`grep -c SpeedT vvx`; echo $c $d $y $e $I $rec $S; if [[ $d==$c && $y==$c && $e -gt 0 && $I -gt 0 && $rec -gt 0 && $S -gt 0  ]] ; then echo Passed; else echo "Failed, by `date`" ; fi ; df -h; }
+
+
+# cspIngestTime   bburg200@bburg1:/var/xfer$ dates `head -1 IVR_2016_01_01.txt |tr '"' ' '|cutc -f30|cut: -f3`
+# unixTime        bburg200@bburg1:/var/xfer$ dates `head -1 IVR_2016_01_01.txt |tr '"' ' '|cutc -f70|cut: -f2`
+# convertu2d _ to -  /var/data/tem$ for f in `ls *_*`; do n=`echo $f|tr '_' '-'`; mv $f $n; done
+
+# hochmeister: find . -iname "*.mp4" -print0 | xargs -0 mv --verbose -t /media/backup/
+
+# Check if SpeedT is processed failed:
+# SpeedT14="ipv6_upload_kbps cm_prov_dn_kbps ipv6_download_kbps cm_prov_up_kbps cm_adv_up_kbps ipv4_download_kbps ipv6_latency_ms ipv4_latency_ms cm_adv_dn_kbps ipv4_upload_kbps directly_connected cm_docsis_version region"
+# for i in $SpeedT14; do echo $i:; head -1 SpeedT_2016_10_15.txt |egrep -io $i; done
+# head -1 SpeedT_2016_10_15.txt|egrep -i "ipv6_upload_kbps|cm_prov_dn_kbps|ipv6_download_kbps|cm_prov_up_kbps|cm_adv_up_kbps|ipv4_download_kbps|ipv6_latency_ms|ipv4_latency_ms|cm_adv_dn_kbps|ipv4_upload_kbps|directly_connected|cm_docsis_version|region"
+
+
+### ALIAS_FOR_COMMON_USE
+
+alias a='alias'
+alias clr='printf "\033c"'
+alias cp='cp -i'
+
+alias duh='  pwd; du -shc'
+alias dush=' pwd; du -sh'
+alias dusk=' pwd; du -sk'
+
+alias sptd='      wget --no-check-certificate -O speedtest-cli.py https://github.com/sivel/speedtest-cli/raw/master/speedtest_cli.py'
+alias sptdr='     wget --no-check-certificate -O speedtest-cli.py https://github.com/sivel/speedtest-cli/raw/master/speedtest_cli.py && python speedtest-cli.py --share '
+
+alias speedtest=' python $HOME/Help/speedtest-cli.py --share | cat09 '
+alias sptlog='    python $HOME/Help/speedtest-cli.py --share | ftee1 speedtest_$(hostname) '
+ospt () {         oterm "line;t1;speedtest|egrep 'load:.*s$'; t2;line; echo WIFI: ; cwf; system_profiler SPAirPortDataType |egrep -A10 'Current Network Information:' " ; }
+
+alias gateway='   netstat -nr '
+alias gm4='       egrep -i "[0-9a-z]{1,2}\:[0-9a-z]{1,2}\:[0-9a-z]{1,2}\:[0-9a-z]{1,2}\:[0-9a-z]{1,2}\:[0-9a-z]{1,2}" '
+alias gmac='      egrep -i "([0-9a-z]{0,4}\:){5,7}[0-9a-z]{0,4}" '
+alias gip='       egrep    "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" '
+gii () {          p=$1; f=$2; if [ `egrep -co "$p" $f` -gt 0 ] ; then echo YES|grep YES; else echo Noooo|grep No; fi ; }
+
+alias dnsgateway='cat /etc/sysconfig/network-scripts/ifcfg-eth0'
+alias dnsip='     cat /etc/resolv.conf'
+alias hostip='    cat /etc/hosts '
+#dns1="69.252.80.80"
+alias pingdns='   dnsip|grep nameserver|rights; pingf `dnsip|grep nameserver|tail -1|cuts -f2`|egrep -B5 "%.*"'
+
+# Networksetup
+# list HWport + DeviceName + EthernetAddress_MACAddr:  oterm networksetup -listallhardwareports; oterm networksetup -listallnetworkservices
+# 1. an alias; 2. Automator: File>New>Service>nwu.workflow... Define a new service;  3.System Preferences > Keyboard > Shortcuts > Services 
+alias nwu='   open /System/Library/CoreServices/Applications/Network\ Utility.app/'
+alias nwpref='open /System/Library/PreferencePanes/Network.prefPane/'
+#alias nwr='/etc/init.d/network restart; echo   Restarted_network_$(date) '
+alias cwf='   networksetup -getairportnetwork en0 | right: '
+alias cnw='   cwf; system_profiler SPAirPortDataType |egrep -A10 "Current Network Information:" '
+#alias wifi='  networksetup -setairportpower airport '
+#alias wificy='wifi off; wifi on; nwpref '
+#alias wile='  networksetup -setairportnetwork en0 ' # wile CCemployee
+
+alias cpuinfo='lscpu'
+alias crlf=' file `find ./` |grep CRLF '
+
+alias cut2c='cut -d ":"  '
+alias cut:=' cut -d ":"  '
+left:  () {  egrep  ".*:" ; }
+right: () {  egrep  ":.*" ; }
+lefts  () {  egrep  ".*\s" ; }
+rights () {  egrep  "\s.*" ; }
+alias cutc=' cut -d ","  '
+alias cut,=' cut -d ","  '
+alias cuts=' cut -d " "  '
+alias cutdq='cut -d "\""  '
+alias cutb=' cut -d "#"  '
+alias cutd=' cut -d "."  '
+alias cutff='cut -d "/"  '
+alias cutp=' cut -d "|"  '
+alias cutsc='cut -d ";"  '
+
+alias ducc=' cut -d"," -f'
+awducc () {  awk -v n=$1 -F"," '{print $n}'   ; }
+awduc  () {  awk               '{print $1}'   ; }
+awp () {     awk               '{print $'$1'}'; }
+
+alias d='    date '
+alias df='   df -h'
+
+alias e='    echo '
+alias echob='echo "*** echo BEGIN_at: `date` " '
+alias echoe='echo "*** echo END_at: `date` " '
+alias echod='terminal-notifier -title "Terminal" -message "echo Done with task!" -open http://www.yahoo.com '
+
+# npm install commander; commander color: http://dailyjs.com/2012/03/08/unix-node-pipes/
+alias cblue=' $HOME/proj/nodejs/colour.js --blue'
+alias cgreen='$HOME/proj/nodejs/colour.js --green'
+alias cred='  $HOME/proj/nodejs/colour.js --red '
+
+alias catvet='cat -vet '
+alias catco='egrep         -C1 [a-z]+ '
+alias cat09='egrep         -C1 [0-9]+ '
+catln () {   fileName=$1 ;  sed -n "$2p" $fileName ; }
+catn () {    f=$1; line=$2; cat -n $f|egrep -C10 $2 ; }
+# print line 4: sed -n '4p' file.txt; awk 'NR==4' file.txt;  perl -ne '$. == 4 && print && exit' 
+# cat a file backwards: $ tac ~/fl_cmd
+# catvet; expand f1_tab f2_spaces; unexpand
+
+alias ge1='  sed -e 1,/ERROR/d |head '
+#alias ge2=' sed -e /ERROR/,$d |head '
+fge1 () {    err=$2; err=${err:-ERROR}; grep -B2 $err  $1 |head -3 ; cat -n $1 | sed -e 1,/$err/d |head -n20 ; }
+# egrep '^.{9}A' file_name; perl -ne 'print if m/^.{9}A/' file_name
+# print only match items:grep -o; awk 'match($0,/regexp/) {print substr($0,RSTART,RLENGTH)}' inputfile;  echo "hallo 123 kadflsdkal" | perl -ne '/(.*123)/ && print "$1\n";'
+# print multiple matches: awk '/regexp/{for(i=1;i<=NF;++i)if($i~/regexp/)print $i}' /path/to/inputfile
+
+alias ldir=' ls -ltra | egrep "^d" '
+alias dir='  llr |egrep "^d" '
+alias dirs=' find . -type d -d 1 -print0 | xargs -0 du -sc | sort -n '
+#alias dir=' sudo find ./ -type d -ls '
+
+alias l.='   ls -ld .* '
+alias lR='   ls -Rh'
+alias lh='   ls -tra | egrep "^\."'
+alias lkh='  cat $HOME/.ssh/known_hosts | fduc '
+alias ll='   ls -lh'
+alias llR='  ls -lRh'
+alias lla='  ls -ltrah'
+alias llr='  ls -ltrh'
+alias llrr=' ls -ltrh|tail '
+alias lls='  ls -sh '
+alias llss=' ls -lSh '
+alias llsd=' sudo find ./ -type d -exec du -sb {} \; | sort -g '
+alias llt='  ls -lth'
+
+alias mv='   mv -i'
+alias o='open '
+alias p='pwd; ls -l'
+
+alias pingf='  ping -a -c 2  '
+alias ports='  netstat -tulan'
+
+alias pscpu10='ps auxf | sort -nr -k 3 | head -10'
+alias psmem10='ps auxf | sort -nr -k 4 | head -10'
+
+alias py='python '
+
+alias repeatls=' watch -t ls '
+
+alias rm='     rm -i'
+alias rmblank='sed "/^$/d;s/^[ \t]*//;s/[ \t]*$//" '
+alias rmbline='sed "/^$/d" '
+
+alias tree_='find . -type d | ls -lARG'
+
+#alias t='tail'
+
+alias tarextract=' tar   -xzf '
+alias tarcompress='tar   -czf '
+alias tarappend='  tar   -czfvr '
+alias tarlist='    tar   -tzfv '
+alias unziplist='  unzip -l '
+
+#tarmcom () { m="$1"; cdvx; echo "Start compress ..."; t1; tarcompress /backup/2016_$m.tar.gz *_2016_$m_* ; t2; echo "list result: "; ls -ltr /backup ; }
+#tarmapp () { yest=`date -d "1 day ago" '+%m_%d' `; m=`date -d yesterday '+%m'; cdvx; echo "Start append   ..."; t1; tarappend   /backup/2016_$m.tar.gz *_2016_$yest* ; t2; echo "list result: "; ls -ltr /backup ; }
+
+ffnotexec () {  d=$1; d=${d:-.}; find $d -type f ! -perm -111 -ls ; }
+
+# Find a file with a pattern in name:
+function ff() { find . -type f -iname '*'"$*"'*' -ls ; }
+
+# Find a file with pattern $1 in name and Execute $2 on it:
+#function fe() { find . -type f -iname '*'"${1:-}"'*' \ -exec ${2:-file} {} \;  ; }
+
+# find . -type d -empty -exec touch {}/.ignore \; 
+#findOlder () { find . -mmin -$((($(date "+%s") - $(stat -c %Y $1))/60)) -type f ; }
+# find /path/to/files* -mtime +5 -exec rm {} \tee2=' tee ./tee_$(date +%Y.%m.%d_%H:%M).txt '
+alias tlall='sudo find /var/log -type f -iregex .*[^.][^0-9]+ -not -iregex .*gz 2> /dev/null | xargs tail -n0 -f  '
+
+alias u='    cd ..;ls; echo Current_dir is `pwd` '
+alias cdu='  cd        ..;ls; echo Current_dir is `pwd` '
+alias cdu2=' cd    ../..;ls; echo Current_dir is `pwd` '
+alias cdu3=' cd ../../..;ls; echo Current_dir is `pwd` '
+
+frep1 () {       while sleep 1;      do date;            $* ; echo ; done; }
+frep () {        while sleep $1;     do date;  $2 $3 $4  $5 ; echo ; done; }
+loop150 () { t1; for i in `seq 150`; do date; echo  $i:; $* ; echo ;            done; t2 ; } 
+loop60 () {  t1; for i in `seq 6`;   do date; echo  $i:; $* ; echo ; sleep 60;  done; t2 ; } 
+loop () {    t1; for i in `seq 5`;   do date; echo  $i:; $* ; echo ; sleep 5;   done; t2 ; } 
+alias loopn='loop fpv0 fpil epn'                    
+alias loopc='loop fpv0 fpic epc'
+
+alias xwc='  xargs wc -l'
+alias xcat=' xargs cat'
+alias xhead='xargs head'
+alias xllr=' xargs ls -ltra '
+
+ffiles () {  n=0; for f in ./* ; do ((n++));ech2 $n; echo  "@ FILE: $f : "; $* $f; done ; }
+fdirs ()  {  n=0; for d in ./* ; do pushd $d; pwd; $* ; popd; echo; done ; }
+
+alias dynip='curl -s http://checkip.dyndns.org | grep "\d*\d" '
+
+
+### USE_AWK_SED: http://sed.sourceforge.net/sed1line.txt
+
+rmduplines () { cat $1 | awk '!NF || !seen[$0]++' ; }
+awkfno () { awk         -F"," '{print $'$1'}'; }
+fmax   () { awk -v n=$1 -F"," 'BEGIN {max = 0} {if ($n>max) max=$n} END {print max}' ; }
+# fmax7 () { awk -F"," 'BEGIN {max = 0} {if ($7>max) max=$7} END {print max}' ; }
+# avg: awk '{sum=sum+$1} END {print sum/NR}
+rmdup () {  awk '!($0 in array) { array[$0]; print }' ; }
+
+#s_join ()  { echo $@ | tr ' ' '_'  ; }
+alias rmblank='sed "/^$/d;s/^[ \t]*//;s/[ \t]*$//" '
+alias rmbline='sed "/^$/d" '
+
+alias a_1line='grep -n -- "-1"'
+alias a1line=' awk  1 $1 '
+aoneline () { tr '\n' ' '  ; }
+alias anline='perl -pe "s/,/\n/g" '
+# alias anline=' sed -e  "s/,/\'$'\n/g" | cat '
+
+# remove all leading whitespace: sed -e 's/^[ \t]*//' 
+# double space: sed G; tripple space sed 'G;G'; Undo double space sed 'n;d'
+# delete BOTH leading and trailing whitespace from each line sed 's/^[ \t]*//;s/[ \t]*$//'
+
+
+## Back up
+
+#fbak () {   filename=$1; cp $filename\{,.baki\} ;     ; ll|grep $1 ; }
+fbu  () {    cp -rfp $1 ./$(date '+%Y_%m_%d_%H_%M')_$1 ; ll|grep $1 ; }
+fori () {    cp -rfp $1 $1.ori                         ; ll|grep $1 ; }
+
+cpwithtar () { src=$1; des=$2; cd $src ; tar cvf - ./* | (cd $des ; tar xvf - ) ; }
+
+
+### USE_PYTHON
+
+# Testing a new py script: /proj/py$ while read ; do python iDropped.py ; done
+pystestloop () { pyscript=$*; while read ; do python $pyscript ; done ; }
+
+# Testing ip
+pyisip () { ip=$1; python -c 'import ipaddr,sys; print(ipaddr.ip_address(sys.argv[1]) ); ' ; }
+
+# pip install sqlparse; echo "select a, b, c from table where a = 3;"| python -c "import sys;import sqlparse;print sqlparse.format(sys.stdin.read(), reindent=True, keyword_case='upper')"
+
+# python -c "print 'this is a test'.title()"
+# week number: python -c 'import datetime; print(datetime.date.today().isocalendar()[1])'
+# $ node -p -e 'process.stdin.isTTY'
+# python -c "print unichr(234)"
+# convert hex to int    python -c "print int('c0ffee'    , 16)"
+# convert               python -c "print int('12648430  ', 10)"
+#pyh ()  {  python -c "import $1;   print help($1)" ; }
+pyh ()   {  python -c "help( '$1' )" ; }
+pyhq ()  {  echo q | pyh $1 ; }
+pydoc () {  python -m pydoc $1 ; }
+pyd ()   {  python -c "import $1;   print  dir($1)" ; }
+pypath () { python -c 'import sys, pprint; pprint.pprint(sys.path)' ; }
+#platf () { python -c "from sys import platform; print platform " ; } 
+#python -c "import sys; print ''.join(x.capitalize() for x in sys.stdin)"  < names.txt
+#python -m timeit "'-'.join(str(n) for n in range(100))"
+
+#findOlder () { find . -mmin -$((($(date "+%s") - $(stat -c %Y $1))/60)) -type f ; }
+
+# (echo "import sys" ; echo "for r in range(10): print 'rob'") | python
+# python -c "exec(\"import sys\\nfor r in range(10): print 'rob'\")"
+
+# print '\n'.join(line.split(":",1)[0] for line in open("/etc/passwd"))
+
+##  Convert
+
+dates    () { t=$1; echo $t " == " `date --date=@$1` ; }
+dateu    () { t=$1; echo $t " == " `date -d             "$t" +%s ` ; }
+macdates () { t=$1; echo $t " == " `date -r              $t `      ; }
+macdateu () { t=$1; echo $t " == " `date -jf "%Y-%m-%d" "$t" +%s ` ; }
+# date -j -f "%Y-%m-%d"       "2010-10-02"      "+%s"
+# date -jf   "%Y-%m-%d %H:%M" "2011-11-13 08:11" +"%Y-%m-%d %H:%M"
+
+h2d () {      echo $((0x$1)) ; }
+d2h () {      printf '%x\n' $1 ; }
+
+trUC () {     tr 'abcdefghijklmnopqrstuvwxyz' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'   ; }
+trLC () {     tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' 'abcdefghijklmnopqrstuvwxyz'   ; }
+
+fgbz ()  {    grep -i $1 $2 $3 $4  $HOME/Help/bash_rcFiles/bashrc.zbra ; }
+# print the last "cp" cmd: !cp:p
+
+lastjsli () {    name=$1; tail -1  `ls -1 -th $name* | head -1` | python -m json.tool ; }
+lastfili () {    name=$1; tail -1  `ls -1 -th $name* | head -1` ; }
+
+lastline () {    sed '$!d' $1 ; }
+lastfile () {    ls -At $1* |head -1 ; } 
+
+lastlog () {     cd $HOME/logs; ls -ltrh |tail -1 ; }
+lastloghead () { cd $HOME/logs; ls -tr   |tail -1|xargs head -20 ; }
+lastlogmore () { cd $HOME/logs; ls -tr   |tail -1|xargs more     ; }
+#fgelastlog () {  cd $HOME/logs; ls -tr   |tail -1|xargs tail -100f |grep -iE "error|IVR|rec|Speed|py" ; }
+
+ffg () {       fn=$1; pat=$2; sudo find ./ -name $fn -exec grep -iH $pat {} \; ; }
+
+ftee  () {     tee -a $HOME/logs/$1_$(date '+%Y.%m.%d').log ; }
+ftee1 () {     tee    $HOME/logs/$(date '+%Y.%m.%d_%H.%M')_$1.log ; }
+
+#fgserv () {   chkconfig|grep $1 ; }
+#fgn  () {     r=`ps -ef | grep $1 | grep -v grep |awk '{print $2}' ` ; if [ ! -z "$r" ]; then echo $r; fi ; }
+
+
+#ftik () {      t1; $* ; t2 ; }
+#ffbig () {     d=$1; d=${d:-./}; s=$2; s=${s:-120M}; find $d -size +$s -ls 2>/dev/null ; }
+#fFindBigFiles () { if [ ! -z $2]; then s=$2; else s=120M; fi ; if [ ! -z $1]; then from_dir=$1; else from_dir="./"; fi ; find $from_dir -size +120M -ls 2>/dev/null ; }
+
+#man() { env \
+        #LESS_TERMCAP_mb=$(printf "\e[1;31m") \
+        #LESS_TERMCAP_md=$(printf "\e[1;31m") \
+        #LESS_TERMCAP_me=$(printf "\e[0m") \
+        #LESS_TERMCAP_se=$(printf "\e[0m") \
+        #LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
+        #LESS_TERMCAP_ue=$(printf "\e[0m") \
+        #LESS_TERMCAP_us=$(printf "\e[1;32m") \
+        #man "$@"
+#}
+
+#man() { env LESS_TERMCAP_mb=$(printf "\e[1;31m") LESS_TERMCAP_md=$(printf "\e[1;31m")  LESS_TERMCAP_me=$(printf "\e[0m") LESS_TERMCAP_se=$(printf "\e[0m") LESS_TERMCAP_so=$(printf "\e[1;44;33m") LESS_TERMCAP_ue=$(printf "\e[0m") LESS_TERMCAP_us=$(printf "\e[1;32m") man "$@" ; }
+fman () { cmd=$1; man $cmd | col -b > $HOME/man_$1.txt; cat -n $HOME/man_$1.txt; ls -l $HOME/man_$1.txt  ; }
+#fdif() { /Applications/WebStorm.app/Contents/MacOS/webstorm diff $1 $2  ; }
+
+#alias nload1000='nload -t 1000'
+
+# Windows: cat file > /dev/clipboard; cat /dev/clipboard > file
+# pbcopy < file.txt; pbpaste; 
+alias controlc='tee >(pbcopy)'
+alias conc='pbcopy'
+alias conv='echo `pbpaste` '
+# cat A |xargs -i grep {} B|sort -u # comm sorted_A sorted_B
+
+### USE_TERMINALS
+
+hterm () { colour=$1; cmd=$2; bash $HOME/proj/shell/hterm.sh $colour $cmd ; }
+
+cterm () { colour=$*; bash $HOME/proj/shell/cterm.sh "$colour" ; } 
+#alias cterm_mp='   cterm "Man Page" '
+#alias cterm_g='    cterm Grass '
+#alias cterm_r='    cterm "red sands" '
+
+oterm () { cmd=$*;   bash $HOME/proj/shell/oterm.sh "date;pwd;$cmd" ; } 
+#alias stag='oterm bbninfo'
+#alias prod='oterm bbcinfo'
+alias stag=' oterm fpvstag'
+alias prod=' oterm fpvprod'
+alias pstag='oterm fpAn   '
+alias pprod='oterm fpAc   '
+
+#fterm () { osascript -e 'tell application "Terminal" to do script  "clear;echo hello;  " ' ; }
+ftop   () { osascript -e 'tell application "Terminal" to do script  "clear;echo hello; top " ' ; }
+#ftb41 () { osascript -e 'tell application "Terminal" to do script  "clear;echo hello; ssh adm1 ssh 10.1.47.41  tail -n100 -f /opt/csv/var/log/baymax-kafka-consumer/baymax-kafka-consumer_stdout.log " ' ; }
+
+#alias notifyDone='terminal-notifier -title "Terminal" -message "Done with task!" -open http://www.yahoo.com '
+
+# port forwarding: from local:8888, to server90:80, thru adm1 hlam001c@CACSVML-15870:~$ ssh -L 8888:10.1.47.90:80 adm1
+#pfw () { bash $HOME/proj/shell/hterm.sh  homebrew 'ssh -L 8888:10.1.47.90:80 adm1 ' ; }
+repoBC7="http://127.0.0.1:8888/repos/Baymax/Centos/7/RPMS/x86_64/"
+alias pfwd='ssh -L 8888:10.1.47.90:80 adm1 '
+
+# launch port forwarding
+pfw ()  {   hterm homebrew pfwd ; }
+
+# test port forwarding
+alias pfwt='open $repoBC7 && curl -s http://127.0.0.1:8888/repos/Baymax/Centos/7/RPMS/x86_64/|ftee1 pfwt1'
+
+
+### VM_CENTOS 7 LINUX
+
+# hostnamectl; rpm -qa centos-release; cat /etc/centos-release; cat /etc/redhat-release; cat /etc/system-release
+# sudo yum install -y git; sudo yum install -y redis; sudo systemctl start redis.service; sudo service redis-sentinel start
+# redis-cli ping; mon
+# sudo yum install -y zeromq; rpm -qa zeromq; npm install zmq; sudo npm install bunyan
+
+
+### UNIX_TIPS
+
+# csplit ~/.bashrc /HELPERS/ /NAMING/ /DATA_SCIENCE/ /VM_CENTOS/ ; then cat xx0* > backtooriginalfile
+# ~$ mkdir -p tmp OR ~$ if [[ ! -e ${HOME}/tmp ]]; then mkdir  ${HOME}/tmp ; fi OR ~$ [ -d tmp ] && echo "The directory exists" || mkdir tmp
+# ip=129.252.30.192; IFS='.' eval 'array=($string)'; echo ${array[@]}
+# $ for i in `cat ~/.ssh/known_hosts |gip -o|sort ` ; do echo -n $i: ; nslookup $i |egrep "name|NXDOMAIN"|cut -d'=' -f2|egrep .*com ; echo; done
+# sum per column: awk '{s+=$1}END{print s}' <file>
+# sum per row: 
+# UNIX sequel or range: echo {01..10}; seq 10; seq 1 2 10; seq -w 5 10
+# for j in `seq 0 255`; do for i in `seq 0 255` ; do seq -f "10.$j.$i.%g" 0 255 ; done ; done 
+# echo {A,C,T,G}{A,C,T,G}{A,C,T,G} //Print all possible 3mer DNA sequence combinations
+# uname -a; cat /etc/redhat-release; cat /etc/centos-release;
+# cp data.{json,txt}
+# substring $ s=1a2b3c ; echo ${s:(-4)}
+# echo `date -d "1 day ago" '+%m'`; echo `date -d "1 day ago" '+%d'`;  echo `date -v-1d +%m`; echo `date -v-1d +%d`
+
+# vi +18d +wq $HOME/.ssh/known_hosts; ssh-keygen -R <hostname>
+# ssh user@server bash/python < /path/to/local/script.sh/py
+# do_something.sh &> out.log ; do_something.sh >out.log 2>out.log
+
+# basic calc, bc. $ echo $(expr 16 / 6 ); echo $(( 16 / 6 )); echo $[4433/60]
+# sudo yum install expect;  ftp;  python-pip ; 
+# sudo pip install python-googl
+# npm      install zmq
+# A && B: only check B, when A is true;  A || B : only check B, when A is false
+# Russia $ [ $[ $RANDOM % 6 ] == 0 ] && echo Bang   || echo *Click*
+# How much memory is Chrome sucking: $ ps -e -m -o user,pid,args,%mem,rss | grep Chrome | perl -ne 'print "$1\n" if / (\d+)$/' | ( x=0;while read line; do (( x += $line )); done; echo $((x/1024)) );
+# Reserve range of lines 3..5, and remove the rest lines: $ perl -i -ne 'print if $. == 3..5' aaa.txt
+
+
+### MACBOOKPRO_TIPS 
+
+# ~/checkouts/bmx-qa/bmx$ opendiff bashrc_bmx bashrc_bmx.ori 
+# brew install pkg-config; brew install zmq
+# first-aid to verify healthy SSD: ~$ (brew install smartmontools;) smartctl -a disk0| egrep -i "fail|smart|pass"
+# ~$ diskutil info disk0| egrep -C5 "SMART|Verified"
+# Command + Option(Alt) + i     === view console
+# Command + Shift       + i     === send email with url and information of the current page
+# mac Z$ diskutil list; to list all thumb drives
+# system_profiler SPAirPortDataType |egrep -A10 "Current Network Information:" '
+# system_profiler -listDataTypes; system_profiler SPFirewallDataType; system_profiler SPPrintersDataType;
+# sw_vers; softwareupdate --list
+# csv2json$ textutil -convert html sample.json; OR textutil -cat html sample.json; textutil -convert txt *.doc
+alias smartdisk='diskutil info disk0  | egrep -C5 "SMART|Verified"  '
+alias smartSSD=' smartctl -a   disk0  | egrep -i  "fail|smart|pass" '
+alias vcamera1='lsof  |head -1; lsof  | egrep -i  "AppleCamera|VDC" '
+alias vcamera2='ps -ef|head -1; ps -ef| egrep -i  "AppleCamera|VDC" '
+alias vcamera='vcamera1'
+
+
+##  EBIF test
+# hlam001c@CACSVML-15870:$HOME/checkouts/smartconnect$ node scripts/getIncidentIds.js 
+# curl -s -X POST -d '{"incident_id":"d0329cbd-f82e-4e78-b528-3b95b0e13204"}'  -H "Content-Type: application/json"  http://baymax-next.csv.comcast.com:3000/ebif/troubleshoot/start_troubleshooting  
+# curl -s -X POST -d '{"incident_id":"ebb2fc02-63fc-4959-ae24-cce5c0e54886"}'  -H "Content-Type: application/json"  http://baymax-next.csv.comcast.com:3000/ebif/troubleshoot/pay_by_phone
+# curl    -X POST -d '{"incident_id":"ebb2fc02-63fc-4959-ae24-cce5c0e54886"}'  -H "Content-Type: application/json"  http://baymax-next.csv.comcast.com:3000/ebif/troubleshoot/callback_confirmed?callback_number=408-900-8457
+
+
+##  Adrian 
+# for i in 5 6 10 13; do ip="10.1.47.$i"; echo "################ $ip ###"; ssh -t $ip "ls -l /opt/csv/etc/alternatives/smartconnect"; done
+# curl -vvv -X POST -H 'content-type: application/json' -d@foo.json 'http://10.1.47.5:3000/event'`
+# mm001c@CACSVML-15870:$HOME/Help$ mail -s test.bburg1 henry_lam@sv.comcast.com
+
+##  hlam001c@CACSVML-15870:$HOME$ brew install MariaDB
+
+# linux_sdev $ cat /etc/redhat-release ;  yum provides "*/g++"  ; sudo yum install gcc-c++
+# linux sdev $ yum info redis; sudo yum update; repoquery --requires --resolve redis 
+# linux sdev $ sudo yum install google-perftools-libs; sudo vi /etc/yum.repos.d/csv.repo (for all test, ser to 0);  sudo yum install redis;  
+# linux sdev $ sudo service redis start; sudo service redis-sentinel start;
+# linux sdev $ sudo chkconfig --level 2345 redis  on; sudo chkconfig --level 2345 redis-sentinel  on
+# linux_sdev $ (new nvm + bunyan) curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash; source ~/.bashrc; nvm install 0.12.9; nvm list; {option: nvm alias default 0.12.9; cat ~/.nvm/alias/default } ; nvm use default; npm install -g bunyan; 
+
+# linux sdev 36379 since geo needs redis port 36379: wget http://download.redis.io/releases/redis-3.2.3.tar.gz; tarextract xzf; cd redis-3.2.3/; make; make test; vi redis-3.2.3/redis.conf; to add in port 36379, instead of 6379; 
+# linux sdev 36379 prepare monitor redis-3.2.3 for new geo as $ hlam001c@dev93:~/redis-3.2.3$ src/redis-cli -p 36379 -n 3 MONITOR ; OR redis-cli -p 6379 MONITOR | grep -Ev 'PING|PUBLISH" "__'
+# linux sdev 36379 exec redis-3.2.3 for new geo as            $ redis-3.2.3/src/redis-server redis.conf 
+
+# grep zmq package.json; npm install zmq; node bin/baymax-server &
+# @bcli: $ unset NODE_PATH; unset NODE_ENV; . .bashrc; node bin/baymax-client -t rfnoise -r test_rules_05.json
+
+##  Flavius API for CS
+# Flavius: 012216: PROD:  http://widgetexternal-a.g.cable.comcast.com/ExtWidgets/ContextStore/ContextStore/GetIncidentContext?accountNumber=8220133034165544&details=snaphot&ConsumerID=F4D96842-B8A2-4560-A2F9-3A1BD046CD2B&output=JSON
+# Flavius: A.Ingest Event: PUT: http://<servername>/webapi/cdt.webapi.contextstore/ContextStore/Incidents/<CorrelationID>/Events/<EventID>
+# Flavius: B.Ingest Event: PUT: http://<servername>/webapi/cdt.webapi.contextstore/ContextStore/Customers/<AccountNumber>/Incidents/Ingest     #with CorrelationID creation on Ingest
+# Flavius: C.Close Event: POST: http://<servername>/webapi/cdt.webapi.contextstore/ContextStore/Incidents/Close
+# Flavius: D.Close EvtStatuGET: http://<servername>/webapi/cdt.webapi.contextstore/ContextStore/Incidents/Close/Status/<StatusID>
+# Flavius: E.Get Top N Titles for an Account Number:                  GET: http://<servername>/Widgets/ContextStore/ContextStore/GetIncidentContext?accountNumber=<AccountNumber>&details=<DetailType>&limit=<LimitCount>&ConsumerID=<ConsumerID>&output=JSON
+# Flavius: F.Get Top N Events for a CorrelationID  :                  GET: http://<servername>/Widgets/ContextStore/ContextStore/GetEventContext?accountNumber=AccountNumber&incident=<CorrelationID>&details=<DetailType>&limit=<LimitCount>&ConsumerID=<ConsumerID>&output=JSON
+# Flavius: G.Get Top CorrelationID for Event Type and Account Number: GET: http://<servername>/Widgets/ContextStore/ContextStore/GetCorrelationIDContext?accountNumber=<AccountNumber>&errorType=<ErrorType>&ConsumerID=<ConsumerID>                                             
+## webapi Mobile_Callback: http://widgetexternal-a.g.cable.comcast.com/ExtWidgets/ContextStore/ContextStore/GetIncidentContext?accountNumber=8499101390235528&details=snaphot&ConsumerID=F4D96842-B8A2-4560-A2F9-3A1BD046CD2B&output=JSON
+## Adrian: result=null: `http://widgetexternal-a.g.cable.comcast.com/ExtWidgets/ContextStore/ContextStore/GetIncidentContext?accountNumber=1234567890123123&details=snaphot&&limit=100&ConsumerID=F4D96842-B8A2-4560-A2F9-3A1BD046CD2B&output=JSON`
+
+#curlapi () { a=$1; a=${a:-8499101410192154}; e=$2; e=${e:-widgetexternal-a.g.cable.comcast.com}; curl "http://$e/ExtWidgets/ContextStore/ContextStore/GetIncidentContext?accountNumber=$a&details=snaphot&ConsumerID=F4D96842-B8A2-4560-A2F9-3A1BD046CD2B&output=JSON" | egrep -i "accountnum|event_id" ; }
+ 
+# Sample CS API to PROD timeline: hlam001c@CACSVML-15870:$HOME$ curl -i -H "Content-Type:application/json" -H "X-consumer-id:RjREOTY4NDItQjhBMi00NTYwLUEyRjktM0ExQkQwNDZDRDJC" -X GET "http://172.24.17.35/ExtWidgets/ContextStore/ContextStore/GetIncidentContext?accountNumber=0958644794902&details=snaphot&limit=100&ConsumerID=F4D96842-B8A2-4560-A2F9-3A1BD046CD2B&output=JSON"
+
+# # context-store-ng setup: yum search mongodb # sudo yum install mongodb-server mongodb # sudo service mongod start
+# test mobile callback accountnum: Approaching High Effort Customer 8155400580834347 8220160140183251 8155400571040698 8497202485993906 8499052380550469 8499051460235041  8499100223787598 8497950055348972
+# test mobile callback accountnum: Highly Impacted Customer 8499101380346301 
+# test mobile callback accountnum: High Effort Customer 8499051640312769  0610513358804 8495600073924864 8495741200715393 8499102010079890 8495753103580097 8777703151095406 8498330080265674 8497950580003100
+
+# incident.source: IVR, ITG, XRE, XOD, STB, XH, CEMP, timeline, "mobile callback", "internet speed experience", RFNoise, KC, null 
+# accountnum:				IVR  			8495741500248509
+# accountnum: 				ITG  			0956953580301   
+# accountnum: 				XRE: 			0957748866410
+# accountnum: 				RFNoise: 1551511622606, 8499051650239787, 0166824206303		
+# accountnum: CEMP			XOD  			8495752542410551
+# accountnum: 				STB  			qa29
+# accountnum: XH			XH   			8778100020112414
+# accountnum: CEMP 			CEMP				xxxx
+# accountnum: 				Timeline 			8498310020278169
+# accountnum: CSP			Mobile Callback 		8495753910471373
+# accountnum:   			internet speed experience 8499052450150703 
+# accountnum:                           XRAY notification	Sita Panyam 8155100181471461 # Ranjit 8155100140021662 # Henry 8155100521885602 # Flavius 8499100090284083 # Flavius2 8499100022395742
+
+# change NTid pwd, use webmail.comcast.com; log in and retype (or wait to sync) accts:
+# Outlook, PlaxoVPN, CCEmplyeeWifi, Timesh, Jira, Confluence, Github clone-push, Keychain
+# change pwd for keychain loging
+
+# node -e "console.log(JSON.stringify(JSON.parse(process.argv[1]), null, '\t'));"  '{"foo":"lorem","bar":"ipsum"}'
+
+# $ node -e "console.log(JSON.stringify(JSON.parse(require('fs').readFileSync(process.argv[1])), null, 4));"  filename.json 
+
+#hlam001c@CACSVML-15870:~/checkouts/mapping-rules$ vun log_stdout > ~/temlg && f=~/temlg ; echo Start_time: `cat $f|sts` ; egrep "ECONNRESET|ETIMEDOUT|ENETUNREACH|ERROR" $f ; echo "End_time  :" `cat $f|sts tail`
+# diskutil info disk0| egrep -i "fail|smart|pass|verif"
+
+alias w2h='       open https://goo.gl/maps/3mU5Nybps632'
+alias w2noi='     open https://goo.gl/maps/EQKr9SM9RF72 '
+alias w2dai='     open https://goo.gl/maps/CB8P52LSk8Q2 '
+alias w2tem='     open https://goo.gl/maps/zPmk69q7NW82'
+alias timesh='    open http://budget.cable.comcast.com'
+alias e_v='       open https://goo.gl/kY9EoV '				
+e2v  () {         open http://dictionary.cambridge.org/us/dictionary/english-vietnamese/$1 ; }
+alias mdlink='    open https://www.mydlink.com/device#26298103'
+alias kippbb='    open https://goo.gl/7BnUqU'
+alias mp3q='      open https://goo.gl/mL4QSJ'
+
+alias cccache='   echo chrome://settings/clearBrowserData'
+#alias rmbhist='   rm /Users/hlam001c/Library/Application\ Support/Google/Chrome/Default/History* '
+
+alias gfh='       open https://goo.gl/cgF7Hd'
+alias etud='      open https://myetudes.org/portal'
+alias naca='      open https://www.netacad.com/group/landing/'
+alias godr='      open https://drive.google.com/drive/my-drive'
+alias cs50='      etud; naca; godr'
+
