@@ -81,6 +81,7 @@ alias a='alias'
 alias c='cat  '
 alias d='date '
 alias e='echo '
+ech2  () {  echo;echo $* ; }
 alias f='finger'
 alias g='grep '
 alias h='head '
@@ -429,9 +430,94 @@ alias crlf='file `find ./` |grep CRLF '
 fcrlf () { file `find ./ -name *.$1 ` |grep CRLF ; }
 fconvertcrlf () { crlf|awk -F: '{print $1}'|xargs dos2unix; }
 
-### GIT hub
+# $ git show |tig; git log | tig;
+
+### GIT_COMMANDS
+
+
+# git refspec
+genv="https://github.com/hqlam/Env"          
+
 #gcln () {  repo=$1; git clone git@github.comcast.com:Baymax/$repo ; }
 gitcln () { repo=$1; repo=${repo:-Env}; git clone https://github.com/hqlam/$repo ; }
+
+githelp () {      git help $* ; }
+# Save fragments: git stash; then later:  git stash pop; list; drop
+# git show --color --pretty=format:%b     efe1243
+gitshowc () {     commit=$1; git show --color --pretty=format:%b $commit ; }
+alias d_m='       echo ****Develop: `git show develop|grep Date:`; echo ****Master : `git show master|grep Date:` '
+# git log --no-merges -p 1.12.0..v1.13.0 |egrep -A4 "^commit" # git log --since="2 days ago"
+gitlastcom () {   commit=$1; commit=${commit:-1}; git log -p -$commit ; }
+git1line () {                                     git log --oneline --graph ; }
+gitoneline () {                                   git log --pretty=oneline ; }
+gitgl () {                                        git log |egrep -i -C10 $* ; }
+gitfilehist () {  f=$1 ;                          git log -p -- $f ; }
+alias gitfilehist2='                              git log -p --since="7 days ago" '
+alias gitll='     echo "*LATEST LOG ... :";       git log |head -7;  echo '
+# Diff the commit to its parents: git diff efe1243^! ; OR git diff --staged;
+gitdif () {       f=$1 ; git diff      $f ; }
+alias gitdiff='          git diff HEAD HEAD^1 ; git diff HEAD HEAD^1 --stat'
+alias gitmod='           git diff `git status|grep modified:|cut: -f2` '
+gitdirty () {     topic=$1;                             echo $topic; upstr=$2; git diff --name-status $topic $upstr ; }
+gitdirty1 () {    topic=`git branch|grep "*"|cuts -f2`; echo $topic; upstr=$1; git diff --name-status $topic $upstr ; }
+gitdirhist () {   for f in `ls`; do echo  `gitfilehist $f|head -5|grep Date` $f ; done ; }
+gitdirsort ()   { gitdirhist > ~/fh; cat ~/fh | sort ; rm -f ~/fh ; }
+#gitdirsort ()  { for f in `ls`; do echo  `gitfilehist $f|head -5|grep Date|cut: -f2` $f ; done > ~/fh; cat ~/fh|sort ; }
+alias gits='      echo "****STATUS:";     git status; echo '
+alias gitst='     echo "****BRANCH ...:"; git status; echo; git branch -vv; ech2 "****THE LATEST LOG ... :"; git log |head -7;  echo '
+alias gitb='      echo -ne "****BRANCH: \t ";               git branch; echo '
+alias cbr='                                                 git branch | grep "*" | cuts -f2'
+alias gitallb='   echo "All branches: "; git pull;          git branch -av; pwd'
+alias gitp='      t1;  git pull;  t2 '
+fgitp () {        soc;cddisp; for d in `ls ..`; do echo -n "**** $d : "; cd ../$d; gitp ; done ; }
+fgitb () {        soc;cddisp; for d in `ls ..`; do echo -n "**** $d : "; cd ../$d; cbr  ; done ; }
+# reset upstream: git branch mamobile_fields_ivr --set-upstream-to origin/develop
+# git rebase upstream/master
+# alias gitpm='   git pull origin master'
+# alias gitpd='   git pull origin develop'
+alias gitpusho='  git push origin '
+createdev2b () {  git checkout -b $1 origin/develop ; }
+alias co_reset='  git reset --hard; date; gitst '
+reset_b () {      bORc=$1; git reset --hard  $bORc; git pull; date; gitst ; }
+delete_b () {     bORc=$1; git branch -d     $bORc; date; gitst ; }
+co_b () {         bORc=$1; bORc=${bORc:-master} && git checkout $bORc; date && echo ___NEW_PULL__&& git pull ; }
+# Refactor filenames: rm, mv; #git mv [file-ori] [file-renamed]
+alias gitrm='     git rm --cached '
+# List files # git ls-files --other --ignored --exclude-standard
+alias gitlist='   git ls-files'
+
+# Open github ogh
+eghlib () {                                                  epen https://github.com/hqlam/Env/tree/master/lib ; }
+eghtd  () {                                                  epen https://github.com/hqlam/Env/tree/master/test/test_data ; }
+eghhl  () {                                                  epen https://github.com/hlam001c/bmx-qa ; }
+egh  () {                     rt=$1; rt=${rt:-Env}; epen https://github.com/hqlam/$rt/$2 ; }
+#ogc () {                     rt=$1; rt=${rt:-Env}; epen https://github.com/hqlam/$rt/commits ; }
+#ogcp () {                    rt=$1; rt=${rt:-Env}; epen https://github.com/hqlam/$rt/compare ; }
+egr  () {                     rt=$1; rt=${rt:-Env}; epen https://github.com/hqlam/$rt/releases ; }
+egt  () {                     rt=$1; rt=${rt:-Env}; epen https://github.com/hqlam/$rt/tags ; }
+egp  () {                     rt=$1; rt=${rt:-Env}; epen https://github.com/hqlam/$rt/pulls ; }
+egb  () {                     rt=$1; rt=${rt:-Env}; epen https://github.com/hqlam/$rt/branches ; }
+eab () {                      rt=$1; rt=${rt:-Env}; epen https://github.com/hqlam/$rt/branches/active ; }
+eby () {                      rt=$1; rt=${rt:-Env}; epen https://github.com/hqlam/$rt/branches/yours ; }
+etb  () { b=$2;b=${b:-master};rt=$1; rt=${rt:-Env}; epen https://github.com/hqlam/$rt/tree/$b ; }
+
+etd  () {                     rt=$1; rt=${rt:-Env}; epen https://github.com/hqlam/$rt/tree/develop ; }
+etm  () {                     rt=$1; rt=${rt:-Env}; epen https://github.com/hqlam/$rt/tree/master ; }
+epr  () { pr=$2;              rt=$1; rt=${rt:-Env}; epen https://github.com/hqlam/$rt/pull/$pr ; }
+eprf () { pr=$2;              rt=$1; rt=${rt:-Env}; epen https://github.com/hqlam/$rt/pull/$pr/files ; }
+eprc () { pr=$2;              rt=$1; rt=${rt:-Env}; epen https://github.com/hqlam/$rt/pull/$pr/commits ; }
+egc  () { commit=$2;          rt=$1; rt=${rt:-Env}; epen https://github.com/hqlam/$rt/commit/$commit?diff=split ; }
+cpbran () { branch=$2;        rt=$1; rt=${rt:-Env}; epen https://github.com/hqlam/$rt/compare/$branch  ; }
+egcp  () {                     rt=$1; rt=${rt:-Env}; epen https://github.com/hqlam/$rt/compare/$2...$3 ; }
+
+# Install git: https://mac.github.com; or https://windows.github.com;
+# Create/migrate repos: git init [project]; clone [url]
+# git config --global/--get user.name/user.email
+# smartconnect $ cat .git/config url = git@github.comcast.com:Baymax/smartconnect.git
+# migrate: git clone --bare https://github.csv.comcast.com/hlam001c/bmx-qa; epen https://github.comcast.com/hlam001c/; create a new bmx-qa repos; git push --mirror https://github.comcast.com/hlam001c/bmx-qa
+
+alias sptd='      wget --no-check-certificate -O speedtest-cli.py https://github.com/sivel/speedtest-cli/raw/master/speedtest_cli.py'
+alias sptdr='     wget --no-check-certificate -O speedtest-cli.py https://github.com/sivel/speedtest-cli/raw/master/speedtest_cli.py && python speedtest-cli.py --share '
 
 
 ### HG Mercury
@@ -495,7 +581,7 @@ alias dumpBackup='pg_dump zebra > db.sql'
 #C:\Program Files (x86)\PyScripter;
 #C:\Program Files (x86)\WinSCP
 #C:\Program Files (x86)\RealVNC\VNC4
-alias eo='    explorer.exe '
+alias epen='  explorer.exe '
 alias ie='    iexplore.exe '
 alias ff='    firefox.exe '
 alias npp='   notepad++.exe '
@@ -672,6 +758,6 @@ alias naca='      explorer.exe  https://www.netacad.com/group/landing/'
 alias godr='      explorer.exe  https://drive.google.com/drive/my-drive'
 alias cs50='      etud; naca; godr'
 
-alias omai='      explorer.exe  http://mail.yahoo.com; explorer.exe http://www.hotmail.com; explorer.exe http://gmail.com '
+alias omai='      explorer.exe  http://mail.yahoo.com; explorer.exe http://www.hotmail.com; explorer.exe http://mail.google.com; explorer.exe http://www.linkedin.com '
 
 
