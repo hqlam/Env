@@ -8,7 +8,9 @@ fi
 #export PS1="\u@\h:\w\\$ "
 
 ### ALIASES AND FUNCTIONS linux, cygwin, win_doskey_powershell, and osx
+
 ### CONSTANTS NAMING
+
 ### HELPERS
 
 
