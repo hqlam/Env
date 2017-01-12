@@ -249,8 +249,9 @@ alias pjson='python -m json.tool'
 #findOlder () { find . -mmin -$((($(date "+%s") - $(stat -c %Y $1))/60)) -type f ; }
 # find /path/to/files* -mtime +5 -exec rm {} \;
 
-alias C2e=' echo y|                      cp        ~/.bashrc ~/checkouts/Env '
-alias C227='ip=10.21.2.27    ; echo $ip; scp -r    ~/.bashrc mwcentral@$ip:~ '
+alias Ceb=' echo y|      cp ~/checkouts/Env/.bashrc ~/ '
+alias C2e=' echo y|      cp               ~/.bashrc ~/checkouts/Env '
+alias C227='ip=10.21.2.27;echo $ip;scp -r ~/.bashrc mwcentral@$ip:~ '
 alias C2A=' C227; C287 '                                  
 
 fl2c () { src=$1; to_path=$2; scp -r $src  mwcentral@10.21.2.29:$to_path ; }
