@@ -24,25 +24,11 @@ fi
 
 alias cdco='cd     ~/checkouts/      && ls -latr && pwd '
 
-alias cdcapa='cd   ~/checkouts/qa/capability_projs; ll; pwd;date '
-alias cdsupp='cd   ~/checkouts/qa/support; ll; pwd;date '
-alias cdtool='cd   ~/checkouts/qa/tools; ll; pwd;date '
-alias cddocs='cd   ~/checkouts/qa/docs; ll; pwd;date '
-alias cdwh='cd     ~/checkouts/qa/work/hlam; ll; pwd;date '
-
-alias cddepl='cd   ~/checkouts/qa/deployments && ls && pwd && date '
-
-alias cdsw='cd     ~/checkouts/qa/sw_releases ; ls; pwd; date '
-alias eswf="echo   ~/checkouts/qa/sw_releases/$pbo.txt"
- 
 alias cdwww='cd    /var/www/html && pwd'
-
-alias cdqa='cd     ~/checkouts/qa/                        && ll && pwd '
+alias cdenv='cd    ~/checkouts/Env                        && ll && pwd '
 alias cdqar='cd    ~/checkouts/qa-archive/                && ll && pwd '
-
 alias cdtest='cd   ~/checkouts/qa/tests                   && ll && pwd '
 alias cdsim='cd    ~/checkouts/qa/simulation/            && ll && pwd '
-
 alias cdsl='cd     ~/checkouts/qa/scripts_lib            && ll && pwd '
 alias cdrt='cd     ~/checkouts/qa/scripts                && ll && pwd '
 
@@ -138,6 +124,7 @@ frep1 () { c=$* ; while sleep 1; do date; $c; echo ; done; }
 frep ()  { c=$* ; while (true)   do date; $c; echo -e "($c)...";echo ;sleep 5; done  ; }
 alias repeatls=' watch -t ls '
 alias cksocket=' frep ss '
+loop () {    t1; for i in `seq 5`;   do date; echo  $i:; $* ; echo ; sleep 5;   done; t2 ; }
 
 ffiles () { for f in ./* ; do $* $f; done ; }
 fdirs ()  { for d in ./* ; do pushd $d; pwd; $* ; popd; echo; done ; }
@@ -229,8 +216,11 @@ pwithtar () { src=$1; des=$2; cd $src ; tar cvf - ./* | (cd $des ; tar xvf - ) ;
 
 alias vi='vim'
 alias vip='vim -p '
+alias vicC='view ~/.bashrc_CSV'
+alias vicZ='view ~/.bashrc_ZBRA'
 alias vic='vi ~/.bashrc'
 alias soc='source ~/.bashrc; a|wc '
+
 vis () { pattern=$2; filename=$1; vi +/$pattern $filename  ; }
 #fvin () { vi +$1 $2  ; }
 
@@ -259,6 +249,7 @@ alias pjson='python -m json.tool'
 #findOlder () { find . -mmin -$((($(date "+%s") - $(stat -c %Y $1))/60)) -type f ; }
 # find /path/to/files* -mtime +5 -exec rm {} \;
 
+alias C2e=' echo y|                      cp        ~/.bashrc ~/checkouts/Env '
 alias C227='ip=10.21.2.27    ; echo $ip; scp -r    ~/.bashrc mwcentral@$ip:~ '
 alias C2A=' C227; C287 '                                  
 
@@ -267,40 +258,42 @@ fl2c () { src=$1; to_path=$2; scp -r $src  mwcentral@10.21.2.29:$to_path ; }
 
 ### Aliases / Functions work with pipeline:
 
-#headft () { awk -v m=$1 -v n=$2 'NR>=$m && NR<=$n'  $3  ; }
-alias xhead='xargs head'
-alias xcat=' xargs cat'
-alias xlist='xargs ls -ltra '
-alias tee2=' tee ./tee_$(date +%Y.%m.%d_%H:%M).txt '
+#headft () {  awk -v m=$1 -v n=$2 'NR>=$m && NR<=$n'  $3  ; }
+alias xwc='   xargs wc -l'
+alias xcat='  xargs cat'
+alias xhead=' xargs head'
+alias xllr='  xargs ls -ltra '
+
+alias tee2='  tee ./tee_$(date +%Y.%m.%d_%H:%M).txt '
 # output to 2 files: my_command | tee -a /some/file > /some/other/file
 
 #alias sortu='sort|uniq -c '
 
-alias cuts=" cut -d \" \"  "
+alias cuts="  cut -d \" \"  "
 #alias cutst="cut -d \"*\"  "
 #alias cute=" cut -d \"!\"  "
-alias cutd=" cut -d \".\"  "
-alias cutb=" cut -d \"#\"  "
+alias cutd="  cut -d \".\"  "
+alias cutb="  cut -d \"#\"  "
 #alias cuta=" cut -d \"@\"  "
 #alias cutam="cut -d \"&\"  "
-alias cutp=" cut -d \"|\"  "
+alias cutp="  cut -d \"|\"  "
 #alias cutpc="cut -d \"%\"  "
-alias cut2c="cut -d \":\"  "
-alias cutsc="cut -d \";\"  "
-alias cutff="cut -d \"/\"  "
+alias cut2c=" cut -d \":\"  "
+alias cutsc=" cut -d \";\"  "
+alias cutff=" cut -d \"/\"  "
 
-alias cutc=" cut -d \",\"  "
-alias ducc=' cut -d"," -f'
-awkfno () { awk         -F"," '{print $'$1'}'; }
-fduc   () { awk -v n=$1 -F"," '{print $n }'  ; }
-fmax   () { awk -v n=$1 -F"," 'BEGIN {max = 0} {if ($n>max) max=$n} END {print max}' ; }
-#fmax7 () { awk -F"," 'BEGIN {max = 0} {if ($7>max) max=$7} END {print max}' ; }
-# avg: awk '{sum=sum+$1} END {print sum/NR}
+alias cutc="  cut -d \",\"  "
+alias ducc='  cut -d"," -f'
+awkfno () {   awk         -F"," '{print $'$1'}'; }
+fduc   () {   awk -v n=$1 -F"," '{print $n }'  ; }
+fmax   () {   awk -v n=$1 -F"," 'BEGIN {max = 0} {if ($n>max) max=$n} END {print max}' ; }
+#fmax7 () {   awk -F"," 'BEGIN {max = 0} {if ($7>max) max=$7} END {print max}' ; }
+# avg: awk '{ sum=sum+$1} END {print sum/NR}
 
-fduc1 () { awk  '{print $1}'  ; }
-alias lkh='cat ~/.ssh/known_hosts | fduc1 '
+fduc1 () {    awk  '{print $1}'  ; }
+alias lkh='   cat ~/.ssh/known_hosts | fduc1 '
 
-rmdup () { awk '!($0 in array) { array[$0]; print }' ; }
+rmdup () {    awk '!($0 in array) { array[$0]; print }' ; }
 #s_join ()  { echo $@ | tr ' ' '_'  ; }
 alias rmblank='sed "/^$/d;s/^[ \t]*//;s/[ \t]*$//" '
 alias rmbline='sed "/^$/d" '
@@ -308,6 +301,7 @@ alias a_1line='grep -n -- "-1"'
 alias a1line=' awk -vORS=" " 1 $1 '
 alias anline=' sed -e  "s/,/\n/g" | cat '
 catln () { fileName=$2 ; sed -n "$1p" $fileName ; }
+
 # alias ge1='sed -e 1,/ERROR/d |head '
 #fge1 () { grep -B2 ERROR $1 |head -3 ; cat -n $1 | sed -e 1,/ERROR/d |head ;}
 
@@ -318,7 +312,7 @@ alias cloneqa='cd ~/checkouts/; hg clone https://bitbucket.org/bobkuehne/zebra-s
 
 alias yumgoodstuff='yes|sudo yum install finger;yes|sudo yum install kdiff3; yes|sudo yum install tree;'
 alias tlyum='xterm -title tail_yum_log -e sudo tail -50f /var/log/yum.log & '
- #alias cdyrd='cd /etc/yum.repos.d; p '
+#alias cdyrd='cd /etc/yum.repos.d; p '
 #fgy  ()   { grep $* ~/yum_repos/yli_072814.txt ; }
 
 fgbc ()   { grep -i $1 $2 $3 $4  ~/bashrc_CSV ;}
@@ -434,6 +428,11 @@ fconvertcrlf () { crlf|awk -F: '{print $1}'|xargs dos2unix; }
 
 ### GIT_COMMANDS
 
+# Install git: https://mac.github.com; or https://windows.github.com;
+# Create/migrate repos: git init [project]; clone [url]
+# git config --global/--get user.name/user.email
+# smartconnect $ cat .git/config url = git@github.comcast.com:Baymax/smartconnect.git
+# migrate: git clone --bare https://github.csv.comcast.com/hlam001c/bmx-qa; epen https://github.comcast.com/hlam001c/; create a new bmx-qa repos; git push --mirror https://github.comcast.com/hlam001c/bmx-qa
 
 # git refspec
 genv="https://github.com/hqlam/Env"          
@@ -510,12 +509,6 @@ egc  () { commit=$2;          rt=$1; rt=${rt:-Env}; epen https://github.com/hqla
 cpbran () { branch=$2;        rt=$1; rt=${rt:-Env}; epen https://github.com/hqlam/$rt/compare/$branch  ; }
 egcp  () {                     rt=$1; rt=${rt:-Env}; epen https://github.com/hqlam/$rt/compare/$2...$3 ; }
 
-# Install git: https://mac.github.com; or https://windows.github.com;
-# Create/migrate repos: git init [project]; clone [url]
-# git config --global/--get user.name/user.email
-# smartconnect $ cat .git/config url = git@github.comcast.com:Baymax/smartconnect.git
-# migrate: git clone --bare https://github.csv.comcast.com/hlam001c/bmx-qa; epen https://github.comcast.com/hlam001c/; create a new bmx-qa repos; git push --mirror https://github.comcast.com/hlam001c/bmx-qa
-
 alias sptd='      wget --no-check-certificate -O speedtest-cli.py https://github.com/sivel/speedtest-cli/raw/master/speedtest_cli.py'
 alias sptdr='     wget --no-check-certificate -O speedtest-cli.py https://github.com/sivel/speedtest-cli/raw/master/speedtest_cli.py && python speedtest-cli.py --share '
 
@@ -552,26 +545,17 @@ alias hg2push='  hg outgoing'
 alias hgsu='     hg summary|grep  -E "tip|branch|zebra|parent:.*:[0-9,a-f,A-F]{7}|changeset:.*:[0-9,a-f,A-F]{7}"; echo ___Total_of_Files___ ;hg st -A|wc -l  '
 alias hgti='     hg tip    |grep  -E "tip|branch|zebra|parent:.*:[0-9,a-f,A-F]{7}|changeset:.*:[0-9,a-f,A-F]{7}" '
 alias curtip='   pwd|grep zebra-.*; echo Summary: ; hgsu -C5; echo;hgcnt;echo;  echo Tip: ; hgti -C5'
-alias allrepos=' cdco; for i in bo*; do cd $i;pwd;for j in ze*; do cd $j;pwd;hgcnt;cd ..;done;cd ..;done '
-fgetsummary () {  $*; for i in zebra-* ; do cd $i; pwd; hgbr -a; hg su ;hg st -A|wc -l;  hg tip; cd .. ; echo; done ; }
-fdissummary () {  for i in zebra-* ; do cd $i; echo $(basename `pwd`): ; hg su|grep -Eho "parent:.*:[0-9,a-f,A-F]{7}" ; echo Total_of_Files:$(hg st -A|wc -l) ; cd .. ; echo; done ; }
 
-alias bfci='     echo ___CurTip_CHECK___ ; hg tip; echo ___Total_of_Files___ ;hg st -A|wc -l ; echo;  echo ___HG_STATUS_CHECK___ ; hg st; echo; echo [Local:`hg tip|grep changeset|cut -d: -f2`] versus [Cloud:`hg incoming|grep change|cut -d: -f2`]; echo '
-
-alias bci=' cdqa; bfci '
-
-
-alias cddevpy='  cdqa; cd development/recv_csv;p; cd ../hub-stub/;p '
- #alias newdevpy=' scp -r hl@10.21.2.29:~/checkouts/qa/development/recv_csv/recv-* /opt/zebra/zebra-datapump/processors/csv; scp -r hl@10.21.2.29:~/checkouts/qa/development/hub-stub/dart-hub-server.py /opt/zebra/zebra-datapump/hub-stub/dart-hub-server.py '
-# alias newdevpy=' scp -r mwcentral@10.21.2.29:~/checkouts/qa/development/recv_csv/recv-* /opt/zebra/zebra-datapump/processors/csv; scp -r mwcentral@10.21.2.29:~/checkouts/qa/development/hub-stub/dart-hub-server.py /opt/zebra/zebra-datapump/hub-stub/dart-hub-server.py '
-# alias verdevpy=' cd /opt/zebra/zebra-datapump/processors/csv; pwd | grep csv; ls -l| grep recv; cd /opt/zebra/zebra-datapump/hub-stub/ ; pwd | grep hub-stub; ls -l |grep dart-hub-server.py '
-# alias cpdevpy='  sudo cp ~/dart-hub-server.py /opt/zebra/zebra-datapump/hub-stub; sudo cp ~/recv-*.py /opt/zebra/zebra-datapump/processors/csv'
 
 #good alias POSTentities='curl -X POST -d @entities_combined_rev14.json -H "Content-Type: application/json" http://127.0.0.1:3122/entities/upload'
 alias GETentDB=' curl -X GET http://127.0.0.1:3122/entities '
 alias WCLentDB=' curl -X GET http://127.0.0.1:3122/entities | wc -l'
 alias dumpBackup='pg_dump zebra > db.sql'
 
+
+### WINDOWS shortcuts:
+
+# PATH 
 # PATH C:\ProgramData\Oracle\Java\javapath;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem;%SYSTEMROOT%\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Roxio Shared\DLLShared\;C:\Program Files (x86)\Common Files\Roxio Shared\10.0\DLLShared\;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;
 
 #C:\Program Files\Java\jdk1.8.0_40\bin;
@@ -584,6 +568,7 @@ alias dumpBackup='pg_dump zebra > db.sql'
 alias epen='  explorer.exe '
 alias ie='    iexplore.exe '
 alias ff='    firefox.exe '
+alias np='    notepad.exe '
 alias npp='   notepad++.exe '
 alias pys='   PyScripter.exe '
 alias winscp='WinSCP.exe  '
@@ -670,40 +655,6 @@ alias wgetprotobuf='cd /tmp && wget https://protobuf.googlecode.com/files/protob
 
 alias beep='echo -en "\007"'
 
-#   Tag format (DART Hub data): 
-#       Type, tag_id,    x,    y,    z,  battery,  timestamp,  virtual group ID
-#          T,   2011, 13.88, -4.89,  2.74,        0,          0,                 0
-#   Entity format: 
-#       entity_id,    x,    y,    z,  timestamp, ang, dist, vel, accL, accT
-
-#  $ ssh-agent bash; $ssh-add ~/.ssh/zadmin   
-# rpm: http://www.cyberciti.biz/faq/rhel-redhat-fedora-opensuse-linux-install-rpmfile-command/
-# netstat -a | egrep 'Proto|LISTEN' # netstat -lnptu # lsof -i -n | egrep 'COMMAND|LISTEN'
-	#5.1.1.	Epel
-	# install and enable epel and remi
-	#$ wget  http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-	#$ wget http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
-	#$ sudo  rpm  -Uvh epel-release-6-8.noarch.rpm remi-release-6*.rpm
-
-	# to validate if epel and remi successfully installed 
-	#$ sudo ls -1 /etc/yum.repos.d/epel* /etc/yum.repos.d/remi.repo
-	#/etc/yum.repos.d/epel.repo
-	#/etc/yum.repos.d/epel-testing.repo
-	#/etc/yum.repos.d/remi.repo
-
-	# modify [remi] to have the two variables below, set to 1
-	# enabled=1
-	# gpgcheck=1
-	#$ sudo vim /etc/yum.repos.d/remi.repo
-	#5.1.2.	System update:
-	## Caution: this is a very comprehensive system wide update, so it can take about 30 mins
-	#$ sudo yum update  
-# service iptables status #for VNC 1.enable, 2.off iptables #iptables -L -v
-#listallusers () { python -c 'print "\n".join(line.split(":",1)[0] for line in open("/etc/passwd"))'  ; }
-#alias list500users=' ls /home |xargs -i id {}|sort '
-
-# read -p "Do you want to continue (Y/N)?"; [ "$(echo $REPLY | tr [:upper:] [:lower:])" == "y" ] || exit
-# if grep -q 'Sum' README.md ; then res=bad; else res=good; fi; echo $res
 # psql -A -F ',' -t -c 'select * from tablename;' # postgreSQL CSV output from the CLI
 
 #    % supervisorctl stop all
@@ -725,19 +676,10 @@ alias beep='echo -en "\007"'
 # awk '{if (NR % 2 == 1) print $0}' file.txt
 # "\\21S03DATA01\Main\Software\MotionWorks\10 Activities\Agile_Work_List.xlsx"
 #[hl]$ man date | col -b > man_date.txt
-# find your IP addr: $ curl -s http://checkip.dyndns.org
-# frevStrInBASH () { for ((i=${#1}; i>=0; i--)); do printf "${1:$i:1}"; done; echo; }
-# [hl]$ su - root -c "pwd;whoami;visudo"
-# Replace spaces in filenames with underscores [hl]$ ls | while read file; do mv "${file}" `echo "${file}" | tr ' ' '_'` ; done
+alias dynip='curl -s http://checkip.dyndns.org'
+frevStrInBASH () { for ((i=${#1}; i>=0; i--)); do printf "${1:$i:1}"; done; echo; }
+
 #http://alinirimia.com/2013/11/run-commands-in-windows-tested-in-windows-8-and-8-1/
-#sudo yum install -y python-requests; echo DONE; python -c "import requests"
-# ls -lsh /home/zadmin/mws_staging/alarm*.1       |awk '{ if ($1 != 0) print $7, $8, $9, "\t", $1, "\t" $10}'
-# ls gets file sizes: ls -lsh /var/log/supervisor/ |awk '{ if ($1 != 0) print $7, $8, $9, "\t", $1, "\t" $10}'
-#[mwcentral@mail email]$ (printf "PERM LINKS OWNER GROUP SIZE MONTH DAY HH:MM/YEAR NAME\n" \
-#>            ; ls -l | sed 1d) | column -t
-# $ for t in 4428 4791 3F1F 3DF6 4423 44D6 3E13 4439 4413 434B 433A 4395 425C 436B 4349 442B 43DD 433F 3E43 4438 3F17 4373 4394 47F6 47F0 466C 4773 3EF2 3F7C 4808 434F 3E49 ; do echo $t; echo; egrep ",[013456789].00000,142"  *$t*.txt  -c; echo; done
-# cat A |xargs -i grep {} B|sort -u
-# comm sorted_A sorted_B
 # C:\> net use M:  /delete
 # doskey use240=net use Z: \\21nasbuildstore.cluster-2003.wherenet.com\Public /user:builduser builduser@1
 # doskey use243=net use M: \\192.168.30.243\Public /user:builduser builduser@1
@@ -754,9 +696,12 @@ alias clearcache='   echo chrome://settings/clearBrowserData'
 
 alias gfh='       explorer.exe  https://goo.gl/cgF7Hd'
 alias etud='      explorer.exe  https://myetudes.org/portal'
+alias canv='      explorer.exe  https://www.foothill.edu/fga/canvas_login.php'
+alias nlab='      explorer.exe  https://ccna.bayict.cabrillo.edu '
 alias naca='      explorer.exe  https://www.netacad.com/group/landing/'
 alias godr='      explorer.exe  https://drive.google.com/drive/my-drive'
-alias cs50='      etud; naca; godr'
+alias cs50a='     etud; naca; godr'
+alias cs50b='     canv; naca; godr; nlab'
 
 alias omai='      explorer.exe  http://mail.yahoo.com; explorer.exe http://www.hotmail.com; explorer.exe http://mail.google.com; explorer.exe http://www.linkedin.com '
 
