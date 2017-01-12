@@ -63,50 +63,55 @@ alias catcolor='egrep --color -C1 [a-z]+ '
 
 
 # Some shortcuts for different directory listings
-alias a='alias'
-alias c='cat  '
-alias d='date '
-alias e='echo '
+alias a='   alias'
+alias c='   cat  '
+alias d='   date '
+alias e='   echo '
 ech2  () {  echo;echo $* ; }
-alias f='finger'
-alias g='grep '
-alias h='head '
+alias f='   finger'
+alias g='   grep '
+alias h='   head '
 alias hist='history'
-alias ht='history|tail ' 
-alias i=' ip r | cut -f12 -d" " '
-alias m='more'
-alias n='hostname -vI '
-alias p='pwd; ls -l'
-alias py='python '
-alias u='cd          ..;ls; echo Current_dir is `pwd` '
-alias cdu='cd        ..;ls; echo Current_dir is `pwd` '
-alias u2='cd      ../..;ls; echo Current_dir is `pwd` '
-alias u3='cd   ../../..;ls; echo Current_dir is `pwd` '
+alias ht='  history|tail ' 
+alias i='   ip r | cut -f12 -d" " '
+alias m='   more'
+alias n='   hostname -vI '
+alias p='   pwd; ls -l'
+alias py='  python '
+alias u='   cd          ..;ls; echo Current_dir is `pwd` '
+alias cdu=' cd        ..;ls; echo Current_dir is `pwd` '
+alias u2='  cd      ../..;ls; echo Current_dir is `pwd` '
+alias u3='  cd   ../../..;ls; echo Current_dir is `pwd` '
 
-alias l.='ls -ld .* '
-alias lh='ls -tra | egrep "^\."'
+alias dir=' ls -ltra | egrep "^d" '
+alias dirs='find . -type d -d 1 -print0 | xargs -0 du -sc | sort -n '
+
+alias l.='  ls -ld .* '
+alias lh='  ls -tra | egrep "^\."'
+alias lkh=' cat $HOME/.ssh/known_hosts | fduc '
 #alias lhid='  diff <(ls) <(ls -a) '
-alias ls='ls -hF --color=tty'                 # classify files in colour
-#alias lf='ls -ltra | egrep -v "^d" '
+alias ls='  ls -hF --color=tty'                 # classify files in colour
+#alias lf=' ls -ltra | egrep -v "^d" '
 alias ldir='ls -ltra | egrep "^d" '
 alias llsd='sudo find ./ -type d -exec du -sh {} \; | sort -g '
-alias dir=' sudo find ./ -type d -ls '
+
 #alias dir2='ls --color=auto --format=vertical'
 #alias dir3='ls --color=auto --format=long'
-alias ll='ls -l'  
-alias lR='ls -R'                              # all but . and ..
-alias llR='ls -lR'
-alias l='ls -CF'  
-alias llt='ls -lt'
-alias llr='ls -ltr'
+
+alias ll='  ls -l'  
+alias lR='  ls -R'                              # all but . and ..
+alias llR=' ls -lR'
+alias l='   ls -CF'  
+alias llt=' ls -lt'
+alias llr=' ls -ltr'
 alias llrr='ls -ltr|tail '
-alias lla='ls -ltra'
-alias lls='ls -s '
+alias lla=' ls -ltra'
+alias lls=' ls -s '
 alias pingf='ping -a -c 2 -s.2 '
 alias pingn='ping -a -n 2      '
-alias s='sort '
-alias t='tail '
-#alias t='type'
+alias s='   sort '
+alias t='   tail '
+#alias t='  type'
 
 alias vihostname='sudo vi /etc/sysconfig/network '
 alias nwr='/etc/init.d/network restart; echo   Restarted_network_$(date) '
@@ -120,11 +125,11 @@ alias cdpy='cd    /cygdrive/c/Python27/mws_py  ;p'
 
 function mkdir2 { mkdir -p "$1" && cd "$1" && pwd ; }
 cd2 ()          { folder=$1; cd $folder ; ls -l ; pwd  ; }
-frep1 () { c=$* ; while sleep 1; do date; $c; echo ; done; }
-frep ()  { c=$* ; while (true)   do date; $c; echo -e "($c)...";echo ;sleep 5; done  ; }
+frep1 () {  c=$* ; while sleep 1; do date; $c; echo ; done; }
+frep ()  {  c=$* ; while (true)   do date; $c; echo -e "($c)...";echo ;sleep 5; done  ; }
 alias repeatls=' watch -t ls '
 alias cksocket=' frep ss '
-loop () {    t1; for i in `seq 5`;   do date; echo  $i:; $* ; echo ; sleep 5;   done; t2 ; }
+loop () {   t1; for i in `seq 5`;   do date; echo  $i:; $* ; echo ; sleep 5;   done; t2 ; }
 
 ffiles () { for f in ./* ; do $* $f; done ; }
 fdirs ()  { for d in ./* ; do pushd $d; pwd; $* ; popd; echo; done ; }
@@ -206,26 +211,32 @@ extract () {
    fi
 }
 
+alias tarextract=' tar   -xzf '
+alias tarcompress='tar   -czf '
+alias tarappend='  tar   -czfvr '
+alias tarlist='    tar   -tzfv '
+alias unziplist='  unzip -l '
 
-#alias tarc='echo arg_f.tar_f; tar czf '
-#alias tart='echo arg_f.tar; tar tzf '
-#alias tarx='echo arg_f.tar; tar xzf '
-alias tarup="tar -zcf"
-alias tardown="tar -zxf"
 pwithtar () { src=$1; des=$2; cd $src ; tar cvf - ./* | (cd $des ; tar xvf - ) ; }
 
-alias vi='vim'
-alias vip='vim -p '
-alias vicC='view ~/.bashrc_CSV'
-alias vicZ='view ~/.bashrc_ZBRA'
-alias vic='vi ~/.bashrc'
-alias soc='source ~/.bashrc; a|wc '
+alias vi='   vim'
+alias vip='  vim -p '
+alias vicC=' view   ~/checkouts/Env/bashrc_CSV'
+alias vicZ=' view   ~/checkouts/Env/bashrc_ZBRA'
+alias vice=' vi     ~/checkouts/Env/.bashrc'
+alias vic='  vi     ~/.bashrc'
+alias soc='  source ~/.bashrc; a|wc; C2e '
+alias soce=' source ~/checkouts/Env/.bashrc; a|wc; deb '
 
-vis () { pattern=$2; filename=$1; vi +/$pattern $filename  ; }
+vis () {   pattern=$2; filename=$1; vi +/$pattern $filename  ; }
 #fvin () { vi +$1 $2  ; }
 
-h2d () { echo $((0x$1)) ; }
-d2h () { printf '%x\n' $1 ; }
+fgbC ()   {    grep -i $1 $2 $3 $4  ~/checkouts/Env/bashrc_CSV ;}
+fgbZ ()   {    grep -i $1 $2 $3 $4  ~/checkouts/Env/bashrc_ZBRA ;}
+fgb  ()   {    grep -i $1 $2 $3 $4  ~/.bashrc ;}
+
+h2d () {   echo $((0x$1)) ; }
+d2h () {   printf '%x\n' $1 ; }
 
 #          python -c "print int('c0ffee'    , 16)"
 #          python -c "print int('12648430  ', 10)"
@@ -293,7 +304,6 @@ fmax   () {   awk -v n=$1 -F"," 'BEGIN {max = 0} {if ($n>max) max=$n} END {print
 # avg: awk '{ sum=sum+$1} END {print sum/NR}
 
 fduc1 () {    awk  '{print $1}'  ; }
-alias lkh='   cat ~/.ssh/known_hosts | fduc1 '
 
 rmdup () {    awk '!($0 in array) { array[$0]; print }' ; }
 #s_join ()  { echo $@ | tr ' ' '_'  ; }
@@ -307,32 +317,27 @@ catln () { fileName=$2 ; sed -n "$1p" $fileName ; }
 # alias ge1='sed -e 1,/ERROR/d |head '
 #fge1 () { grep -B2 ERROR $1 |head -3 ; cat -n $1 | sed -e 1,/ERROR/d |head ;}
 
-strUC () { echo $1 | tr 'abcdefghijklmnopqrstuvwxyz' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'   ;}
-strLC () { echo $1 | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' 'abcdefghijklmnopqrstuvwxyz'   ;}
+strUC () {    echo $1 | tr 'abcdefghijklmnopqrstuvwxyz' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'   ;}
+strLC () {    echo $1 | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' 'abcdefghijklmnopqrstuvwxyz'   ;}
 
 alias cloneqa='cd ~/checkouts/; hg clone https://bitbucket.org/bobkuehne/zebra-sj qa ; date; p '
 
 alias yumgoodstuff='yes|sudo yum install finger;yes|sudo yum install kdiff3; yes|sudo yum install tree;'
-alias tlyum='xterm -title tail_yum_log -e sudo tail -50f /var/log/yum.log & '
-#alias cdyrd='cd /etc/yum.repos.d; p '
-#fgy  ()   { grep $* ~/yum_repos/yli_072814.txt ; }
+alias tlyum='  xterm -title tail_yum_log -e sudo tail -50f /var/log/yum.log & '
 
-fgbc ()   { grep -i $1 $2 $3 $4  ~/bashrc_CSV ;}
-fgbz ()   { grep -i $1 $2 $3 $4  ~/bashrc_ZBRA ;}
-fgb  ()   { grep -i $1 $2 $3 $4  ~/.bashrc ;}
-fgh  ()   { HISTTIMEFORMAT=%c ; history | grep $* |tail -20 ; }
+fgh  ()   {    HISTTIMEFORMAT=%c ; history | grep $* |tail -20 ; }
 # print the last "cp" cmd: !cp:p
-fgc  ()   { grep -inr $* ~/config_file ; }
-fgpy ()   { grep -inrH $* /cygdrive/c/Python27/* ; }
-#fgei ()   { grep -iEn "fail|error" $* ; }
-fgl  ()   { cd ~/logs; ls -tr |tail -1|xargs tail -f |grep -iE "fail|error|FATAL:|TASK:" ; }
-ffg  ()   { sudo find ./ -name $1 -exec grep -iH $2 {} \; ;}
-fkp  ()   { pgrep -f $1 ;pkill $1    ; }
-fgserv () { chkconfig|grep $1 ; }
-fgalt    () { cd ~/checkouts/qa/deployments/inventories && egrep -C1 $*  hosts_boeing_alt_v1 ; }
-fgaltgen () { cd ~/checkouts/qa/work/hlam/ && egrep -C1 $*  qa_gen_inventory ; }
+fgc  ()   {    grep -inr $* ~/config_file ; }
+fgpy ()   {    grep -inrH $* /cygdrive/c/Python27/* ; }
+#fgei ()   {   grep -iEn "fail|error" $* ; }
+fgl  ()   {    cd ~/logs; ls -tr |tail -1|xargs tail -f |grep -iE "fail|error|FATAL:|TASK:" ; }
+ffg  ()   {    sudo find ./ -name $1 -exec grep -iH $2 {} \; ;}
+fkp  ()   {    pgrep -f $1 ;pkill $1    ; }
+fgserv () {    chkconfig|grep $1 ; }
+fgalt    () {  cd ~/checkouts/qa/deployments/inventories && egrep -C1 $*  hosts_boeing_alt_v1 ; }
+fgaltgen () {  cd ~/checkouts/qa/work/hlam/ && egrep -C1 $*  qa_gen_inventory ; }
 
-ftee1 ()  { tee ~/logs/$(date '+%Y.%m.%d_%H.%M')_$1.log ; }
+ftee1 ()  {    tee ~/logs/$(date '+%Y.%m.%d_%H.%M')_$1.log ; }
 
 # alias rstart='cdscri; timeout 20 bash start.sh'
 # alias rsa='cdscri; timeout 20 bash start_standalone.sh /opt/zebra/zebra-boeing/common/boeing_standalone.config /opt/zebra/zebra-boeing/common/boeing_standalone_tag_positions.csv  '
@@ -362,10 +367,10 @@ alias catrsup='echo $pbo; egrep "name:|File" ~/checkouts/$pbo/zebra-config-manag
 alias catrboe='echo $pbo; egrep "name:|File" ~/checkouts/$pbo/zebra-config-management/roles/boeing/tasks/main.yml |cat -n '
 fcatrboex () { echo $pbo; egrep "name:|File" ~/checkouts/$pbo/zebra-config-management/roles/$1/tasks/main.yml|cat -n ; }
 
-alias xssh='xterm -e ssh '
+alias xssh='   xterm -e ssh '
 
 alias manansible='ansible-doc'
-alias tlall='sudo find /var/log -type f -iregex '.*[^\.][^0-9]+$' -not -iregex '.*gz$' 2> /dev/null | xargs tail -n0 -f  '
+alias tlall='  sudo find /var/log -type f -iregex '.*[^\.][^0-9]+$' -not -iregex '.*gz$' 2> /dev/null | xargs tail -n0 -f  '
 alias serv_all='service --status-all | egrep "postg|ntpd|superv"; chkconfig --list '
 
 alias cdsupd=' cd /etc/supervisor.d/; ls -l /etc/supervisor.d/mws_nfl.conf; cat -n mws_nfl.conf;p '
@@ -385,15 +390,15 @@ alias supso='  date;supervisorctl stop all '
 alias supsa='  date;supervisorctl start all '
 alias sups2='  hostname -vI; supervisorctl status; date '
 
-supff () { firefox http://$1:9001/  ; }
+supff () {     firefox http://$1:9001/  ; }
 
 
-alias pog=" sudo service postgresql-9.3 status"
-alias poga="sudo service postgresql-9.3 start "
-alias pogo="sudo service postgresql-9.3 stop  "
+alias pog="    sudo service postgresql-9.3 status"
+alias poga="   sudo service postgresql-9.3 start "
+alias pogo="   sudo service postgresql-9.3 stop  "
 
 #ftp://ftp.box.com phuser Pa1ntHangar
-alias ftpbox='echo "hlam@zebra.com Motion12!"; ftp ftp.box.com '
+alias ftpbox=' echo "hlam@zebra.com Motion12!"; ftp ftp.box.com '
 alias ftpnoczi='ftp://10.120.248.2/Installers/ZebraInterlock/'
 
 fkp  () {   r=`ps -ef | grep $1 | grep -v grep |awk '{print $2}' ` ; if [ ! -z "$r" ]; then sudo kill -9 $r; fi ; }
@@ -403,21 +408,20 @@ fkbo () {   ps -ef | grep -v python2.7| grep -E "python|start.sh|start_|standalo
 fknfl () {  ps -ef | grep -v python2.7| grep -E "python|start.sh|start_|standalone.config|distributor|GUI|notty|nfl|mws" | grep -v grep  | awk  '{print $2}' | xargs sudo kill -9 ;  }
 alias kmw=' fkbo ; fknfl'
 
-alias ckpy='  date; ps -ef|grep python| grep -v grep|cat -n  '
+alias ckpy='date; ps -ef|grep python| grep -v grep|cat -n  '
 #service supervisord status |cat -n; netstat -vatn; 
-alias ckmw='  while (true) do date; ss; ps auxf|grep -v python2.7| grep -iE "sshd|python|start.sh|start_|standalone.config|distrib|GUI|notty|supervisor|mws|nfl|noc|venue|gameclock-server|play-server|entity-server|roster-server|http-server|config_monitor"|grep -v grep|cat -n  ;ps auxef|wc; echo "  "; sleep 5 ; done;'
+alias ckmw='while (true) do date; ss; ps auxf|grep -v python2.7| grep -iE "sshd|python|start.sh|start_|standalone.config|distrib|GUI|notty|supervisor|mws|nfl|noc|venue|gameclock-server|play-server|entity-server|roster-server|http-server|config_monitor"|grep -v grep|cat -n  ;ps auxef|wc; echo "  "; sleep 5 ; done;'
 
-dates () { t=$1; echo $t " == " `date --date=@$1`   ; }
-dateu () { t=$1; echo $t " == " `date -d "$t" +%s ` ; }
+dates () {  t=$1; echo $t " == " `date --date=@$1`   ; }
+dateu () {  t=$1; echo $t " == " `date -d "$t" +%s ` ; }
 alias t__s='date "+%FT%T"'
-alias t1='date; starttime=$(date +"%s")'
-alias t2='date; echo seconds=$(($(date +"%s")-$starttime)) | egrep "=[0-9]+" '
+alias t1='  date; starttime=$(date +"%s")'
+alias t2='  date; echo seconds=$(($(date +"%s")-$starttime)) | egrep "=[0-9]+" '
 ftiktoc () { t1; $* ; t2 ; }
 # time t=$(cat 3min.csv| cut -d',' -f1) ;  time t=$(cat 3min.csv| awk -F ',' '{print $3}' ); or echo $line, with line=1,hai, ba, 4, 5
 
-alias echob=' echo "*** BEGIN_at: `date` " '
-alias echoe=' echo "*** END_at: `date` " '
-
+alias echob='    echo "*** BEGIN_at: `date` " '
+alias echoe='    echo "*** END_at: `date` " '
 alias echodate=' echo "fsettimeCentos `date '+%m%d%H%M%y'`" '
 fsettimeCentos () { echo "time format mmddHHMMyyyy"; sudo  rm /etc/localtime; sudo ln -s /usr/share/zoneinfo/PST8PDT /etc/localtime; sudo date $1  ; sudo hwclock --systohc; sudo hwclock; echo "*** DONE script run at `date`" ; }
 
@@ -707,4 +711,21 @@ alias cs50b='     canv; naca; godr; nlab'
 
 alias omai='      explorer.exe  http://mail.yahoo.com; explorer.exe http://www.hotmail.com; explorer.exe http://mail.google.com; explorer.exe http://www.linkedin.com '
 
-
+### Powershell Cmds fir Cygwin -- C:/USERS/HENRY/MACROS.TXT
+alias pll='     powershell     ls'
+alias pgrepv='  powershell   select-string -notmatch      $*'
+alias pgrepi='  powershell   select-string -casesensitive $*'
+alias pdf='     powershell      gdr'
+alias pdu='     powershell      -noprofile    -command "foreach ($o in gci) { Write-output $o $o.Length } "'
+alias psef='    powershell    gps      $*'
+alias psleep='  powershell   sleep    $1'
+alias ptouch='  powershell   sp -path $1  -name LastWriteTime -value $(get-date)'
+alias puptime=' powershell  (gwmi -Class Win32_OperatingSystem).LastBootUpTime'
+alias penv='    powershell     ls env:'
+alias ppwd='    powershell     pwd'
+alias pshelp='  powershell  get-help $*  -full'
+alias psalias=' powershell alias    $*'
+alias psgcm='   powershell   gcm      $1*'
+alias psvar='   powershell   ls       variable:'
+alias ptailf='  powershell   gc       $1  -wait'
+alias ptemp_head='powershell gc  $*  -t 10'
