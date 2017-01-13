@@ -231,9 +231,9 @@ alias soce=' source ~/checkouts/Env/.bashrc; a|wc; deb '
 vis () {   pattern=$2; filename=$1; vi +/$pattern $filename  ; }
 #fvin () { vi +$1 $2  ; }
 
-fgbC ()   {    grep -i $1 $2 $3 $4  ~/checkouts/Env/bashrc_CSV ;}
-fgbZ ()   {    grep -i $1 $2 $3 $4  ~/checkouts/Env/bashrc_ZBRA ;}
-fgb  ()   {    grep -i $1 $2 $3 $4  ~/.bashrc ;}
+fgbC () {  grep  -i $1   $2 $3 $4  ~/checkouts/Env/bashrc_CSV ;}
+fgbZ () {  grep  -i $1   $2 $3 $4  ~/checkouts/Env/bashrc_ZBRA ;}
+fgb  () {  egrep -i "$1" $2 $3 $4  ~/.bashrc ;}
 
 h2d () {   echo $((0x$1)) ; }
 d2h () {   printf '%x\n' $1 ; }
