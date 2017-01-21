@@ -116,12 +116,12 @@ alias t='   tail '
 alias vihostname='sudo vi /etc/sysconfig/network '
 alias nwr='/etc/init.d/network restart; echo   Restarted_network_$(date) '
 alias vihosts='vi /cygdrive/c/Windows/System32/drivers/etc/hosts '
-alias cdc=" cd    /cygdrive/c ;p"
-alias cdws="cd    /cygdrive/c/workspace             ;p"
-alias cddt="cd    /cygdrive/c/Users/henry/Desktop   ;p"
-alias cddl="cd    /cygdrive/c/Users/henry/Downloads ;p"
-alias cdmd="cd    /cygdrive/c/Users/henry/Documents/;p"
-alias cdmw="cd    /cygdrive/c/Users/henry/Documents/MW/;p"
+alias cdc=' cd    /cygdrive/c ;p'
+alias cdws='cd    /cygdrive/c/workspace             ;p'
+alias cddt='cd    /cygdrive/c/Users/henry/Desktop   ;p'
+alias cddl='cd    /cygdrive/c/Users/henry/Downloads ;p'
+alias cdmd='cd    /cygdrive/c/Users/henry/Documents/;p'
+alias cdmw='cd    /cygdrive/c/Users/henry/Documents/MW/;p'
 alias cdpy='cd    /cygdrive/c/Python27/mws_py  ;p'
 alias cdwt='cd    /cygdrive/c/Users/henry;p'
 
@@ -234,9 +234,9 @@ alias soce=' source ~/checkouts/Env/.bashrc; a|wc; deb '
 vis () {   pattern=$2; filename=$1; vi +/$pattern $filename  ; }
 #fvin () { vi +$1 $2  ; }
 
-fgbC () {  grep  -i $1   $2 $3 $4  ~/checkouts/Env/bashrc_CSV ;}
-fgbZ () {  grep  -i $1   $2 $3 $4  ~/checkouts/Env/bashrc_ZBRA ;}
-fgb  () {  egrep -i "$1" $2 $3 $4  ~/.bashrc ;}
+fgbC ()   {    grep -i $1 $2 $3 $4  ~/checkouts/Env/bashrc_CSV ;}
+fgbZ ()   {    grep -i $1 $2 $3 $4  ~/checkouts/Env/bashrc_ZBRA ;}
+fgb  ()   {    grep -i $1 $2 $3 $4  ~/.bashrc ;}
 
 h2d () {   echo $((0x$1)) ; }
 d2h () {   printf '%x\n' $1 ; }
