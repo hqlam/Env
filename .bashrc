@@ -116,11 +116,14 @@ alias t='   tail '
 alias vihostname='sudo vi /etc/sysconfig/network '
 alias nwr='/etc/init.d/network restart; echo   Restarted_network_$(date) '
 alias vihosts='vi /cygdrive/c/Windows/System32/drivers/etc/hosts '
+alias cdc=" cd    /cygdrive/c ;p"
+alias cdws="cd    /cygdrive/c/workspace             ;p"
 alias cddt="cd    /cygdrive/c/Users/henry/Desktop   ;p"
 alias cddl="cd    /cygdrive/c/Users/henry/Downloads ;p"
 alias cdmd="cd    /cygdrive/c/Users/henry/Documents/;p"
 alias cdmw="cd    /cygdrive/c/Users/henry/Documents/MW/;p"
 alias cdpy='cd    /cygdrive/c/Python27/mws_py  ;p'
+alias cdwt='cd    /cygdrive/c/Users/henry;p'
 
 
 function mkdir2 { mkdir -p "$1" && cd "$1" && pwd ; }
@@ -712,19 +715,19 @@ alias cs50b='     canv; naca; godr; nlab'
 alias omai='      explorer.exe  http://mail.yahoo.com; explorer.exe http://www.hotmail.com; explorer.exe http://mail.google.com; explorer.exe http://www.linkedin.com '
 
 ### Powershell Cmds fir Cygwin -- C:/USERS/HENRY/MACROS.TXT
-alias pll='     powershell     ls'
+alias pll='     powershell   ls'
 alias pgrepv='  powershell   select-string -notmatch      $*'
 alias pgrepi='  powershell   select-string -casesensitive $*'
-alias pdf='     powershell      gdr'
-alias pdu='     powershell      -noprofile    -command "foreach ($o in gci) { Write-output $o $o.Length } "'
-alias psef='    powershell    gps      $*'
+alias pdf='     powershell   gdr'
+alias pdu='     powershell  -noprofile   -command "foreach ($o in gci) { Write-output $o $o.Length } "'
+alias psef='    powershell   gps      $*'
 alias psleep='  powershell   sleep    $1'
-alias ptouch='  powershell   sp -path $1  -name LastWriteTime -value $(get-date)'
+alias ptouch='  powershell   sp -path $1 -name LastWriteTime -value $(get-date)'
 alias puptime=' powershell  (gwmi -Class Win32_OperatingSystem).LastBootUpTime'
-alias penv='    powershell     ls env:'
-alias ppwd='    powershell     pwd'
-alias pshelp='  powershell  get-help $*  -full'
-alias psalias=' powershell alias    $*'
+alias penv='    powershell   ls env:'
+alias ppwd='    powershell   pwd'
+alias pshelp='  powershell   get-help $* -full'
+alias psalias=' powershell   alias    $*'
 alias psgcm='   powershell   gcm      $1*'
 alias psvar='   powershell   ls       variable:'
 alias ptailf='  powershell   gc       $1  -wait'
