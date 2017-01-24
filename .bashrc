@@ -567,7 +567,7 @@ alias dumpBackup='pg_dump zebra > db.sql'
 # PATH 
 # PATH C:\ProgramData\Oracle\Java\javapath;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem;%SYSTEMROOT%\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Common Files\Roxio Shared\DLLShared\;C:\Program Files (x86)\Common Files\Roxio Shared\10.0\DLLShared\;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;
 
-#C:\Program Files\Java\jdk1.8.0_40\bin;
+#C:\Program Files\Java\jdk1.8.0_121\bin;
 #C:\Program Files\Internet Explorer;
 #C:\Program Files (x86)\Mozilla Firefox;
 #C:\Program Files (x86)\Notepad++;
@@ -705,12 +705,13 @@ alias clearcache='   echo chrome://settings/clearBrowserData'
 
 alias gfh='       explorer.exe  https://goo.gl/cgF7Hd'
 alias etud='      explorer.exe  https://myetudes.org/portal'
-alias canv='      explorer.exe  https://www.foothill.edu/fga/canvas_login.php'
-alias nlab='      explorer.exe  https://ccna.bayict.cabrillo.edu '
-alias naca='      explorer.exe  https://www.netacad.com/group/landing/'
-alias godr='      explorer.exe  https://drive.google.com/drive/my-drive'
-alias cs50a='     etud; naca; godr'
-alias cs50b='     canv; naca; godr; nlab'
+alias grades='    explorer.exe  https://foothillcollege.instructure.com'
+alias canvas='    explorer.exe  https://www.foothill.edu/fga/canvas_login.php'
+alias netlab='    explorer.exe  https://ccna.bayict.cabrillo.edu '
+alias netaca='    explorer.exe  https://www.netacad.com/group/landing/'
+alias gdrive='    explorer.exe  https://drive.google.com/drive/my-drive'
+alias cs50a='     etud;   netaca; gdrive'
+alias cs50b='     canvas; netaca; gdrive; netlab'
 
 alias omai='      explorer.exe  http://mail.yahoo.com; explorer.exe http://www.hotmail.com; explorer.exe http://mail.google.com; explorer.exe http://www.linkedin.com '
 
@@ -732,3 +733,8 @@ alias psgcm='   powershell   gcm      $1*'
 alias psvar='   powershell   ls       variable:'
 alias ptailf='  powershell   gc       $1  -wait'
 alias ptemp_head='powershell gc  $*  -t 10'
+
+
+### netsh
+# netsh wlan show profile name=labnol key=clear
+
