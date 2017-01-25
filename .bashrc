@@ -264,13 +264,8 @@ alias pjson='python -m json.tool'
 # find /path/to/files* -mtime +5 -exec rm {} \;
 
 alias deb=' diff            ~/checkouts/Env/.bashrc ~/.bashrc '
-alias Ceb=' echo y|      cp ~/checkouts/Env/.bashrc ~/ '
-alias C2e=' echo y|      cp               ~/.bashrc ~/checkouts/Env '
-alias C227='ip=10.21.2.27;echo $ip;scp -r ~/.bashrc mwcentral@$ip:~ '
-alias C2A=' C227; C287 '                                  
-
-fl2c () { src=$1; to_path=$2; scp -r $src  mwcentral@10.21.2.29:$to_path ; }
-
+alias e2b=' echo y|      cp ~/checkouts/Env/.bashrc ~/ '
+alias b2e=' echo y|      cp               ~/.bashrc ~/checkouts/Env '
 
 ### Aliases / Functions work with pipeline:
 
@@ -323,8 +318,6 @@ catln () { fileName=$2 ; sed -n "$1p" $fileName ; }
 strUC () {    echo $1 | tr 'abcdefghijklmnopqrstuvwxyz' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'   ;}
 strLC () {    echo $1 | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' 'abcdefghijklmnopqrstuvwxyz'   ;}
 
-alias cloneqa='cd ~/checkouts/; hg clone https://bitbucket.org/bobkuehne/zebra-sj qa ; date; p '
-
 alias yumgoodstuff='yes|sudo yum install finger;yes|sudo yum install kdiff3; yes|sudo yum install tree;'
 alias tlyum='  xterm -title tail_yum_log -e sudo tail -50f /var/log/yum.log & '
 
@@ -341,9 +334,6 @@ fgalt    () {  cd ~/checkouts/qa/deployments/inventories && egrep -C1 $*  hosts_
 fgaltgen () {  cd ~/checkouts/qa/work/hlam/ && egrep -C1 $*  qa_gen_inventory ; }
 
 ftee1 ()  {    tee ~/logs/$(date '+%Y.%m.%d_%H.%M')_$1.log ; }
-
-# alias rstart='cdscri; timeout 20 bash start.sh'
-# alias rsa='cdscri; timeout 20 bash start_standalone.sh /opt/zebra/zebra-boeing/common/boeing_standalone.config /opt/zebra/zebra-boeing/common/boeing_standalone_tag_positions.csv  '
 
 ftrk1a  () { t1; echob;cd ~/checkouts/qa/scripts ; ls; pwd; if [ ! -z $1 ]; then ip=$1; else ip=10.21.2.30 ; fi; python run_test_tracker.py -t  01a_tracker_rnd_0.7 -m zadm@$ip |ftee1 trk1a_$ip; echoe ;t2 ;echo "Pls cdarc to check..." ; }
 
@@ -362,13 +352,6 @@ fupdpy  () { t1; echob; cdrt; python update.py       -r $1 | ftee1 $1 ; echoe; t
 alias depi='  t1; cdrt; python deploy_info.py -c $dbo ; t2  '
 alias dep_='  t1; cdrt; python deploy.py      -c $dbo ; t2  '
 fdep () { t1; echob; cdrt; python deploy.py    -c $dbo | ftee1 dep_$pbo ; beep; echoe;  t2 ;  }
-
-alias catroles='echo $pbo; egrep "name:|File" ~/checkouts/$pbo/zebra-config-management/roles/common/tasks/main.yml |cat -n ; echo; egrep "name:|File" ~/checkouts/$pbo/zebra-config-management/roles/mws_core_sw/tasks/main.yml |cat -n ; echo; egrep "name:|File" ~/checkouts/$pbo/zebra-config-management/roles/ntpd/tasks/main.yml |cat -n ; echo; egrep "name:|File" ~/checkouts/$pbo/zebra-config-management/roles/supervisor/tasks/main.yml |cat -n ; echo; egrep "name:|File" ~/checkouts/$pbo/zebra-config-management/roles/boeing/tasks/main.yml |cat -n ; echo; egrep "name:|File" ~/checkouts/$pbo/zebra-config-management/roles/boeing_p5_p6/tasks/main.yml |cat -n '
-alias catrcomm='echo $pbo; egrep "name:|File" ~/checkouts/$pbo/zebra-config-management/roles/common/tasks/main.yml|cat -n '
-alias catrmws='echo $pbo; egrep "name:|File" ~/checkouts/$pbo/zebra-config-management/roles/mws_core_sw/tasks/main.yml|cat -n '
-alias catrsup='echo $pbo; egrep "name:|File" ~/checkouts/$pbo/zebra-config-management/roles/supervisor/tasks/main.yml|cat -n '
-alias catrboe='echo $pbo; egrep "name:|File" ~/checkouts/$pbo/zebra-config-management/roles/boeing/tasks/main.yml |cat -n '
-fcatrboex () { echo $pbo; egrep "name:|File" ~/checkouts/$pbo/zebra-config-management/roles/$1/tasks/main.yml|cat -n ; }
 
 alias xssh='   xterm -e ssh '
 
@@ -472,7 +455,7 @@ gitdirhist () {   for f in `ls`; do echo  `gitfilehist $f|head -5|grep Date` $f 
 gitdirsort ()   { gitdirhist > ~/fh; cat ~/fh | sort ; rm -f ~/fh ; }
 #gitdirsort ()  { for f in `ls`; do echo  `gitfilehist $f|head -5|grep Date|cut: -f2` $f ; done > ~/fh; cat ~/fh|sort ; }
 alias gits='      echo "****STATUS:";     git status; echo '
-alias gitst='     echo "****BRANCH ...:"; git status; echo; git branch -vv; ech2 "****THE LATEST LOG ... :"; git log |head -7;  echo '
+alias gitst='cdenv;echo "****BRANCH ...:"; git status; echo; git branch -vv; ech2 "****THE LATEST LOG ... :"; git log |head -7;  echo '
 alias gitb='      echo -ne "****BRANCH: \t ";               git branch; echo '
 alias cbr='                                                 git branch | grep "*" | cuts -f2'
 alias gitallb='   echo "All branches: "; git pull;          git branch -av; pwd'
