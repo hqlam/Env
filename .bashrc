@@ -121,7 +121,8 @@ alias cdws='cd    /cygdrive/c/workspace             ;p'
 alias cddt='cd    /cygdrive/c/Users/henry/Desktop   ;p'
 alias cddl='cd    /cygdrive/c/Users/henry/Downloads ;p'
 alias cdmd='cd    /cygdrive/c/Users/henry/Documents/;p'
-alias cdmw='cd    /cygdrive/c/Users/henry/Documents/MW/;p'
+alias cdh3='cd    /cygdrive/c/Users/hqlam           ;p'
+alias cdh7='cd    /cygdrive/c/Users/henry           ;p'
 alias cdpy='cd    /cygdrive/c/Python27/mws_py  ;p'
 alias cdwt='cd    /cygdrive/c/Users/henry;p'
 
@@ -228,7 +229,7 @@ alias vicC=' view   ~/checkouts/Env/bashrc_CSV'
 alias vicZ=' view   ~/checkouts/Env/bashrc_ZBRA'
 alias vice=' vi     ~/checkouts/Env/.bashrc'
 alias vic='  vi     ~/.bashrc'
-alias soc='  source ~/.bashrc; a|wc; C2e '
+alias soc='  source ~/.bashrc; a|wc; b2e '
 alias soce=' source ~/checkouts/Env/.bashrc; a|wc; deb '
 
 vis () {   pattern=$2; filename=$1; vi +/$pattern $filename  ; }
