@@ -643,7 +643,7 @@ alias xnload='   xterm -e nload & '
 alias nload1000='nload –t 1000'
 alias speedtest='   python ~/Help/speedtest-cli.py --share '
 alias speedtestlog='python ~/Help/speedtest-cli.py --share | ftee1 speedtest_$(hostname -I) '
-alias dlspeedtest=' wget -O speedtest-cli.py https://github.com/sivel/speedtest-cli/raw/master/speedtest_cli.py'
+alias dlspeedtest=' wget -O speedtest-cli.py https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py '
 alias wgetprotobuf='cd /tmp && wget https://protobuf.googlecode.com/files/protobuf-2.5.0.tar.gz && ls -ltr '
 
 alias beep='echo -en "\007"'
@@ -700,6 +700,8 @@ alias cs50b='     canvas; netaca; gdrive; netlab'
 alias omai='      explorer.exe  http://mail.yahoo.com; explorer.exe http://www.hotmail.com; explorer.exe http://mail.google.com; explorer.exe http://www.linkedin.com '
 
 ### Powershell Cmds fir Cygwin -- C:/USERS/HENRY/MACROS.TXT
+alias vicm=' vi      /cygdrive/c/Users/hqlam/macros.txt'
+alias socm=' /cygdrive/c/Users/hqlam/soc.bat '
 alias pll='     powershell   ls'
 alias pgrepv='  powershell   select-string -notmatch      $*'
 alias pgrepi='  powershell   select-string -casesensitive $*'
