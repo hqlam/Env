@@ -232,7 +232,7 @@ alias vicZ=' view   ~/checkouts/Env/bashrc_ZBRA'
 alias vice=' vi     ~/checkouts/Env/.bashrc'
 alias vic='  vi     ~/.bashrc'
 alias soc='  source ~/.bashrc; a|wc      '
-alias soc2=' source ~/.bashrc; a|wc; C2e '
+alias soc2=' source ~/.bashrc; a|wc; b2e '
 alias soce=' source ~/checkouts/Env/.bashrc; a|wc; deb '
 
 vis () {   pattern=$2; filename=$1; vi +/$pattern $filename  ; }
@@ -536,7 +536,6 @@ alias hgsu='     hg summary|grep  -E "tip|branch|zebra|parent:.*:[0-9,a-f,A-F]{7
 alias hgti='     hg tip    |grep  -E "tip|branch|zebra|parent:.*:[0-9,a-f,A-F]{7}|changeset:.*:[0-9,a-f,A-F]{7}" '
 alias curtip='   pwd|grep zebra-.*; echo Summary: ; hgsu -C5; echo;hgcnt;echo;  echo Tip: ; hgti -C5'
 
-
 #good alias POSTentities='curl -X POST -d @entities_combined_rev14.json -H "Content-Type: application/json" http://127.0.0.1:3122/entities/upload'
 alias GETentDB=' curl -X GET http://127.0.0.1:3122/entities '
 alias WCLentDB=' curl -X GET http://127.0.0.1:3122/entities | wc -l'
@@ -555,7 +554,7 @@ alias dumpBackup='pg_dump zebra > db.sql'
 #C:\Program Files (x86)\PyScripter;
 #C:\Program Files (x86)\WinSCP
 #C:\Program Files (x86)\RealVNC\VNC4
-wstart () {   fn=$1; cmd /c start $fn ; }
+cmdstart () { fn=$1; cmd /c start $fn ; }
 alias wopen=' cmd /c start '
 alias explo=' explorer.exe '
 alias ie='    iexplore.exe '
@@ -727,3 +726,4 @@ alias cmdpevent='     cmd /c eventvwr'
 alias cmddisk='       cmd /c diskmgmt'
 alias cmdcomp='       cmd /c compmgmt'
 alias cmddev='        cmd /c devmgmt'
+
