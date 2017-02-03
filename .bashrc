@@ -113,18 +113,20 @@ alias s='   sort '
 alias t='   tail '
 #alias t='  type'
 
+alias vipyn='  vi /cygdrive/c/Python27/mws_py/pynotes.py '
 alias vihostname='sudo vi /etc/sysconfig/network '
-alias nwr='/etc/init.d/network restart; echo   Restarted_network_$(date) '
+alias nwr='    /etc/init.d/network restart; echo   Restarted_network_$(date) '
 alias vihosts='vi /cygdrive/c/Windows/System32/drivers/etc/hosts '
+
 alias cdc=' cd    /cygdrive/c ;p'
 alias cdws='cd    /cygdrive/c/workspace             ;p'
 alias cddt='cd    /cygdrive/c/Users/henry/Desktop   ;p'
 alias cddl='cd    /cygdrive/c/Users/henry/Downloads ;p'
 alias cdmd='cd    /cygdrive/c/Users/henry/Documents/;p'
-alias cdh3='cd    /cygdrive/c/Users/hqlam           ;p'
-alias cdh7='cd    /cygdrive/c/Users/henry           ;p'
-alias cdpy='cd    /cygdrive/c/Python27/mws_py  ;p'
-alias cdwt='cd    /cygdrive/c/Users/henry;p'
+alias cdpy='cd    ~/proj/py ;p'
+alias cdjv='cd    ~/proj/jv ;p'
+alias cdjvs='cd   ~/proj/jvs;p'
+alias cddos='cd   /cygdrive/c/Users/henry;p'
 
 
 function mkdir2 { mkdir -p "$1" && cd "$1" && pwd ; }
@@ -229,7 +231,8 @@ alias vicC=' view   ~/checkouts/Env/bashrc_CSV'
 alias vicZ=' view   ~/checkouts/Env/bashrc_ZBRA'
 alias vice=' vi     ~/checkouts/Env/.bashrc'
 alias vic='  vi     ~/.bashrc'
-alias soc='  source ~/.bashrc; a|wc; b2e '
+alias soc='  source ~/.bashrc; a|wc      '
+alias soc2=' source ~/.bashrc; a|wc; C2e '
 alias soce=' source ~/checkouts/Env/.bashrc; a|wc; deb '
 
 vis () {   pattern=$2; filename=$1; vi +/$pattern $filename  ; }
@@ -264,9 +267,25 @@ alias pjson='python -m json.tool'
 #findOlder () { find . -mmin -$((($(date "+%s") - $(stat -c %Y $1))/60)) -type f ; }
 # find /path/to/files* -mtime +5 -exec rm {} \;
 
+# webshare at http://host_ip_addr:5777
+# @resosurce host server: pwd;ipaddr; webshare 51234. Then, @end-user server: open http://host_ip_addr:51234
+# to monitor if sharing is going on: $w; or fispydone; or ps -ef|grep python; Example: CACSVML-15870:~$ sshsdev fispydone; CACSVML-15870:~$ sshsdev w
+#webshare () { p=$1; p=${p:-5777}; python -c "from SimpleHTTPServer import test; import sys; sys.argv = [None,$p]; test()" ; }
+webshare () {  p=$1; p=${p:-5777}; ech2 `ipad`:$p; python -m SimpleHTTPServer $p ; }
+alias pyshare='python -m SimpleHTTPServer 8888 & '
+
+alias ipdrop='python $HOME/proj/py/iDropped.py '
+ipdr () {     python -c 'import socket; print ("IP=", socket.gethostbyname(socket.gethostname()) , "If IP==127.0.0.1, Then Internet connection was dropped."  ) ' ; }
+ipad () {     python -c 'import socket; print (socket.gethostbyname(socket.gethostname())); ' ; }
+#idr () {     python -c 'import urllib; try: urllib.urlopen("http://google.com"); except: print("NOT connected"); ' ; }
+
+
 alias deb=' diff            ~/checkouts/Env/.bashrc ~/.bashrc '
 alias e2b=' echo y|      cp ~/checkouts/Env/.bashrc ~/ '
 alias b2e=' echo y|      cp               ~/.bashrc ~/checkouts/Env '
+
+fl2c () { src=$1; to_path=$2; scp -r $src  mwcentral@10.21.2.29:$to_path ; }
+
 
 ### Aliases / Functions work with pipeline:
 
@@ -319,40 +338,20 @@ catln () { fileName=$2 ; sed -n "$1p" $fileName ; }
 strUC () {    echo $1 | tr 'abcdefghijklmnopqrstuvwxyz' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'   ;}
 strLC () {    echo $1 | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' 'abcdefghijklmnopqrstuvwxyz'   ;}
 
+alias cloneqa='cd ~/checkouts/; hg clone https://bitbucket.org/bobkuehne/zebra-sj qa ; date; p '
+
 alias yumgoodstuff='yes|sudo yum install finger;yes|sudo yum install kdiff3; yes|sudo yum install tree;'
 alias tlyum='  xterm -title tail_yum_log -e sudo tail -50f /var/log/yum.log & '
 
 fgh  ()   {    HISTTIMEFORMAT=%c ; history | grep $* |tail -20 ; }
 # print the last "cp" cmd: !cp:p
-fgc  ()   {    grep -inr $* ~/config_file ; }
-fgpy ()   {    grep -inrH $* /cygdrive/c/Python27/* ; }
-#fgei ()   {   grep -iEn "fail|error" $* ; }
+fgc  ()   {    grep -inr $*  ~/config_file ; }
+fgpy ()   {    grep -inrH $* ~/proj/py/*   ; }
 fgl  ()   {    cd ~/logs; ls -tr |tail -1|xargs tail -f |grep -iE "fail|error|FATAL:|TASK:" ; }
-ffg  ()   {    sudo find ./ -name $1 -exec grep -iH $2 {} \; ;}
+ffg  ()   {    find ./ -name $1 -exec grep -iH $2 {} \; ; }
 fkp  ()   {    pgrep -f $1 ;pkill $1    ; }
 fgserv () {    chkconfig|grep $1 ; }
-fgalt    () {  cd ~/checkouts/qa/deployments/inventories && egrep -C1 $*  hosts_boeing_alt_v1 ; }
-fgaltgen () {  cd ~/checkouts/qa/work/hlam/ && egrep -C1 $*  qa_gen_inventory ; }
-
 ftee1 ()  {    tee ~/logs/$(date '+%Y.%m.%d_%H.%M')_$1.log ; }
-
-ftrk1a  () { t1; echob;cd ~/checkouts/qa/scripts ; ls; pwd; if [ ! -z $1 ]; then ip=$1; else ip=10.21.2.30 ; fi; python run_test_tracker.py -t  01a_tracker_rnd_0.7 -m zadm@$ip |ftee1 trk1a_$ip; echoe ;t2 ;echo "Pls cdarc to check..." ; }
-
-t1a="01_alarm_status"
-
-
-fsnr () { t1; echob;cd ~/checkouts/qa/scripts ; ls; pwd; if [ ! -z $1 ]; then tn=$1; else tn=01_basic_json_validation ; fi;python run_test_sim_nfl_report.py   -t $tn   | ftee1 t1a_py_$tn_$pbo ; echoe ;t2 ;echo "Pls cdarc to check..." ;lastlog; }
-
-flms () { t1; echob;cd ~/checkouts/qa/scripts ; ls; pwd; if [ ! -z $1 ]; then tn=$1; else tn=01_basic_patterns ; fi;python run_test_sim_lms.py   -t $tn   | ftee1 t1a_py_$tn_$pbo ; echoe ;t2 ;echo "Pls cdarc to check..." ;lastlog; }
-
-#frasc () { t1; ansible-playbook -vvv $1 -i $2 -u $3 --skip-tags "common" |tee ~/logs/$(date '+%Y.%m.%d_%H:%M')_$1.log; cat $1; pwd;t2 ; }
-
-alias updpy='t1; cdrt; python update.py -r $pbo.txt ;cdco; t2  '
-fupdpy  () { t1; echob; cdrt; python update.py       -r $1 | ftee1 $1 ; echoe; t2 ; }
-
-alias depi='  t1; cdrt; python deploy_info.py -c $dbo ; t2  '
-alias dep_='  t1; cdrt; python deploy.py      -c $dbo ; t2  '
-fdep () { t1; echob; cdrt; python deploy.py    -c $dbo | ftee1 dep_$pbo ; beep; echoe;  t2 ;  }
 
 alias xssh='   xterm -e ssh '
 
@@ -360,7 +359,6 @@ alias manansible='ansible-doc'
 alias tlall='  sudo find /var/log -type f -iregex '.*[^\.][^0-9]+$' -not -iregex '.*gz$' 2> /dev/null | xargs tail -n0 -f  '
 alias serv_all='service --status-all | egrep "postg|ntpd|superv"; chkconfig --list '
 
-alias cdsupd=' cd /etc/supervisor.d/; ls -l /etc/supervisor.d/mws_nfl.conf; cat -n mws_nfl.conf;p '
 alias supdpid='cd /var/run/; ls -ltra; more supervisord.pid; pwd '
 alias supdtmp='cd /tmp     ; ls -ltra | egrep "^s" ; pwd '
 alias tlsupd=' sudo xterm -title tail_supervisord_log -e tail -100f /var/log/supervisor/supervisord.log & '
@@ -378,7 +376,6 @@ alias supsa='  date;supervisorctl start all '
 alias sups2='  hostname -vI; supervisorctl status; date '
 
 supff () {     firefox http://$1:9001/  ; }
-
 
 alias pog="    sudo service postgresql-9.3 status"
 alias poga="   sudo service postgresql-9.3 start "
@@ -456,7 +453,7 @@ gitdirhist () {   for f in `ls`; do echo  `gitfilehist $f|head -5|grep Date` $f 
 gitdirsort ()   { gitdirhist > ~/fh; cat ~/fh | sort ; rm -f ~/fh ; }
 #gitdirsort ()  { for f in `ls`; do echo  `gitfilehist $f|head -5|grep Date|cut: -f2` $f ; done > ~/fh; cat ~/fh|sort ; }
 alias gits='      echo "****STATUS:";     git status; echo '
-alias gitst='cdenv;echo "****BRANCH ...:"; git status; echo; git branch -vv; ech2 "****THE LATEST LOG ... :"; git log |head -7;  echo '
+alias gitst='     echo "****BRANCH ...:"; git status; echo; git branch -vv; ech2 "****THE LATEST LOG ... :"; git log |head -7;  echo '
 alias gitb='      echo -ne "****BRANCH: \t ";               git branch; echo '
 alias cbr='                                                 git branch | grep "*" | cuts -f2'
 alias gitallb='   echo "All branches: "; git pull;          git branch -av; pwd'
@@ -558,7 +555,9 @@ alias dumpBackup='pg_dump zebra > db.sql'
 #C:\Program Files (x86)\PyScripter;
 #C:\Program Files (x86)\WinSCP
 #C:\Program Files (x86)\RealVNC\VNC4
-alias epen='  explorer.exe '
+wstart () {   fn=$1; cmd /c start $fn ; }
+alias wopen=' cmd /c start '
+alias explo=' explorer.exe '
 alias ie='    iexplore.exe '
 alias ff='    firefox.exe '
 alias np='    notepad.exe '
@@ -588,7 +587,6 @@ alias getzi='  date;date1=$(date +"%s"); cd ~/checkouts;ls -tr ; sudo rm -rf zeb
 #checkouts]$ hg clone https://bitbucket.org/danbuckler/mission_planner
 #checkouts]$ hg clone https://bitbucket.org/danbuckler/c-check-for-point-in-polygon
 
-
 alias vipyn='   vi /cygdrive/c/Python27/mws_py/pynotes.py '
 
 #alias dftot='df -h --total | awk 'NR==1; END{print}''
@@ -616,34 +614,27 @@ man() {
 			man "$@"
 }
 fman () { cmd=$1; man $cmd | col -b > ~/man_$1.txt; cat -n ~/man_$1.txt; ls -l ~/man_$1.txt  ; }
-# alias erc='    echo $?'
-# alias bc='     bc -l'
-alias ports='  netstat -tulanp'
-alias gateway='netstat -nr '
+# alias erc='     echo $?'
+# alias bc='      bc -l'
+alias ports='     netstat -tulanp'
+alias gateway='   netstat -nr '
 alias dnsgateway='cat /etc/sysconfig/network-scripts/ifcfg-eth0'
 alias dnsip='     cat /etc/resolv.conf'
-alias ipconf='ipconfig /all |egrep --color -C12 "IPv.*|adapter" '
-alias gip='egrep --color -C12 "IPv.*|adapter|addr:[.0-9]*" '
+alias ipconf='    ipconfig /all |egrep --color -C12 "IPv.*|adapter" '
+alias gip='       egrep --color -C12 "IPv.*|adapter|addr:[.0-9]*" '
 
-# alias iptlist='sudo /sbin/iptables -L -n -v --line-numbers'
+# alias iptlist=' sudo /sbin/iptables -L -n -v --line-numbers'
 
 #alias vnctar29=' scp -r hl@10.21.2.29:~/hl/VNC_enable.tar .'
-alias vncenable='sudo rpm -ivh VNC-Server-5.2.1-Linux-x64.rpm; sudo vnclicense -add F743B-R22UH-PBGQH-RJ2PQ-H6R9A; sudo service vncserver-x11-serviced start; wait; echo "For target, type in pwd zadmin"; echo "For controller, type in pwd mwcentral"; sudo vncpasswd '
+alias vncenable=' sudo rpm -ivh VNC-Server-5.2.1-Linux-x64.rpm; sudo vnclicense -add F743B-R22UH-PBGQH-RJ2PQ-H6R9A; sudo service vncserver-x11-serviced start; wait; echo "For target, type in pwd zadmin"; echo "For controller, type in pwd mwcentral"; sudo vncpasswd '
 
-fdiffWeek () { cd /cygdrive/e/GameData;p; if [ ! -d Week$1 ]; then echo should_check_folder... ; wait ; fi ;for f in `ls Week$1`; do ls Week$1/$f; diff Week$1/$f /cygdrive/c/tem/Week$1/$f; done;  }
+fdiffWeek () {    cd /cygdrive/e/GameData;p; if [ ! -d Week$1 ]; then echo should_check_folder... ; wait ; fi ;for f in `ls Week$1`; do ls Week$1/$f; diff Week$1/$f /cygdrive/c/tem/Week$1/$f; done;  }
 
-#zgtd () { t1; f="/cygdrive/m/Analysis/LowBATT/BatteryHistory/$1_$2"; echo "zgrep -a $1 $2" > $f; zgrep -a $1 $2 >> $f; t2 ; }
-gtd () { t1; f="/cygdrive/m/Analysis/LowBATT/BatteryHistory/$1_$2"; echo "grep $1 $2" > $f; grep $1 $2 >> $f; t2 ; }
-
-alias bh='cd /cygdrive/m/Analysis/LowBATT/BatteryHistory'
-alias s1='cd /cygdrive/m/Analysis/LOGS/Box\ Sync/LOWBATT' 
-alias s2='cd /cygdrive/m/Analysis/LOGS/Box\ Sync/LOWBATT/home/zadmin/mws_staging'
-
-alias xnload='   xterm -e nload & '
-alias nload1000='nload –t 1000'
+alias xnload='    xterm -e nload & '
+alias nload1000=' nload –t 1000'
 alias speedtest='   python ~/Help/speedtest-cli.py --share '
 alias speedtestlog='python ~/Help/speedtest-cli.py --share | ftee1 speedtest_$(hostname -I) '
-alias dlspeedtest=' wget -O speedtest-cli.py https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py '
+alias dlspeedtest=' wget -O speedtest-cli.py https://github.com/sivel/speedtest-cli/raw/master/speedtest_cli.py'
 alias wgetprotobuf='cd /tmp && wget https://protobuf.googlecode.com/files/protobuf-2.5.0.tar.gz && ls -ltr '
 
 alias beep='echo -en "\007"'
@@ -700,8 +691,6 @@ alias cs50b='     canvas; netaca; gdrive; netlab'
 alias omai='      explorer.exe  http://mail.yahoo.com; explorer.exe http://www.hotmail.com; explorer.exe http://mail.google.com; explorer.exe http://www.linkedin.com '
 
 ### Powershell Cmds fir Cygwin -- C:/USERS/HENRY/MACROS.TXT
-alias vicm=' vi      /cygdrive/c/Users/hqlam/macros.txt'
-alias socm=' /cygdrive/c/Users/hqlam/soc.bat '
 alias pll='     powershell   ls'
 alias pgrepv='  powershell   select-string -notmatch      $*'
 alias pgrepi='  powershell   select-string -casesensitive $*'
@@ -722,5 +711,19 @@ alias ptemp_head='powershell gc  $*  -t 10'
 
 
 ### netsh
-# netsh wlan show profile name=labnol key=clear
+wflist () {        netsh wlan show profile ; }
+wfpwd  () { wn=$1; netsh wlan show profile name=$wn key=clear |grep Key ; }
+# [ -e `wifipwd NETGEAR |egrep Key ` ] && echo WiFi || echo No such WiFi 
 
+### Windows CMD: control; msinfo32; calc; write; chkdsk; cmd /c mrt; 
+alias ipconfig='      cmd /c ipconfig '
+alias cmddisplay='    cmd /c desk.cpl'
+alias cmdsound='      cmd /c mmsys.cpl'
+alias cmdnc='         cmd /c ncpa.cpl'
+alias cmdfirewall='   cmd /c firewall.cpl'
+alias cmdtask='       cmd /c taskmgr'
+alias cmdperf='       cmd /c perfmon'
+alias cmdpevent='     cmd /c eventvwr'
+alias cmddisk='       cmd /c diskmgmt'
+alias cmdcomp='       cmd /c compmgmt'
+alias cmddev='        cmd /c devmgmt'
