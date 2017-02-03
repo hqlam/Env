@@ -126,7 +126,7 @@ alias cdmd='cd    /cygdrive/c/Users/henry/Documents/;p'
 alias cdpy='cd    ~/proj/py ;p'
 alias cdjv='cd    ~/proj/jv ;p'
 alias cdjvs='cd   ~/proj/jvs;p'
-alias cddos='cd   /cygdrive/c/Users/henry;p'
+alias cddos='cd   /cygdrive/c/Users/henry'
 
 
 function mkdir2 { mkdir -p "$1" && cd "$1" && pwd ; }
@@ -238,9 +238,9 @@ alias soce=' source ~/checkouts/Env/.bashrc; a|wc; deb '
 vis () {   pattern=$2; filename=$1; vi +/$pattern $filename  ; }
 #fvin () { vi +$1 $2  ; }
 
-fgbC ()   {    grep -i $1 $2 $3 $4  ~/checkouts/Env/bashrc_CSV ;}
-fgbZ ()   {    grep -i $1 $2 $3 $4  ~/checkouts/Env/bashrc_ZBRA ;}
-fgb  ()   {    grep -i $1 $2 $3 $4  ~/.bashrc ;}
+fgbC ()   {    grep -i "$1" $2 $3 $4  ~/checkouts/Env/bashrc_CSV ;}
+fgbZ ()   {    grep -i "$1" $2 $3 $4  ~/checkouts/Env/bashrc_ZBRA ;}
+fgb  ()   {    grep -i "$1" $2 $3 $4  ~/.bashrc ;}
 
 h2d () {   echo $((0x$1)) ; }
 d2h () {   printf '%x\n' $1 ; }
@@ -714,15 +714,14 @@ wflist () {        netsh wlan show profile ; }
 wfpwd  () { wn=$1; netsh wlan show profile name=$wn key=clear |grep Key ; }
 # [ -e `wifipwd NETGEAR |egrep Key ` ] && echo WiFi || echo No such WiFi 
 
-### Windows CMD: control; msinfo32; calc; write; chkdsk; cmd /c mrt; 
-alias ipconfig='      cmd /c ipconfig '
+### Windows CMD: control; msinfo32; systeminfo; calc; write; chkdsk; cmd /c mrt; 
 alias cmddisplay='    cmd /c desk.cpl'
 alias cmdsound='      cmd /c mmsys.cpl'
 alias cmdnc='         cmd /c ncpa.cpl'
 alias cmdfirewall='   cmd /c firewall.cpl'
 alias cmdtask='       cmd /c taskmgr'
 alias cmdperf='       cmd /c perfmon'
-alias cmdpevent='     cmd /c eventvwr'
+alias cmdevent='      cmd /c eventvwr'
 alias cmddisk='       cmd /c diskmgmt'
 alias cmdcomp='       cmd /c compmgmt'
 alias cmddev='        cmd /c devmgmt'
