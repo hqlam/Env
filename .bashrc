@@ -113,7 +113,6 @@ alias s='   sort '
 alias t='   tail '
 #alias t='  type'
 
-alias vipyn='  vi /cygdrive/c/Python27/mws_py/pynotes.py '
 alias vihostname='sudo vi /etc/sysconfig/network '
 alias nwr='    /etc/init.d/network restart; echo   Restarted_network_$(date) '
 alias vihosts='vi /cygdrive/c/Windows/System32/drivers/etc/hosts '
@@ -345,8 +344,9 @@ alias tlyum='  xterm -title tail_yum_log -e sudo tail -50f /var/log/yum.log & '
 
 fgh  ()   {    HISTTIMEFORMAT=%c ; history | grep $* |tail -20 ; }
 # print the last "cp" cmd: !cp:p
-fgc  ()   {    grep -inr $*  ~/config_file ; }
-fgpy ()   {    grep -inrH $* ~/proj/py/*   ; }
+fgc  ()   {    grep -rin  $*  ~/config_file ; }
+fgpy ()   {    grep -rinH $*  ~/proj/py/*   ; }
+fgpyn ()  {    grep -i    $*  ~/proj/py/pynotes.py ; }
 fgl  ()   {    cd ~/logs; ls -tr |tail -1|xargs tail -f |grep -iE "fail|error|FATAL:|TASK:" ; }
 ffg  ()   {    find ./ -name $1 -exec grep -iH $2 {} \; ; }
 fkp  ()   {    pgrep -f $1 ;pkill $1    ; }
@@ -452,8 +452,8 @@ gitdirty1 () {    topic=`git branch|grep "*"|cuts -f2`; echo $topic; upstr=$1; g
 gitdirhist () {   for f in `ls`; do echo  `gitfilehist $f|head -5|grep Date` $f ; done ; }
 gitdirsort ()   { gitdirhist > ~/fh; cat ~/fh | sort ; rm -f ~/fh ; }
 #gitdirsort ()  { for f in `ls`; do echo  `gitfilehist $f|head -5|grep Date|cut: -f2` $f ; done > ~/fh; cat ~/fh|sort ; }
-alias gits='      echo "****STATUS:";     git status; echo '
-alias gitst='     echo "****BRANCH ...:"; git status; echo; git branch -vv; ech2 "****THE LATEST LOG ... :"; git log |head -7;  echo '
+alias gits='      echo  "****STATUS:";     git status; echo '
+alias gitst='cdenv;echo "****BRANCH ...:"; git status; echo; git branch -vv; ech2 "****THE LATEST LOG ... :"; git log |head -7;  echo '
 alias gitb='      echo -ne "****BRANCH: \t ";               git branch; echo '
 alias cbr='                                                 git branch | grep "*" | cuts -f2'
 alias gitallb='   echo "All branches: "; git pull;          git branch -av; pwd'
