@@ -586,7 +586,8 @@ alias getzi='  date;date1=$(date +"%s"); cd ~/checkouts;ls -tr ; sudo rm -rf zeb
 #checkouts]$ hg clone https://bitbucket.org/danbuckler/mission_planner
 #checkouts]$ hg clone https://bitbucket.org/danbuckler/c-check-for-point-in-polygon
 
-alias vipyn='   vi /cygdrive/c/Python27/mws_py/pynotes.py '
+alias vipyn='  vi ~/proj/py/pynotes.py '
+vif () {       cmd /c start vi ~/$1; cd; llr ; }
 
 #alias dftot='df -h --total | awk 'NR==1; END{print}''
 alias dfdu='   cd ~; f="~/Documents/df_dush.txt"; date >> $f; df >> $f; du -sh|grep -v cannot >> $f; echo "+++++++" >> $f; cat $f      '
