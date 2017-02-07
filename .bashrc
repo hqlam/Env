@@ -587,7 +587,7 @@ alias getzi='  date;date1=$(date +"%s"); cd ~/checkouts;ls -tr ; sudo rm -rf zeb
 #checkouts]$ hg clone https://bitbucket.org/danbuckler/c-check-for-point-in-polygon
 
 alias vipyn='  vi ~/proj/py/pynotes.py '
-vif () {       cmd /c start vi ~/$1; cd; llr ; }
+vif () {       cmd /c start vi $1; p ; }
 
 #alias dftot='df -h --total | awk 'NR==1; END{print}''
 alias dfdu='   cd ~; f="~/Documents/df_dush.txt"; date >> $f; df >> $f; du -sh|grep -v cannot >> $f; echo "+++++++" >> $f; cat $f      '
@@ -669,7 +669,9 @@ frevStrInBASH () { for ((i=${#1}; i>=0; i--)); do printf "${1:$i:1}"; done; echo
 # doskey use243=net use M: \\192.168.30.243\Public /user:builduser builduser@1
 # find /?
 
-alias timesh='    explorer.exe  http://budget.cable.comcast.com'
+#alias timesh='    explorer.exe  http://budget.cable.comcast.com'
+
+alias exlib='     ech2 h_21197103670765; ech2 v_21197903329406; explo http://discover.sjlibrary.org/iii/encore_sjpl/myaccount'
 alias e_v='       explorer.exe  https://goo.gl/kY9EoV '
 e2v  () {         explorer.exe  http://dictionary.cambridge.org/us/dictionary/english-vietnamese/$1 ; }
 alias mdlink='    explorer.exe  https://www.mydlink.com/device#26298103'
@@ -682,11 +684,15 @@ alias gfh='       explorer.exe  https://goo.gl/cgF7Hd'
 alias etud='      explorer.exe  https://myetudes.org/portal'
 alias grades='    explorer.exe  https://foothillcollege.instructure.com'
 alias canvas='    explorer.exe  https://www.foothill.edu/fga/canvas_login.php'
-alias netlab='    explorer.exe  https://ccna.bayict.cabrillo.edu '
+alias netlab='    firefox       https://ccna.bayict.cabrillo.edu '
 alias netaca='    explorer.exe  https://www.netacad.com/group/landing/'
 alias gdrive='    explorer.exe  https://drive.google.com/drive/my-drive'
 alias cs50a='     etud;   netaca; gdrive'
 alias cs50b='     canvas; netaca; gdrive; netlab'
+
+#alias mathkhan='  explorer.exe  http://khanacademy.org/mappers'
+#alias read1='     explorer.exe  http://newsela.com'
+#alias read2='     explorer.exe  http://hosted355.renlearn.com/3260860/'
 
 alias omai='      explorer.exe  http://mail.yahoo.com; explorer.exe http://www.hotmail.com; explorer.exe http://mail.google.com; explorer.exe http://www.linkedin.com '
 
