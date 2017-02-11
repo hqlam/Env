@@ -113,9 +113,7 @@ alias s='   sort '
 alias t='   tail '
 #alias t='  type'
 
-alias vihostname='sudo vi /etc/sysconfig/network '
-alias nwr='    /etc/init.d/network restart; echo   Restarted_network_$(date) '
-alias vihosts='vi /cygdrive/c/Windows/System32/drivers/etc/hosts '
+#alias nwr='    /etc/init.d/network restart; echo   Restarted_network_$(date) '
 
 alias cdc=' cd    /cygdrive/c ;p'
 alias cdws='cd    /cygdrive/c/workspace             ;p'
@@ -123,6 +121,7 @@ alias cddt='cd    /cygdrive/c/Users/henry/Desktop   ;p'
 alias cddl='cd    /cygdrive/c/Users/henry/Downloads ;p'
 alias cdmd='cd    /cygdrive/c/Users/henry/Documents/;p'
 alias cdpy='cd    ~/proj/py ;p'
+alias cdsh='cd    ~/proj/shell ;p'
 alias cdjv='cd    ~/proj/jv ;p'
 alias cdjvs='cd   ~/proj/jvs;p'
 alias cddos='cd   /cygdrive/c/Users/henry'
@@ -226,10 +225,17 @@ pwithtar () { src=$1; des=$2; cd $src ; tar cvf - ./* | (cd $des ; tar xvf - ) ;
 
 alias vi='   vim'
 alias vip='  vim -p '
+vin  () {    filename=$1; num=$2;           vi      +$num               $filename ; }
+vis  () {    filename=$1; pat=$2;           vi      +/$pat              $filename ; }
+vics () {    vis $HOME/.bashrc $* ; }
+vih  () {    cmd=$*; bash $HOME/proj/shell/hterm.sh basic  vis $cmd ; }
+vibc () {    filename=$1; old="$2"; new=$3; vi -bc ":%s/$old/$new/c|:q" $filename ; }
+vid  () {    filename=$1; pat="$2";         vi -bc ":g/$pat/d|:q"       $filename ; }
 alias vicC=' view   ~/checkouts/Env/bashrc_CSV'
 alias vicZ=' view   ~/checkouts/Env/bashrc_ZBRA'
 alias vice=' vi     ~/checkouts/Env/.bashrc'
 alias vic='  vi     ~/.bashrc'
+alias writeb='cd;   write .bashrc'
 alias soc='  source ~/.bashrc; a|wc      '
 alias soc2=' source ~/.bashrc; a|wc; b2e '
 alias soce=' source ~/checkouts/Env/.bashrc; a|wc; deb '
@@ -560,13 +566,14 @@ alias explo=' explorer.exe '
 alias ie='    iexplore.exe '
 alias ff='    firefox.exe '
 alias np='    notepad.exe '
-alias npp='   notepad++.exe '
-alias pys='   PyScripter.exe '
-alias winscp='WinSCP.exe  '
-alias vnc='   vncviewer.exe'
+#alias npp='   notepad++.exe '
+#alias pys='   PyScripter.exe '
+#alias winscp='WinSCP.exe  '
+#alias vnc='   vncviewer.exe'
 alias wex='   explorer /n '
-alias sky=' cd /cygdrive/c/Program\ Files\ \(x86\)/Skype/Phone && ./Skype.exe  & '
-alias skyo='cd /cygdrive/c/Program\ Files\ \(x86\)/Skype/Phone && ./Skype.exe  /shutdown '
+alias sky='   cd /cygdrive/c/Program\ Files\ \(x86\)/Skype/Phone && ./Skype.exe  & '
+alias skyo='  cd /cygdrive/c/Program\ Files\ \(x86\)/Skype/Phone && ./Skype.exe  /shutdown '
+alias spacesniffer='/cygdrive/e/spacesniffer_1_2_0_2/SpaceSniffer.exe '
 
 
 # alias cleanoz=' cd /opt; sudo rm -rf /opt/zebra; p; cd /etc/supervisor.d/; sudo rm -rf mws_*.conf; p ' 
@@ -660,7 +667,11 @@ alias beep='echo -en "\007"'
 # awk '{if (NR % 2 == 1) print $0}' file.txt
 # "\\21S03DATA01\Main\Software\MotionWorks\10 Activities\Agile_Work_List.xlsx"
 #[hl]$ man date | col -b > man_date.txt
-alias dynip='curl -s http://checkip.dyndns.org'
+
+alias vihostname=' sudo vi /etc/sysconfig/network '
+alias vihosts='    vi /cygdrive/c/Windows/System32/drivers/etc/hosts '
+
+alias dynip='      curl -s http://checkip.dyndns.org'
 frevStrInBASH () { for ((i=${#1}; i>=0; i--)); do printf "${1:$i:1}"; done; echo; }
 
 #http://alinirimia.com/2013/11/run-commands-in-windows-tested-in-windows-8-and-8-1/
@@ -680,15 +691,15 @@ alias mp3q='      explorer.exe  https://goo.gl/mL4QSJ'
 
 alias clearcache='   echo chrome://settings/clearBrowserData'
 
-alias gfh='       explorer.exe  https://goo.gl/cgF7Hd'
+alias gfh='       explorer.exe  https://goo.gl/maps/a9XFzRYBPF72 '
 alias etud='      explorer.exe  https://myetudes.org/portal'
 alias grades='    explorer.exe  https://foothillcollege.instructure.com'
 alias canvas='    explorer.exe  https://www.foothill.edu/fga/canvas_login.php'
-alias netlab='    firefox       https://ccna.bayict.cabrillo.edu '
+alias netlab='    firefox       https://ccna.bayict.cabrillo.edu & '
 alias netaca='    explorer.exe  https://www.netacad.com/group/landing/'
 alias gdrive='    explorer.exe  https://drive.google.com/drive/my-drive'
 alias cs50a='     etud;   netaca; gdrive'
-alias cs50b='     canvas; netaca; gdrive; netlab'
+alias cs50b='     canvas; netaca; gdrive; netlab  '
 
 #alias mathkhan='  explorer.exe  http://khanacademy.org/mappers'
 #alias read1='     explorer.exe  http://newsela.com'
