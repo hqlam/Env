@@ -304,6 +304,11 @@ alias tee2='  tee ./tee_$(date +%Y.%m.%d_%H:%M).txt '
 # output to 2 files: my_command | tee -a /some/file > /some/other/file
 
 #alias sortu='sort|uniq -c '
+#cat number.txt | awk 'BEGIN{FS=" "} {for(i=1;i<=NF;i++) print $i}'
+#cat number.txt | awk 'BEGIN{FS=" "} {for(i=1;i<=NF;i++) print $i}'  | awk 'x[$0]++'
+#cat number.txt | awk 'BEGIN{FS=" "} {for(i=1;i<=NF;i++) print $i}'  | awk '!x[$0]++'
+#cat number.txt | awk 'BEGIN{FS=" "} {for(i=1;i<=NF;i++) print $i}'  | sort |uniq -u
+
 
 alias cuts="  cut -d \" \"  "
 #alias cutst="cut -d \"*\"  "
@@ -510,6 +515,7 @@ alias sptdr='     wget --no-check-certificate -O speedtest-cli.py https://github
 
 
 ### HG Mercury
+
 rtbu () { cd ~/checkouts/qa; hg status | awk '/~$/  {print $2}' | xargs rm ;  }
 rpyc () { cd ~/checkouts/qa; hg status | awk '/pyc/ {print $2}' | xargs rm ; } 
 
@@ -563,6 +569,7 @@ alias dumpBackup='pg_dump zebra > db.sql'
 cmdstart () { fn=$1; cmd /c start $fn ; }
 alias wopen=' cmd /c start '
 alias explo=' explorer.exe '
+alias wex='   explorer /n '
 alias ie='    iexplore.exe '
 alias ff='    firefox.exe '
 alias np='    notepad.exe '
@@ -570,10 +577,9 @@ alias np='    notepad.exe '
 #alias pys='   PyScripter.exe '
 #alias winscp='WinSCP.exe  '
 #alias vnc='   vncviewer.exe'
-alias wex='   explorer /n '
 alias sky='   cd /cygdrive/c/Program\ Files\ \(x86\)/Skype/Phone && ./Skype.exe  & '
 alias skyo='  cd /cygdrive/c/Program\ Files\ \(x86\)/Skype/Phone && ./Skype.exe  /shutdown '
-alias spacesniffer='/cygdrive/e/spacesniffer_1_2_0_2/SpaceSniffer.exe '
+alias spacesniffer='/cygdrive/e/spacesniffer_1_2_0_2/SpaceSniffer.exe & '
 
 
 # alias cleanoz=' cd /opt; sudo rm -rf /opt/zebra; p; cd /etc/supervisor.d/; sudo rm -rf mws_*.conf; p ' 
@@ -646,6 +652,7 @@ alias wgetprotobuf='cd /tmp && wget https://protobuf.googlecode.com/files/protob
 
 alias beep='echo -en "\007"'
 
+#t=$(cat arr.sh) ; echo ${t:3:4} //slice out the char 4th to 8th
 # psql -A -F ',' -t -c 'select * from tablename;' # postgreSQL CSV output from the CLI
 
 #    % supervisorctl stop all
@@ -680,9 +687,11 @@ frevStrInBASH () { for ((i=${#1}; i>=0; i--)); do printf "${1:$i:1}"; done; echo
 # doskey use243=net use M: \\192.168.30.243\Public /user:builduser builduser@1
 # find /?
 
+### Explo, Goo.gl
+
 #alias timesh='    explorer.exe  http://budget.cable.comcast.com'
 
-alias exlib='     ech2 h_21197103670765; ech2 v_21197903329406; explo http://discover.sjlibrary.org/iii/encore_sjpl/myaccount'
+alias sjpl='      ech2 h_21197103670765; ech2 v_21197903329406; explo http://discover.sjlibrary.org/iii/encore_sjpl/myaccount'
 alias e_v='       explorer.exe  https://goo.gl/kY9EoV '
 e2v  () {         explorer.exe  http://dictionary.cambridge.org/us/dictionary/english-vietnamese/$1 ; }
 alias mdlink='    explorer.exe  https://www.mydlink.com/device#26298103'
@@ -708,6 +717,7 @@ alias cs50b='     canvas; netaca; gdrive; netlab  '
 alias omai='      explorer.exe  http://mail.yahoo.com; explorer.exe http://www.hotmail.com; explorer.exe http://mail.google.com; explorer.exe http://www.linkedin.com '
 
 ### Powershell Cmds fir Cygwin -- C:/USERS/HENRY/MACROS.TXT
+
 alias pll='     powershell   ls'
 alias pgrepv='  powershell   select-string -notmatch      $*'
 alias pgrepi='  powershell   select-string -casesensitive $*'
@@ -728,11 +738,13 @@ alias ptemp_head='powershell gc  $*  -t 10'
 
 
 ### netsh
+
 wflist () {        netsh wlan show profile ; }
 wfpwd  () { wn=$1; netsh wlan show profile name=$wn key=clear |grep Key ; }
 # [ -e `wifipwd NETGEAR |egrep Key ` ] && echo WiFi || echo No such WiFi 
 
-### Windows CMD: control; msinfo32; systeminfo; calc; write; chkdsk; cmd /c mrt; 
+### Windows CMD: control; msinfo32; systeminfo; calc; write; chkdsk; cmd /c mrt; shell:recent; :sendto; 
+
 alias cmddisplay='    cmd /c desk.cpl'
 alias cmdsound='      cmd /c mmsys.cpl'
 alias cmdnc='         cmd /c ncpa.cpl'
