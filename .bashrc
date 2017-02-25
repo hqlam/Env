@@ -250,6 +250,35 @@ fgb  ()   {    grep -i "$1" $2 $3 $4  ~/.bashrc ;}
 h2d () {   echo $((0x$1)) ; }
 d2h () {   printf '%x\n' $1 ; }
 
+### CSV files
+
+cattable () { f=$1; sep=$2; cat $f | column -s"$sep" -t ; }
+#$ cat sample.csv | column -s"," -t
+csvLines () {      wc -l $* ; }
+csvCommaCount () { csvf=$1; perl -ne 'print tr/,//, "\n"' < $csvf      | sort -u ; }
+csvSumHorizon () { csvf=$1; perl -ne '@a=split(/,/);  $b=0; foreach $r (1..$#a){ $b+=$a[$r] } print "$a[0],$b\n"' -f $csvf ; }
+# $ cat sample.csv |perl -nle 'print length,"\t",$_ if 17 == length ' ;  OR length > 17 ; OR 18 > length
+
+c2j () {           csvf=$1; python $HOME/proj/py/csv2json/c2j.py $csvf ; echo "Go check $(basename $csvf).json file" ; }
+csv2json () {      python -c "import csv,json;      print json.dumps(list(csv.reader(open('$1'))), sort_keys=True, indent=4, separators=(',', ': ') )" ; }
+
+csvCol () { python $HOME/proj/py/csvcolumn.py $1 ; }
+#python csvcolumn.py < csv2json/sample.csv 2 ; cat csv2json/sample.csv|python csvcolumn.py 2
+# csvCol  < csv2json/sample.csv 2;              cat csv2json/sample.csv | csvCol 2
+
+csvFields () {     f=$1; col=$2; col=${col:-35}; r=$3; r=${r:-3}; for i in `seq $col`; do echo -ne "FIELD $i:  \t"; head -n $r $f |cut -d"," -f $i; done ; }
+csvHdup () {       f=$1; head -1 $f | trUC|tr ',' '\n'|sort|uniq -d ; }
+csvView () {       f=$1; sed -e 's/,,/, ,/g' $f | column -s, -t | less -#5 -N -S ; }
+#ivrHmis { ; }
+#ivrHext { ; }
+#csvSed () {       sed -e 's/,,/, ,/g'    | column -s, -t | less -#5 -N -S ; }
+
+# $csvCommaCOunt to get 15;  for i in `seq 15`; do echo -ne "$i:  \t"; head vod-credit-limit.csv|cutc -f $i; done
+# prod_rules$ for i in `seq 7`; do echo -ne "$i:  \t"; head xray_enrich.csv|cutc -f $i; done
+# for i in {1..3} ; do echo -ne "$i:  \t"; head findreplace_01_03_16.csv|cutc -f $i; done
+# for i in `seq 10`; do echo -ne "$i:  \t"; head tvns.csv|cutc -f $i; done
+
+
 #          python -c "print int('c0ffee'    , 16)"
 #          python -c "print int('12648430  ', 10)"
 #pyh ()  { python -c "import $1;                print help($1)" ; }
@@ -304,10 +333,12 @@ alias tee2='  tee ./tee_$(date +%Y.%m.%d_%H:%M).txt '
 # output to 2 files: my_command | tee -a /some/file > /some/other/file
 
 #alias sortu='sort|uniq -c '
+#ids=(aa ab aa ac aa ad); printf "%s\n" "${ids[@]}"
 #cat number.txt | awk 'BEGIN{FS=" "} {for(i=1;i<=NF;i++) print $i}'
 #cat number.txt | awk 'BEGIN{FS=" "} {for(i=1;i<=NF;i++) print $i}'  | awk 'x[$0]++'
 #cat number.txt | awk 'BEGIN{FS=" "} {for(i=1;i<=NF;i++) print $i}'  | awk '!x[$0]++'
 #cat number.txt | awk 'BEGIN{FS=" "} {for(i=1;i<=NF;i++) print $i}'  | sort |uniq -u
+#fStr=$(cat text.txt|tr "\n" " "); fArr=($fStr); echo "whole arr ${fArr[*]}"; echo "len ${#fArr[@]}"; 
 
 
 alias cuts="  cut -d \" \"  "
@@ -680,6 +711,9 @@ alias vihosts='    vi /cygdrive/c/Windows/System32/drivers/etc/hosts '
 
 alias dynip='      curl -s http://checkip.dyndns.org'
 frevStrInBASH () { for ((i=${#1}; i>=0; i--)); do printf "${1:$i:1}"; done; echo; }
+#$ var=helllo;for((i=0;i<${#var};i++)); do re="$re${var:~i:1}"; done; echo $var $re
+#var=hello; c=$var; rev=""; while [ "$c" ]; do rev=$rev${c#"${c%?}"}; c=${c%?}; done; echo $var $rev
+#echo hello | rev; cat fname.txt | rev
 
 #http://alinirimia.com/2013/11/run-commands-in-windows-tested-in-windows-8-and-8-1/
 # C:\> net use M:  /delete

@@ -211,24 +211,27 @@ list as queue:
   .popleft()
 
 tuple:
-  consists of a number of values separated by commas
-  cannot be changed; like string, tuple is immutable. 
+  consists of a number of values separated by commas; like a row in a DB table; 
+  tuple contents are ordered (like an array)
+  content cannot be changed; like string, tuple is immutable. 
+  tuple is used for constants; list is used for non-contants, changable items
   0 or 1 items:
     empty = ()
     singleton = 'hello',    # <-- note trailing comma
   t = 12345, 54321, 'hello!'
   x, y, z = t
-    unpacking
+  # unpacking
 
 set:
-  an unordered collection with no duplicate elements
+  an unordered collection with unique items only; useful to detect duplicates.
+  ops like .add(); .remove(); in 
   set('')
   {}
   a = {x for x in 'abracadabra' if x not in 'abc'}
   
 dictionary:
   indexed by keys (immutable typed)
-    Tuples can be used as keys if they contain only strings, numbers, or tuples;
+  Tuples can be used as keys if they contain only strings, numbers, or tuples;
   unique key: value pairs
   {}
   dict([('','')])
@@ -236,6 +239,14 @@ dictionary:
   .items()
   del
   {x: x**2 for x in (2, 4, 6)}
+
+dict_creation:
+    for k,v in from_a_dict.iteritems():
+        print k,v
+    for k,v in enumerate(seq):
+        print k,v
+    dict( zip( keys_list, values_list) )
+
 
 -----------------------------
 
@@ -272,8 +283,9 @@ help('modules'): available modules
 dir('<module name>'): members in a module
 
 -----------------------------
-By default, all objects in Python are True. Containers and numbers are False if the container is empty or if
-the number is equal to zero. In addition, there is an object, None, that is always False
+By default, all objects in Python are True. 
+Containers and numbers are False if the container is empty or if the number is equal to zero. 
+In addition, there is an object, None, that is always False
 
 -----------------------------
 example of dot file:
@@ -295,12 +307,16 @@ docstrings:
 
 -----------------------------
 The primary looping idioms in Python are
-for x    in s: ...
-for x, y in zip(s, t): ...
-for x    in reversed(s): ...
-for i, x in enumerate(s): ...
-for x    in sorted(s): ...
-
+for x    in s: print(x)
+for x    in reversed(s): print(x)
+for i, x in enumerate(s): print(x, i)
+for x    in sorted(s): print(x)
+for i    in range(10): print(i)
+    
+for k,v  in zip(l1, l2): print(k, v)
+for k,v  in from_a_dict.iteritems(): print(k, v)
+for k,v  in enumerate(seq): print(k, v)
+    print(k,v)
 ------------------------------
 module os:
   file names, command line arguments, environment variables
@@ -426,7 +442,7 @@ Can be chained together like Unix pipes and filters
 generator:
   yeild keyword
   Remembers state between invocations:
-    the stack including open loops and trystatements;
+    the stack including open loops and try statements;
     the execution pointer; and local variables
 
 ----------------------------
