@@ -213,14 +213,22 @@ gitlastcommit () { git pull; commit=$1; commit=${commit:-1}; git log -p -$commit
 gitlastcom () {    git pull 2> /dev/null; commit=$1; commit=${commit:-1}; git log -p -$commit | grep commit|cut -c8-14 ; }
 #work g_c () {    git pull 2> /dev/null; commit=$1; commit=${commit:-1}; gc=`git log -p -$commit | grep commit|cut -c8-14`; echo "GitHub xap repos: SHA=$gc"; echo; for i in 57.11 57.13 27.110 30.93 ; do echo -n core_96.118.$i: SHA=; cc=`curl -s 96.118.$i:8080/api/v1/version|pjson|grep commit|tr ',\"' ' '|cut -d. -f4`; echo  $cc ; [ $gc == $cc ] && echo ">>>> NOT_matched `date` <<< " && echo && cd ~/proj/py && python m.py ; done ; }
 
+# recent commits
 git1line () {                                     git log --oneline --graph ; }
 gitoneline () {                                   git log --pretty=oneline ; }
+
+# grep text from git_log
 gitgl () {                                        git log |egrep -i -C10 $* ; }
+
+# show history of a file
 gitfilehist () {  f=$1 ;                          git log -p -- $f ; }
 alias gitfilehist2='                              git log -p --since="7 days ago" '
 alias gitll='     echo "*LATEST LOG ... :";       git log |head -7;  echo '
+gitdirhist () {   for f in `ls`; do echo  `gitfilehist $f|head -5|grep Date` $f ; done ; }
+gitdirsort ()   { gitdirhist > ~/fh; cat ~/fh | sort ; rm -f ~/fh ; }
+#gitdirsort ()  { for f in `ls`; do echo  `gitfilehist $f|head -5|grep Date|cut: -f2` $f ; done > ~/fh; cat ~/fh|sort ; }
 
-# tig command
+# file history with tig command
 tigfilehist () {  f=$1 ; tig blame        $f ; }
 alias catt='      tigfilehist '
 
@@ -232,16 +240,14 @@ alias gitmod='           git diff `git status|grep modified:|cut: -f2` '
 gitdirty () {     topic=$1;                             echo $topic; upstr=$2; git diff --name-status $topic $upstr ; }
 gitdirty1 () {    topic=`git branch|grep "*"|cuts -f2`; echo $topic; upstr=$1; git diff --name-status $topic $upstr ; }
 
-gitdirhist () {   for f in `ls`; do echo  `gitfilehist $f|head -5|grep Date` $f ; done ; }
-gitdirsort ()   { gitdirhist > ~/fh; cat ~/fh | sort ; rm -f ~/fh ; }
-#gitdirsort ()  { for f in `ls`; do echo  `gitfilehist $f|head -5|grep Date|cut: -f2` $f ; done > ~/fh; cat ~/fh|sort ; }
-
+# status, branch, last log, last commit
 alias gits='      echo "****STATUS:";     git status; echo '
 alias gitst='     echo "****BRANCH ...:"; git status; echo; git branch -vv; ech2 "****THE LATEST LOG ... :"; git log |head -7;  echo '
 alias gitb='      echo -ne "****BRANCH: \t ";               git branch; echo '
 alias cbr='                                                 git branch | grep "*" | cuts -f2'
 alias gitallb='   echo "All branches: "; git pull;          git branch -av; pwd'
 
+# git pull all
 alias gitp='      t1;  git pull;  t2 '
 fgitp () {        soc;cdxap; for d in `ls ..`; do echo -n "**** $d : "; cd ../$d; gitp ; done ; }
 fgitb () {        soc;cdxap; for d in `ls ..`; do echo -n "**** $d : "; cd ../$d; cbr  ; done ; }
@@ -273,43 +279,40 @@ alias gitlist='   git ls-files'
 # Open github ogh
 # all $gs= (pulls; commits; branches; releases; tags; compare; contributors; issues )
 # branches/all; branches/yours; branches/active; tree/develop;  pull/3/files; pull/3/commits; pull/new/develop; compare/develop...csv_082316; 
-oghlib () {                                                  open https://github.comcast.com/xpcs/xpc-test/tree/master/lib ; }
-oghtd  () {                                                  open https://github.comcast.com/xpcs/xpc-test/tree/master/test/test_data ; }
-oghhl  () {                                                  open https://github.comcast.com/hlam001c/bmx-qa ; } 
-p
-oghh   () {                                                  open https://github.com/hqlam/ ; } 
+oghhl  () {                                              open https://github.comcast.com/hlam001c/bmx-qa ; } 
+oghh   () {                                              open https://github.com/hqlam/ ; } 
 
 # Open ogh
-ogh  () {                     rt=$1; rt=${rt:-xpc-test}; open https://github.comcast.com/xpcs/$rt ; }
+ogh  () {                     rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt ; }
 
-#ogc () {                     rt=$1; rt=${rt:-xpc-test}; open https://github.comcast.com/xpcs/$rt/commits ; }
-#ogcp () {                    rt=$1; rt=${rt:-xpc-test}; open https://github.comcast.com/xpcs/$rt/compare ; }
-ogr  () {                     rt=$1; rt=${rt:-xpc-test}; open https://github.comcast.com/xpcs/$rt/releases ; }
-ogt  () {                     rt=$1; rt=${rt:-xpc-test}; open https://github.comcast.com/xpcs/$rt/tags ; }
-ogp  () {                     rt=$1; rt=${rt:-xpc-test}; open https://github.comcast.com/xpcs/$rt/pulls ; }
-ogb  () {                     rt=$1; rt=${rt:-xpc-test}; open https://github.comcast.com/xpcs/$rt/branches ; }
+#ogc () {                     rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/commits ; }
+#ogcp () {                    rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/compare ; }
+ogr  () {                     rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/releases ; }
+ogt  () {                     rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/tags ; }
+ogp  () {                     rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/pulls ; }
+ogb  () {                     rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/branches ; }
 
 # open ogh branches
-oab () {                      rt=$1; rt=${rt:-xpc-test}; open https://github.comcast.com/xpcs/$rt/branches/active ; }
-oby () {                      rt=$1; rt=${rt:-xpc-test}; open https://github.comcast.com/xpcs/$rt/branches/yours ; }
+oab () {                      rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/branches/active ; }
+oby () {                      rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/branches/yours ; }
 
 # open ogh tree
-otb  () { b=$2;b=${b:-master};rt=$1; rt=${rt:-xpc-test}; open https://github.comcast.com/xpcs/$rt/tree/$b ; }
-otd  () {                     rt=$1; rt=${rt:-xpc-test}; open https://github.comcast.com/xpcs/$rt/tree/develop ; }
-otm  () {                     rt=$1; rt=${rt:-xpc-test}; open https://github.comcast.com/xpcs/$rt/tree/master ; }
+otb  () { b=$2;b=${b:-master};rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/tree/$b ; }
+otd  () {                     rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/tree/develop ; }
+otm  () {                     rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/tree/master ; }
 
 # open ogh pull
-opr  () { pr=$1;              rt=$2; rt=${rt:-xpc-test}; open https://github.comcast.com/xpcs/$rt/pull/$pr ; }
-oprf () { pr=$1;              rt=$2; rt=${rt:-xpc-test}; open https://github.comcast.com/xpcs/$rt/pull/$pr/files ; }
-oprc () { pr=$1;              rt=$2; rt=${rt:-xpc-test}; open https://github.comcast.com/xpcs/$rt/pull/$pr/commits ; }
+opr  () { pr=$1;              rt=$2; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/pull/$pr ; }
+oprf () { pr=$1;              rt=$2; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/pull/$pr/files ; }
+oprc () { pr=$1;              rt=$2; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/pull/$pr/commits ; }
 
 # open ogh commit
-ogc  () { commit=$1;          rt=$2; rt=${rt:-xpc-test}; open https://github.comcast.com/xpcs/$rt/commit/$commit?diff=split ; }
+ogc  () { commit=$1;          rt=$2; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/commit/$commit?diff=split ; }
 
 # open ogh compare
-cpbran () { branch=$1;        rt=$2; rt=${rt:-xpc-test}; open https://github.comcast.com/xpcs/$rt/compare/$branch  ; }
-ogcp  () {                     rt=$1; rt=${rt:-xpc-test}; open https://github.comcast.com/xpcs/$rt/compare/$2...$3 ; }
-#ocp    develop  master' ;ocp    1.12.0   v1.13.0 #https://github.comcast.com/xpcs/xpc-test/compare/1.12.0...v1.13.0
+cpbran () { branch=$1;        rt=$2; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/compare/$branch  ; }
+ogcp  () {                     rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/compare/$2...$3 ; }
+#ocp    develop  master' ;ocp    1.12.0   v1.13.0 #https://github.comcast.com/xpcs/xap/compare/1.12.0...v1.13.0
 
 # Install git: https://mac.github.com; or https://windows.github.com; 
 
@@ -322,20 +325,8 @@ alias clonesc93=' git clone git@github.comcast.com:xpcs/xpc-test.git'
 gcln () { repo=$1;git clone git@github.comcast.com:xpcs/$repo ; } 
 
 gitcln () {       repo=$1; repo=${repo:-xpc-test}; git clone https://github.comcast.com/xpcs/$repo ; }
-alias clonesc='   cdco && gcln xpc-test.git  '
-alias clonemr='   cdco && gcln mapping-rules.git '
-#alias clonemrs=' cdco && gcln mapping-rules-server.git '
-#alias clonekc='  cdco && gcln kafka-consumer.git'
-#alias cloneau='  cdco && gcln AdminUI.git'
-
-alias clonedisp=' cdco && gcln dispatcher'
-
-alias renewsc='   cdco && [[ -d smartconnect ]]   && sudo mv -f smartconnect   hl/smartconnect_$(date '+%Y.%m.%d.%H.%M.%s')   && clonesc && cdsc && date; git branch -vv ; git log |head -7 '
-alias renewmr='   cdco && [[ -d mapping-rules ]]  && sudo mv -f mapping-rules  hl/mapping-rules_$(date '+%Y.%m.%d.%H.%M.%s')  && clonemr && cdmr && date; git branch -vv ; git log |head -7 '
-
-#alias renewmrs='  cdco && [[ -d mapping-rules-server ]]  && sudo mv -f mapping-rules-server  hl/mapping-rules-server$(date '+%Y.%m.%d.%H.%M.%s')  && clonemrs && cdmrs && date; git branch -vv ; git log |head -7 '
-alias renewkc='   cdco && [[ -d kafka-consumer ]] && sudo mv -f kafka-consumer hl/kafka-consumer_$(date '+%Y.%m.%d.%H.%M.%s') && clonekc && cdkc && date; git branch -vv ; git log |head -7 '
-#alias renewau='   cdco && [[ -d AdminUI ]] && sudo mv -f AdminUI hl/AdminUI_$(date '+%Y.%m.%d.%H.%M.%s')  && cloneau && cdau && date; git branch -vv ; git log |head -7 '
+alias clonexap='  cdco && gcln xap.git  '
+alias renewxap='  cdco && [[ -d xap ]]  && sudo mv -f xap   hl/xap_$(date '+%Y.%m.%d.%H.%M.%s')   && clonexap && cdxa && date; git branch -vv ; git log |head -7 '
 
 alias cdredis='   cd /usr/local/bin/redis; ls -ltr '
 # make avail $ rpm -qf /usr/local/bin/redis/redis.conf
@@ -1010,9 +1001,11 @@ alias echoe='echo "*** echo END_at: `date` " '
 alias echod='terminal-notifier -title "Terminal" -message "echo Done with task!" -open http://www.yahoo.com '
 
 # npm install commander; commander color: http://dailyjs.com/2012/03/08/unix-node-pipes/
-alias cblue=' $HOME/proj/nodejs/colour.js --blue'
-alias cgreen='$HOME/proj/nodejs/colour.js --green'
-alias cred='  $HOME/proj/nodejs/colour.js --red '
+alias cyellow=' $HOME/proj/nodejs/colour.js --yellow'
+alias camber='  $HOME/proj/nodejs/colour.js --amber'
+alias cblue='   $HOME/proj/nodejs/colour.js --blue'
+alias cgreen='  $HOME/proj/nodejs/colour.js --green'
+alias cred='    $HOME/proj/nodejs/colour.js --red '
 
 alias catvet='cat -vet '
 alias catco='egrep         -C1 [a-z]+ '
@@ -1407,7 +1400,7 @@ PRTGREENLATERN="10.172.73.188"
 
 ###
 
-IP_tftp="10.255.246.110"
+TFTP_IP="10.255.246.110"
 XMGR="96.118.36.213"
 
 hostY="96.119.225.204"
@@ -1420,41 +1413,52 @@ CPRO_24="$HOME/devices/cpe/cpro_24.json"
 CDEV_ec="$HOME/devices/cpe/cdev_ec.json"
 M1="10868CEA6D24"
 M2="044E5A9AE8EC"
+CDEV_IP="10.255.244.34"
 
 alias uipro='     open https://internet.xfinity.com/'
 alias uidev='     open https://internet.xfinity.com/'
-alias uistg='     open https://internet.staging.xfinity.com/'
+alias uistg='     echo SI_XPC_UID65/Csv1050xPC/Mac=10868CEA6D24; echo SI_XPC_UID49/Csv1050xPC CMMAC=5C8FE0A62F62; open https://internet.staging.xfinity.com/'
 
 alias jxm='       open https://jenkins.awsxpc.comcast.net/'
 alias owebex='    open https://icollaborate.webex.com/meet/henry_lamcomcast.com'
 alias twlog='     tail -f /rdklogs/logs/WEBPAlog.txt.0 '
 god () {          c=$1; c=${c:-red}; a=$2; a=${a:-core}; echo "color=$c, app=$a"; open http://repos.awsxpc.comcast.net/version/god_command_with_versions.py?color=$c\&app=$a ; }
-#alias apixpc='    open https://red.awsxpc.comcast.net/docs'
-alias apixpc='    open http://96.119.227.212:8080/docs/#!/v1'
-alias apiodp='    open http://96.118.27.12/docs/#!/v1'
+
+### Xmanage shows servers info
 alias oxmn='      open http://96.118.36.213:8000/api/v1/xmanage/env/list-new/odp-yellow '
 oxi () { c=$1; c=${c:-red} ; open    http://96.118.36.213:8000/api/v1/xmanage/env/list-new/$c ; }
 cxi () { c=$1; c=${c:-red} ; curl -s http://96.118.36.213:8000/api/v1/xmanage/env/list-new/$c | python -m json.tool ; }
-ipcore () {   echo red_list:    ; cxi | egrep -A4 "xpccore.*-[24]"|grep ip|cut -d: -f2|cat09 ; echo amber_list: ; cxi amber | egrep -A4 "xpccore.*-[24]"|grep ip|cut -d: -f2; echo yellow_list: ; cxi yellow | egrep -A4 "xpccore.*-[24]"|grep ip|cut -d: -f2 ; }
+ipcore () {   echo red_list:    ; cxi | egrep -A4 "xpccore.*-[24]"|grep ip|cut -d: -f2|cat09 ; echo amber_list: ; cxi amber | egrep -A4 "xpccore.*-[24]"|grep ip|cut -d: -f2|camber; echo yellow_list: ; cxi yellow | egrep -A4 "xpccore.*-[24]"|grep ip|cut -d: -f2|cyellow ; }
 ipcore13 () { echo yellow_list: ; cxi | egrep -A4 "xpccore.*-[13]"|grep ip|cut -d: -f2       ;  }
 
-odhreboot () {   m=$1; m=${m:-10868CEA6D24}; echo "GO: link Open; REBOOT: click Change Power State"; open http://dawg-house.cvs-a.ula.comcast.net:8080/dawg-house/webpa/?q=$m ; }
+ipcoreR () {   echo red_list:    ; cxi        | egrep -A4 "xpccore.*-[24]"|grep ip|cut -d: -f2|cred  ; }
+ipcoreA () {   echo amb_list:    ; cxi amber  | egrep -A4 "xpccore.*-[24]"|grep ip|cut -d: -f2|camber ; }
+ipcoreY () {   echo yel_list:    ; cxi yellow | egrep -A4 "xpccore.*-[24]"|grep ip|cut -d: -f2|cyellow ; }
+
+### reboot, upgrade firmware:
+rebootodh () {   m=$1; m=${m:-10868CEA6D24}; echo "1GO: link Open; 2MAC=$m right?; 3REBOOT: click Change Power State"; open http://dawg-house.cvs-a.ula.comcast.net:8080/dawg-house/webpa/?q=$m ; }
 alias odh='      open http://dawg-house.cvs-a.ula.comcast.net:8080/dawg-house/webpa/'
-alias oistool='  open https://istool'
+#alias oistool='  open https://istool'
 # hlam001c@cacsvlo-16686:~$ snmpget -v2c -c hDaFHJG7 10.255.244.80 1.3.6.1.2.1.1.1.0         | tr ';<<' '\n' | column -s: -t | grep SW_REV
 # SNMPv2-MIB::sysDescr.0 = STRING: ARRIS DOCSIS 3.0 / PacketCable 2.0 Touchstone Residential Gateway <<HW_REV: 7; VENDOR: ARRIS Group, Inc.; BOOTR: 4.2.0.39; SW_REV: 10.0.145B.SIP.PC20.CT_TG1682_2.3p8s1_PROD_sey; MODEL: TG1682G>>
+
+
+### cd
 alias sxa='      subl ~/checkouts/xap'
 alias sxt='      subl ~/checkouts/xpc-test'
 alias cdxa='     cd   ~/checkouts/xap'
 alias cdxt='     cd   ~/checkouts/xpc-test'
-alias cdxts='    cd   ~/checkouts/xap/smoketests/test_xpc/xpc_tests'
-fgxts () {       cdxts; grep -rin $* * ; }
+alias runat='    cd ~/checkouts/xpc-test/boxertest_client'
+alias cdst='     cd   ~/checkouts/xap/smoketests/'
+alias cdsts='    cd   ~/checkouts/xap/smoketests/test_xpc/xpc_tests'
+
+fgsts () {       cdsts; grep -rin $* * ; }
 
 # SAMPLE TO RUN SMOKETEST: python smoketest.py --mac 5C8FE07ED532 --cpe_ip 10.255.244.69 --log INFO --host 96.119.227.212:8080 --scheme http  --webpa https://scytale-rc.webpa.comcast.net:8090   --suites test_suites/xpc_tests/test_case_sns_notification
 # run smoketest_xpc.py to run xpc apis in xap repo
 alias obt='      open https://github.comcast.com/xpcs/xpc-test/tree/boxerclient/boxertest_client'
 
-alias oxts='     open https://github.comcast.com/xpcs/xap/tree/develop/smoketests/test_xpc/xpc_tests'
+alias osts='     open https://github.comcast.com/xpcs/xap/tree/develop/smoketests/test_xpc/xpc_tests'
 alias ost='      open https://github.comcast.com/xpcs/xap/tree/develop/smoketests'
 
 alias oxa='      open https://github.comcast.com/xpcs/xap'
@@ -1467,54 +1471,116 @@ alias cdev='     pjson  ~/devices/cpe/cdev_ec.json | right: '
 alias macp='     cpro | gc2 -i cmac'
 alias macd='     cdev | gc2 -i cmac'
 alias cdevip='   cdev | gc2 -i ip'
+alias telcdev='  echo "pwd=arristi"; telnet 10.255.244.34'
 
 gc2 () {         egrep $*|cut -d: -f2|tr ',\"' ' ' ; }
 gnem () {        egrep "name:|endpoint:|method:|eq__:" ; }
 
+### check association and get csid:
 #isAssociate () {   m=$1; m=${m:-10868CEA6D24}; python -c "import sys,json,os,requests; print json.loads(requests.get('http://96.119.227.212:8080/api/v1/gateway-cpe/$m/association',cert='./client.pem',verify=False).text)" ; }
+# $ curl -s -X GET http://$hostY:8080/api/v1/gateway-cpe/$M1/association|pjson
+delc () {          m=$1; h=$2; curl -s -X DELETE http://$h:8080/api/v1/gateway-cpe/$m               |pjson ; }
+isa () {           m=$1; h=$2; curl -s -X GET    http://$h:8080/api/v1/gateway-cpe/$m/association   |pjson ; }
 isA () {           m=$1; m=${m:-10868CEA6D24}; h=$2; h=${h:-96.119.227.212}; u="http://$h:8080/api/v1/gateway-cpe/$m/association"; echo The MAC $m association verified with URL $u; python -c "import sys,json,os,requests; resp = json.loads(requests.get('$u',cert='./client.pem',verify=False).text); print json.dumps(resp)" | python -m json.tool ; }
 gcsid () {       isA $1 $2 | gc2 csid ; }
 alias isAY='    isA $M1 $hostY'
 alias isAA='    isA $M1 $hostA'
 alias isAR='    isA $M1 $hostR'
+alias isA1='    isAY; isAA; isAR '
+alias isA2Y='   isA $M2 $hostY'
+alias isA2A='   isA $M2 $hostA'
+alias isA2R='   isA $M2 $hostR'
+alias isA2='    isA2Y; isA2A; isA2R '
+alias isAall='  isA1; isA2 '
+
 #gcsid () {      m=$1; m=${m:-10868CEA6D24}; h=$2; h=${h:-96.119.227.212}; u="http://$h:8080/api/v1/gateway-cpe/$m/association"; python -c "import sys,json,os,requests; resp = json.loads(requests.get('$u',cert='./client.pem',verify=False).text); print resp[\"data\"][\"xpc_csid\"] "  ; }
 gdata () {       m=$1; m=${m:-10868CEA6D24}; h=$2; h=${h:-96.119.227.212}; u="http://$h:8080/api/v1/gateway-cpe/$m/association"; python -c "import sys,json,os,requests; resp = json.loads(requests.get('$u',cert='./client.pem',verify=False).text); print resp[\"data\"] "  ; }
 
 
-
+### create new csid
 #create_csid () { h=$1; h=${h:-96.119.227.212:8080}; u="http://$h/api/v1/gateway-configset"; echo For host $h, creating CSID with  URL $u; python -c "import sys,json,os,requests; print json.loads(requests.post('$u', cert='./client.pem', verify=False ).text)  " ; }
 cr_csid () {    h=$1; h=${h:-96.119.227.212:8080}; u="http://$h/api/v1/gateway-configset"; echo "For host $h, creating CSID with  URL $u"; python -c "import sys,json,os,requests; resp= json.loads(requests.post('$u', cert='./client.pem', verify=False ).text) ; print json.dumps(resp, indent=4) " | python -m json.tool  ; }
 
+### onboarding
 alias onbY='py ~/onboard.py    $M1 $hostY'
 alias onbA='py ~/onboard.py    $M1 $hostA'
 alias onbR='py ~/onboard.py    $M1 $hostR'
 
+### clean_asso and csid
 alias cacY='py ~/clean_ac.py   $M1 $hostY'
 alias cacA='py ~/clean_ac.py   $M1 $hostA'
 alias cacR='py ~/clean_ac.py   $M1 $hostR'
 
+### func a, b, c for Asso, onB, Clean
 amh () {     m=$1; h=$2; isA                 $m  $h    ; }
 bmh () {     m=$1; h=$2; py ~/onboard.py     $m  $h    ; }
-dacmh () {   m=$1; h=$2; py ~/clean_ac.py    $m  $h    ; }
+cacmh () {   m=$1; h=$2; py ~/clean_ac.py    $m  $h    ; }
 
-alias modIP='   echo General_Applications_NetworkModems and CM_MAC ; open http://ip-edge-portal.cable.comcast.com/login.php'
+### Modem device info
+alias modIP='   echo "View cpro_24 device info at: General>Apps>NW modems and CM_MAC" ; open http://ip-edge-portal.cable.comcast.com/login.php'
 
-alias remider_endSprint='echo "Check https://jenkins.awsxpc.comcast.net/view/red/job/smoketest-n-on-red* , or amber* , to find at least 1 job of N level, actually PASSED, before going to the next sprint" '
+### reminders
+alias reminder_Mon_Yel='echo reminder_Mon_Yellow'
+alias reminder_Wed_Gre='echo reminder_Wed_Green'
+alias reminder_endSprint='echo "Check https://jenkins.awsxpc.comcast.net/view/red/job/smoketest-n-on-red* , or amber* , to find at least 1 job of N level, actually PASSED, before going to the next sprint" '
 
+### firmware and tftp
 alias sshtftp=' ssh root@10.255.246.110 '
 alias vikey='   echo "Add in key of id_rsa.pub for non-pwd login"; vi ~/.ssh/authorized_keys'
 alias lfw='     ls -ltra /var/www/html/images'
 
-
+### clduser
 #alias sshcld='   ssh clduser@96.118.61.26'
 #ssh -i ~/.ssh/xpc-openstack-key.txt clduser@96.118.30.93 -t "date; hostname; sudo tail /var/log/yum.log"
-coresha () { coreip=$1; coreip=${coreip:-96.118.57.13}; ssh -i ~/.ssh/xpc-openstack-key.txt clduser@$coreip -t "echo `seq  -f = -s '' 20 `; date; hostname; sudo tail -4 /var/log/yum.log" ; }
-csha () { coreip=$1; coreip=${coreip:-96.118.57.13}; ssh -i ~/.ssh/xpc-openstack-key.txt clduser@$coreip -t "echo `seq  -f = -s '' 20 `; date; hostname; yum info xap      " ; }
 
-alias shared='for i in 57.11 57.13 27.110 30.93 ; do coresha 96.118.$i ; done '
+### SHA: github and red_core
+coresha () {   coreip=$1; coreip=${coreip:-96.118.57.13}; ssh -i ~/.ssh/xpc-openstack-key.txt clduser@$coreip -t "echo `seq  -f = -s '' 20 `; date; hostname; sudo tail -4 /var/log/yum.log" ; }
+csha () {      coreip=$1; coreip=${coreip:-96.118.57.13}; ssh -i ~/.ssh/xpc-openstack-key.txt clduser@$coreip -t "echo `seq  -f = -s '' 20 `; date; hostname; yum info xap      " ; }
+
+alias shared=' for i in 57.11 57.13 27.110 30.93 ; do coresha 96.118.$i ; done '
 #alias shared='for i in 96.119.227.212 96.119.227.195  96.119.245.37  96.119.243.238  96.118.23.51  96.118.30.94 ; do coresha $i ; done '
 #alias shaamb='for i in ` cxi amber | egrep -A4 "core.*-[24]d-"|grep ip|cut -d: -f2|tr ',\"\\n' ' ' ` ; do coresha $i ; done '
 
-g_c () {    git pull 2> /dev/null; commit=$1; commit=${commit:-1}; gc=`git log -p -$commit | grep commit|cut -c8-14`; echo "GitHub xap repos: SHA=$gc"; echo; for i in 57.11 57.13 27.110 30.93 ; do echo -n red_core_96.118.$i: SHA=; cc=`curl -s 96.118.$i:8080/api/v1/version|pjson|grep commit|tr ',\"' ' '|cut -d. -f4`; echo  $cc ; [ $gc != $cc ] && echo ">>>> NOT_matched `date` <<< " && echo ; done ; }
+#g_c () {       git pull 2> /dev/null; commit=$1; commit=${commit:-1}; gc=`git log -p -$commit | grep commit|cut -c8-14`; echo "GitHub xap repos: SHA=$gc"; echo; for i in 57.11 57.13 27.110 30.93 ; do echo -n red_core_96.118.$i: SHA=; cc=`curl -s 96.118.$i:8080/api/v1/version|pjson|grep commit|tr ',\"' ' '|cut -d. -f4`; echo  $cc ; [ $gc != $cc ] && echo ">>>> NOT_matched `date` <<< " && echo ; done ; }
+g_c () {       git pull 2> /dev/null; commit=$1; commit=${commit:-1}; gc=`git log -p -$commit | grep commit|cut -c8-14`; echo "GitHub xap repos: SHA=$gc"; echo; for i in $licR ; do echo -n red_core_$i: SHA=; cc=`curl -s $i:8080/api/v1/version|pjson|grep commit|tr ',\"' ' '|cut -d. -f4`; echo  $cc ; [ $gc != $cc ] && echo ">>>> NOT_matched `date` <<< " && echo ; done ; }
+g_cA () {      git pull 2> /dev/null; commit=$1; commit=${commit:-1}; gc=`git log -p -$commit | grep commit|cut -c8-14`; echo "GitHub xap repos: SHA=$gc"; echo; for i in $licA ; do echo -n amb_core_$i: SHA=; cc=`curl -s $i:8080/api/v1/version|pjson|grep commit|tr ',\"' ' '|cut -d. -f4`; echo  $cc ; [ $gc != $cc ] && echo ">>>> NOT_matched `date` <<< " && echo ; done ; }
 
-alias telcdev='echo "pwd=arristi"; telnet 10.255.244.34'
+### boxer
+alias cdbx='   cdco; cd boxer; pwd; ls -ltr'
+alias insboxer='cdbx  ; echo Python s/b 2.7; python setup.py develop'
+
+### get version
+
+gver () {      h=$1; curl -s -X GET http://$h:8080/api/v1/version|pjson|gc2 commit ; }
+licR="96.118.57.11   96.118.57.13   96.118.27.110 96.118.30.93"
+licA="96.119.227.212 96.119.227.195 96.119.245.37 96.119.243.238 96.118.23.51   96.118.30.94"
+licY="96.119.225.204 96.119.228.79  96.118.16.114 96.118.165.225 96.118.185.219"
+#verR () {      for h in 96.118.57.11   96.118.57.13   96.118.27.110 96.118.30.93 ; do echo -n "red_core_$i: "; gver $h ; echo; done ; }
+verR () {      for h in $licR ; do echo -n "red_core_$i: "; gver $h ; echo; done ; }
+verA () {      for h in $licA ; do echo -n "amb_core_$i: "; gver $h ; echo; done ; }
+verY () {      for h in $licY ; do echo -n "yel_core_$i: "; gver $h ; echo; done ; }
+
+### API
+#alias apixpc='    open https://red.awsxpc.comcast.net/docs'
+alias apixpc='    open http://96.119.227.212:8080/docs/#!/v1'
+alias apiodp='    open http://96.118.27.12/docs/#!/v1'
+oah () {      h=$1; open           http://$h:8080/docs ; }
+cah () {      h=$1; curl -s -X GET http://$h:8080/docs/api-docs/api/v1|pjson|grep path  ; }
+
+### CPE configuration
+isc () {           m=$1; h=$2; curl -s -X GET    http://$h:8080/api/v1/gateway-cpe/$m/configuration    |pjson ; }
+
+### API
+acs () {          m=$1; h=$2; curl -s -X GET    http://$h:8080/api/v1/gateway-configset               |pjson ; }
+aws () {          m=$1; h=$2; curl -s -X GET    http://$h:8080/api/v1/gateway-cpe/$m/webpa_stat       |pjson ; }
+adc () {          m=$1; h=$2; curl -s -X GET    http://$h:8080/api/v1/gateway-cpe/$m/device_class     |pjson ; }
+agw () {          m=$1; h=$2; curl -s -X GET    http://$h:8080/api/v1/gateway-cpe/$m/gateways         |pjson ; }
+ain () {          m=$1; h=$2; curl -s -X GET    http://$h:8080/api/v1/gateway-cpe/$m/initialization   |pjson ; }
+asi () {          m=$1; h=$2; curl -s -X GET    http://$h:8080/api/v1/gateway-cpe/$m/sync_info        |pjson ; }
+awp () {          m=$1; h=$2; curl -s -X GET    http://$h:8080/api/v1/gateway-cpe/$m/wifi_personalization |pjson ; }
+apf () {          m=$1; h=$2; curl -s -X GET    http://$h:8080/api/v1/gateway-cpe/$m/post-factory-reset-action |pjson ; }
+
+
+# run with $M2 and cdev_ip, test N on Red N-1, ex: https://jenkins.awsxpc.comcast.net/view/Monitor/job/smoketest-n-on-red-n-1/60817/consoleFull
+# hlam001c@cacsvlo-16686:~/checkouts/xpc-test/boxertest_client$ /usr/bin/python2.7 smoketest-xpc.py --log INFO --scheme https --host red.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34  --suites xpc_tests/sanity
+
