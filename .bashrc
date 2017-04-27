@@ -734,7 +734,8 @@ frevStrInBASH () { for ((i=${#1}; i>=0; i--)); do printf "${1:$i:1}"; done; echo
 
 ### Explo, Goo.gl
 
-#alias timesh='    explorer.exe  http://budget.cable.comcast.com'
+alias timesh='    explorer.exe  http://budget.cable.comcast.com'
+alias adp='       ech2 adphenrylam a.save34; explorer.exe  http://myaccess.adp.com'
 
 alias sjpl='      ech2 h_21197103670765; ech2 v_21197903329406; explo http://discover.sjlibrary.org/iii/encore_sjpl/myaccount'
 alias e_v='       explorer.exe  https://goo.gl/kY9EoV '
