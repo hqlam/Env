@@ -1,0 +1,370 @@
+cdM1="10868CEA6D24"
+M2="044E5A9AE8EC"
+M3="F44B2A77BF28"
+
+I2="10.255.244.34"
+I3="10.255.244.20"
+
+hostY="96.119.225.204"
+hostA="96.119.227.212"
+hostR="96.118.57.13"
+
+hostOY="96.118.58.243"
+hostOA="96.118.59.53"
+hostOR="96.118.61.32"
+
+licR="96.118.57.11     96.118.57.13   96.118.27.110  96.118.30.93"
+licA="96.119.227.212   96.119.227.195 96.119.245.37  96.119.243.238 96.118.23.51   96.118.30.94"
+licY="96.119.225.204   96.119.228.79  96.118.16.114  96.118.165.225 96.118.185.219"
+licX="96.118.57.11     96.118.57.13   96.118.27.110  96.118.30.93   96.119.227.212 96.119.227.195 96.119.245.37 96.119.243.238 96.118.23.51  96.118.30.94 96.119.225.204 96.119.228.79  96.118.16.114   96.118.165.225 96.118.185.219"
+
+lic13R="96.118.57.10   96.118.57.12   96.118.27.107  96.118.27.106"
+lic13A="96.119.227.189 96.119.227.222 96.119.245.35  96.119.243.237 96.118.23.53   96.118.23.52  "
+lic13Y="96.119.225.205 96.119.224.255 96.118.16.113  96.118.16.111  96.118.165.224 96.118.172.88 "
+
+licOR="96.118.61.32    96.118.61.37   96.118.27.90   96.118.16.126"
+licOA="96.118.59.53    96.118.51.38   96.119.224.83  96.119.224.71  96.118.28.58   96.118.28.60"
+licOY="96.118.58.243   96.118.59.240  96.119.228.102 96.118.167.133 96.118.190.181"
+licO="96.118.61.32     96.118.61.37   96.118.27.90   96.118.16.126  96.118.59.53   96.118.51.38   96.119.224.83 96.119.224.71  96.118.28.58  96.118.28.60 96.118.58.243  96.118.59.240  96.119.228.102  96.118.167.133 96.118.190.181"
+
+
+#├── sns
+tcx101="sns_notification_nb.boxersuite"
+tcx102="test_case_sns_notification.xlsx"
+#├── sync
+tcx201="sync_lite"
+tcx202="test_case_sync.boxersuite"
+tcx203="test_case_sync.xlsx"
+#├── test_case_celery_task
+tcx201="test_case_celery_task.boxersuite"
+#├── xmanage
+tcx301="test_case_configs.boxersuite"
+tcx301="test_case_monitor.boxersuite"
+tcx301="test_case_service.boxersuite"
+#├── xpc_tests
+tcx501="sanity"
+tcx502="test_case_all_onboard"
+tcx503="test_case_cirrent_cmmac_positive"
+tcx504="test_case_configset"
+tcx505="test_case_emptyconfig"
+tcx506="test_case_forget_device"
+tcx507="test_case_group_bridge_mode_configuration"
+tcx508="test_case_group_cpe_information_onboard"
+tcx509="test_case_group_private_network_ethernet_statistics_onboard"
+tcx510="test_case_group_private_wifi_statistics_onboard"
+tcx511="test_case_group_reporting"
+tcx512="test_case_lan_positive"
+tcx513="test_case_moca"
+tcx514="test_case_multigroup_onboard"
+tcx515="test_case_operational_group_connected_device_info_onboard"
+tcx516="test_case_radio_2g_positive"
+tcx517="test_case_radio_5g_positive"
+tcx518="test_case_table_mac_address_binding"
+tcx519="test_case_table_portforward"
+tcx520="test_case_unicode"
+tcx521="test_case_wan_onboard"
+tcx522="test_case_wifi_positive"
+#--suites xpc_tests/test_case_multigroup_onboard,xpc_tests/test_case_operational_group_connected_device_info_onboard,
+# xpc_tests/test_case_radio_2g_positive,
+# xpc_tests/test_case_radio_5g_positive,
+# xpc_tests/test_case_table_mac_address_binding,
+# xpc_tests/test_case_table_portforward,
+# xpc_tests/test_case_unicode,
+# xpc_tests/test_case_wan_onboard,xpc_tests/test_case_wifi_positive,
+# xpc_tests/test_case_group_radio_2g_onboard,
+# xpc_tests/test_case_all_onboard,
+# xpc_tests/test_case_cirrent_cmmac_positive,
+# xpc_tests/test_case_configset_wifi_security,
+# xpc_tests/test_case_new_emptyconfig_onboard,
+# xpc_tests/test_case_forget_device,
+# xpc_tests/test_case_group_bridge_mode_configuration,
+# xpc_tests/test_case_group_cpe_information_onboard,
+# xpc_tests/test_case_group_private_network_ethernet_statistics_onboard,
+# xpc_tests/test_case_group_private_wifi_statistics_onboard,
+# xpc_tests/test_case_group_reporting,
+# xpc_tests/test_case_lan_positive,
+# xpc_tests/test_case_moca
+#└── xpc_tests_negative
+tcx601="test_case_bridge_mode_negative"
+tcx602="test_case_cirrent_cmmac_negative.boxersuite"
+tcx603="test_case_emptyconfig_negative.boxersuite"
+tcx604="test_case_group_lan_negative.boxersuite"
+tcx605="test_case_group_lan_negative.xlsx"
+tcx606="test_case_group_lan_onboard_neg.boxersuite"
+tcx607="test_case_group_lan_onboard_neg.xlsx"
+tcx608="test_case_group_radio_2g_negative.boxersuite"
+tcx609="test_case_group_radio_2g_negative.xlsx"
+tcx610="test_case_group_radio_2g_onboard_neg.boxersuite"
+tcx611="test_case_group_radio_2g_onboard_neg.xlsx"
+tcx612="test_case_group_radio_5g_negative.boxersuite"
+tcx613="test_case_group_radio_5g_negative.xlsx"
+tcx614="test_case_group_radio_5g_onboard_neg.boxersuite"
+tcx615="test_case_group_radio_5g_onboard_neg.xlsx"
+tcx616="test_case_group_wifi_negative.boxersuite"
+tcx617="test_case_group_wifi_negative.xlsx"
+tcx618="test_case_group_wifi_onboard_neg.boxersuite"
+tcx619="test_case_group_wifi_onboard_neg.xlsx"
+tcx620="test_case_table_create_configset.xlsx"
+tcx621="test_case_table_mac_binding_neg.boxersuite"
+tcx622="test_case_table_mac_binding_neg.json"
+tcx623="test_case_table_portforward_neg.boxersuite"
+tcx624="test_case_table_portforward_neg.json"
+
+# ### test_odp:
+
+# tco1="connected_devices_smoke.boxersuite"
+# ├── device.boxersuite
+# ├── device_aging_smoke.boxersuite
+# ├── device_identity.boxersuite
+# ├── device_management_smoke.boxersuite
+# ├── device_management_using_device_mac.boxersuite
+# ├── device_metrics_smoke.boxersuite
+# ├── device_periodic_reports.boxersuite
+# ├── device_status_consumer_smoke.boxersuite
+# ├── device_traffic_consumer_smoke.boxersuite
+# ├── forget_device_smoke.boxersuite
+# ├── host_sync_notification.boxersuite
+# ├── interface_wifi_consumer_smoke.boxersuite
+# ├── no_connected_devices_smoke.boxersuite
+# ├── notification_device_host_consumer_smoke.boxersuite
+# ├── sns_internal_smoke.boxersuite
+# ├── sns_notification.boxersuite
+# ├── tc_cd_validmac.boxertest
+# ├── tc_dm_invalid_devicemac.boxertest
+# ├── tc_dm_invalid_interfacemac.boxertest
+# ├── tc_dm_invalid_interfacetype.boxertest
+# ├── tc_dm_invalid_networktype.boxertest
+# ├── tc_dm_invalid_times.boxertest
+# ├── tc_dm_no_params.boxertest
+# ├── tc_dm_only_devicemac.boxertest
+# ├── tc_dm_only_interfacemac.boxertest
+# ├── tc_dm_only_interfacetype.boxertest
+# ├── tc_dm_only_networktype.boxertest
+# ├── tc_dm_only_times.boxertest
+# ├── tc_dm_with_params.boxertest
+# #├── test_case_basic_scheduler
+# │   ├── test_case_device_mgmt_cancel_restore_inside_schedule.boxersuite
+# │   ├── test_case_device_mgmt_cancel_restore_outside_schedule.boxersuite
+# │   ├── test_case_device_mgmt_create_bedtime_schedule.boxersuite
+# │   ├── test_case_device_mgmt_get_default_states.boxersuite
+# │   ├── test_case_device_mgmt_ondemand_allow.boxersuite
+# │   ├── test_case_device_mgmt_ondemand_block.boxersuite
+# │   ├── test_case_device_mgmt_update_bedtime_schedule.boxersuite
+# │   ├── test_case_device_mgmt_wakeup.boxersuite
+# │   └── test_case_device_mgmt_wakeup_duration.boxersuite
+# #├── test_case_celery_task
+# │   └── test_case_celery_task.boxersuite
+# #├── test_case_device_summary
+# │   ├── test_case_connected_devices.boxersuite
+# │   ├── test_case_forget_device.boxersuite
+# │   ├── test_case_no_connected_devices.boxersuite
+# │   └── test_case_sns_internal.boxersuite
+# #├── test_case_group_scheduler
+# │   ├── test_case_group_cancel_restore_inside_schedule.boxersuite
+# │   ├── test_case_group_cancel_restore_outside_schedule.boxersuite
+# │   ├── test_case_group_create_bedtime_schedule.boxersuite
+# │   ├── test_case_group_ondemand_allow.boxersuite
+# │   ├── test_case_group_ondemand_block.boxersuite
+# │   ├── test_case_group_update_bedtime_schedule.boxersuite
+# │   ├── test_case_group_wakeup.boxersuite
+# │   └── test_case_group_wakeup_duration.boxersuite
+# #├── test_case_xdns
+# │   ├── test_case_reset_cpe_device_xdns_policy.boxersuite
+# │   ├── test_case_reset_cpe_xdns_policy.boxersuite
+# │   ├── test_case_reset_device_xdns_policy.boxersuite
+# │   ├── test_case_set_cpe_xdns_policy.boxersuite
+# │   └── test_case_set_device_xdns_policy.boxersuite
+# #├── v2
+# #│   ├── sanity_scheduler
+# #│   ├── test_case_basic_scheduler
+# #│   ├── test_case_group_scheduler
+# #│   ├── test_case_negative_scheduler
+# #│   └── test_case_xdns
+# ├── version_build.boxersuite
+# └── wifi_metrics_smoke.boxersuite
+
+# M2 ; forget_device
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host red.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090   --mac 044E5A9AE8EC --cpe_ip 10.255.244.34  --smoketest_header X-Xpc-Test=smoketests-nb-n-1 --suites xpc_tests/test_case_forget_device
+
+# M2 ; host 96.118.57.13:8080 ; forget_device
+#python2.7 smoketest-xpc.py --log INFO --scheme http --host 96.118.57.13:8080 --webpa https://api.webpa.comcast.net:8090         --mac 044E5A9AE8EC --cpe_ip 10.255.244.34                                                  --suites xpc_tests/test_case_forget_device
+
+
+# yellow
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host yellow.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 9C34263F9CC8 --cpe_ip 10.255.244.149 --suites xpc_tests/sanity
+
+#python2.7 smoketest-xpc.py --log INFO --scheme http  --host 96.119.225.204:8080        --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34  --suites xpc_tests/test_case_group_private_wifi_statistics_onboard
+#python2.7 smoketest-xpc.py --log INFO --scheme http  --host 96.119.225.204:8080        --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34  --suites xpc_tests
+
+# Red sync smktest failed due to bad cpe 040617, resun with cdev M2
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host red.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 14CFE2146392 --cpe_ip 10.255.244.57 --suites sync
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host red.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34 --suites sync
+
+# N-1 Red N , job 30276
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host red.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 3C7A8A3328C8 --cpe_ip 10.255.244.6 --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests/sanity
+#python2.7 smoketest-xpc.py --log INFO --scheme http  --host 96.118.57.13:8080      --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34  --suites xpc_tests/sanity
+
+# n-1 Red n
+#python2.7 smoketest-xpc.py --log INFO --scheme http  --host 96.118.57.13:8080       --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34    --suites xpc_tests
+
+# n Red n-1
+#python2.7 smoketest-xpc.py --log INFO --scheme http  --host 96.118.57.13:8080       --webpa https://api.webpa.comcast.net:8090  --mac 044E5A9AE8EC --cpe_ip 10.255.244.34   --suites xpc_tests/test_case_table_portforwarding
+
+# n-1 Amber n-1 job 52168, M2
+#python2.7 smoketest-xpc.py --log INFO --scheme http --host 96.119.227.212:8080      --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34   --suites xpc_tests/test_case_forget_device
+
+# n-1 amber n-1 job 52185
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host amber.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 3C7A8A3769C4 --cpe_ip 10.255.244.5 --smoketest_header X-Xpc-Test=smoketests-nb-n-1 --suites xpc_tests/test_case_forget_device
+
+# n-1 amber n, job 42428 on M2
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host red.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 5C8FE0A1BE32 --cpe_ip 10.255.244.126 --enable_graph_report True --enable_report True --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests
+#python2.7 smoketest-xpc.py --log INFO --scheme http   --host 96.118.57.13:8080      --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34    --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests/sanity
+
+# n-1 red n 31028
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host red.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 3C7A8A3328C8 --cpe_ip 10.255.244.6    --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests
+#python2.7 smoketest-xpc.py --log INFO  --scheme http  --host 96.118.57.13:8080     --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34   --smoketest_header X-Xpc-Test=smoketests-nb-N   --suites xpc_tests/test_case_unicode_onboard
+
+#smoketest-n-on-red-n-1		64758	test_case_unicode_onboard XPC unicode passphrase onboard test in Boxer		no need to delete the record of this CPE	rerun local	
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host red.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 3C7A8A32A3E4 --cpe_ip 10.255.244.111 --smoketest_header X-Xpc-Test=smoketests-nb-n-1 --suites xpc_tests
+#python2.7 smoketest-xpc.py  --log INFO --scheme http  --host 96.118.57.13:8080     --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34  --smoketest_header X-Xpc-Test=smoketests-nb-n-1 --suites xpc_tests/test_case_unicode
+
+# smoketest-n-1-on-amber-n		43759	test_case_table_portforward	521	dev not found
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host amber.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 3C7A8A376B54 --cpe_ip 10.255.244.112 --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests
+#python2.7 smoketest-xpc.py --log INFO --scheme http --host 96.119.227.212:8080     --webpa https://api.webpa.comcast.net:8090 --mac F44B2A77BF28 --cpe_ip 10.255.244.20     --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests/test_case_table_portforward
+
+
+#smoketest-scheduler-v2		11034	est_case_group_wakeup	202	action': 'set_bedtime POST did not pass		rerun M2
+#python2.7 smoketest-odp.py --log INFO --scheme http --host 96.118.16.126:8080 --webpa https://api.webpa.comcast.net:8090 --mac F44B2A77BCCB --cpe_ip 2001:558:4000:1a:764b:2aff:fe77:bccb --service xap --api_prefix /api/v2 --enable_report True --suites v2/sanity_scheduler
+#python2.7 smoketest-odp.py --log INFO --scheme http --host 96.118.16.126:8080 --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34 --service xap --api_prefix /api/v2 --enable_report True --suites v2/sanity_scheduler
+
+
+#smoketest-n-1-on-amber-n		43777	test_case_group_reporting	500	no SELECT permission @ gateway-cpe/3C7A8A376B54/association [DELETE]		rerun M3
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host amber.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 3C7A8A376B54 --cpe_ip 10.255.244.112 --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests
+#python2.7 smoketest-xpc.py --log INFO --scheme http --host 96.119.227.212:8080 --webpa https://api.webpa.comcast.net:8090 --mac F44B2A77BF28 --cpe_ip 10.255.244.20 --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests/test_case_group_reporting
+
+
+#smoketest-n-1-on-amber-n		43781	test_case_group_bridge_mode_configuration	500	User xpcuser has no MODIFY permission on <table xpc.radio_ssid_config>		rerun
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host amber.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 3C7A8A376B54 --cpe_ip 10.255.244.112 --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests
+#python2.7 smoketest-xpc.py --log INFO --scheme http --host 96.119.227.212:8080     --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34  --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests/test_case_group_bridge_mode_configuration
+
+#smoketest-n-1-on-amber-n-1		52839	test_case_forget_device	503	resp timeout @ portforwarding_configuration_table [POST]		rerun M2
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host amber.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 3C7A8A3769C4 --cpe_ip 10.255.244.5 --smoketest_header X-Xpc-Test=smoketests-nb-n-1 --suites xpc_tests
+#python2.7 smoketest-xpc.py --log INFO --scheme http --host 96.119.227.189:8080    --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34 --smoketest_header X-Xpc-Test=smoketests-nb-n-1 --suites xpc_tests/test_case_forget_device
+
+#smoketest-n-1-on-amber-n	43791	test_case_group_radio_2g_positive	500	xpcuser has no MODIFY permission on <table xpc.csid>
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host amber.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 3C7A8A376B54 --cpe_ip 10.255.244.112 --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests
+#python2.7 smoketest-xpc.py --log INFO --scheme http  --host 96.119.227.212:8080  --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34 --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests/sanity
+
+#smoketest-n-1-on-amber-n-1		52855	test_case_forget_device	503	Response timeout @ portforwarding_configuration_table [POST] 
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host amber.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 3C7A8A3769C4 --cpe_ip 10.255.244.5 --smoketest_header X-Xpc-Test=smoketests-nb-n-1 --suites xpc_tests
+#python2.7 smoketest-xpc.py --log INFO --scheme http  --host 96.119.227.212:8080  --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34 --smoketest_header X-Xpc-Test=smoketests-nb-n-1 --suites xpc_tests/test_case_forget_device
+
+
+#smoketest-n-on-red-n			sanity	503	resp timeout		local M2
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host red.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 5C8FE0A1BE32 --cpe_ip 10.255.244.126 --enable_graph_report True --enable_report True --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests
+#python2.7 smoketest-xpc.py --log INFO --scheme http  --host 96.118.57.13:8080 --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34 --enable_graph_report True --enable_report True --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests/sanity
+
+#smoketest-n-on-amber-n-1		51650	test_case_moca	404
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host amber.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 5C8FE09E07CE --cpe_ip 10.255.244.64 --smoketest_header X-Xpc-Test=smoketests-nb-n-1 --suites xpc_tests
+#python2.7 smoketest-xpc.py --log INFO --scheme http  --host 96.119.227.222:8080 --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34 --smoketest_header X-Xpc-Test=smoketests-nb-n-1 --suites xpc_tests/test_case_moca
+
+#smoketest-n-on-red-n 46769	test_case_lan	500	webpa set failure status:552 message:Atomic Set failed', u'error_code': 5012}		local M2:  
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host red.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 5C8FE0A1BE32 --cpe_ip 10.255.244.126 --enable_graph_report True --enable_report True --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests
+#python2.7 smoketest-xpc.py --log INFO --scheme http  --host 96.118.57.13:8080 --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34 --enable_graph_report True --enable_report True --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests/test_case_lan_positive
+
+#smoketest-n-on-red-n/46776/
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host red.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 5C8FE0A1BE32 --cpe_ip 10.255.244.126 --enable_graph_report True --enable_report True --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests
+#python2.7 smoketest-xpc.py --log INFO  --scheme http  --host 96.118.57.13:8080 --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34 --enable_graph_report True --enable_report True --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests/test_case_all_onboard
+
+
+# https://jenkins.awsxpc.comcast.net/view/Monitor/job/smoketest-on-yellow/65757/consoleFull test_case_group_bridge_mode_configuration
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host uiorchyellow.g.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 14CFE2146492 --cpe_ip 10.255.244.85 --enable_graph_report True --enable_report True --suites xpc_tests
+#python2.7 smoketest-xpc.py --log INFO --scheme http --host 96.119.225.204:8080 --webpa https://api.webpa.comcast.net:8090 --mac F44B2A77BF28 --cpe_ip 10.255.244.20 --enable_graph_report True --enable_report True --suites xpc_tests/test_case_group_bridge_mode_configuration
+
+# https://jenkins.awsxpc.comcast.net/view/Monitor/job/smoketest-n-1-on-red-n/31211/consoleFull 31211	test_case_table_portforward	404	MAC not exist
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host red.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 3C7A8A3328C8 --cpe_ip 10.255.244.6 --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests
+#python2.7 smoketest-xpc.py --log INFO --scheme http  --host 96.118.57.13:8080  --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34 --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests/test_case_table_portforward
+
+#https://jenkins.awsxpc.comcast.net/view/yellow/job/smoketest-on-yellow/65796/console	none	none	Webpa not yet Ready to process Request		slacked Kevin CPE: --mac 14CFE2146492 --cpe_ip 10.255.244.85	rerun M2 mac=044E5A9AE8EC, ip=10.255.244.34
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host uiorchyellow.g.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 14CFE2146492 --cpe_ip 10.255.244.85 --enable_graph_report True --enable_report True --suites xpc_tests
+#python2.7 smoketest-xpc.py --log INFO --scheme http  --host 96.119.225.204:8080  --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34 --enable_graph_report True --enable_report True --suites xpc_tests
+
+#
+
+#Jenkins Monitor smoketest-scheduler-v2   11019
+#python2.7 smoketest-odp.py --log INFO --scheme http --host 96.118.16.126:8080 --webpa https://api.webpa.comcast.net:8090 --mac F44B2A77BCCB --cpe_ip 2001:558:4000:1a:764b:2aff:fe77:bccb --service xap --api_prefix /api/v2 --enable_report True --suites v2/sanity_scheduler,v2/test_case_basic_scheduler,v2/test_case_group_scheduler
+
+#test_case_basic_scheduler
+#96.119.228.111     odpcore-ch2f-1d-yellow
+#python2.7 smoketest-odp.py  --log INFO --scheme http --host 96.119.228.111:8080 --webpa https://api.webpa.comcast.net:8090 --mac F44B2A77BF28 --cpe_ip 10.255.244.20  --service xap --api_prefix /api/v2 --suites v2/test_case_basic_scheduler/test_case_device_mgmt_set_bedtime_and_wakeup.boxersuite
+#96.118.58.243      odpcore-asb-2d-yellow
+#python2.7 smoketest-odp.py  --log INFO --scheme http --host 96.118.58.243:8080 --webpa https://api.webpa.comcast.net:8090 --mac F44B2A77BF28 --cpe_ip 10.255.244.20  --service xap --api_prefix /api/v2 --suites v2/test_case_basic_scheduler/test_case_device_mgmt_set_bedtime_and_wakeup.boxersuite
+#for i in  $licOY     ; do echo;echo "###ip:$i ###";echo ; python2.7 smoketest-odp.py  --log INFO --scheme http --host $i:8080 --webpa https://api.webpa.comcast.net:8090 --mac F44B2A77BF28 --cpe_ip 10.255.244.20  --service xap --api_prefix /api/v2 --suites v2/test_case_basic_scheduler/test_case_device_mgmt_set_bedtime_and_wakeup.boxersuite; done
+
+#python2.7 smoketest-odp.py  --log INFO --scheme http --host 96.118.59.53:8080 --webpa https://api.webpa.comcast.net:8090 --mac F44B2A77BF28 --cpe_ip 10.255.244.20  --service xap --api_prefix /api/v2 --suites v2/test_case_basic_scheduler/test_case_device_mgmt_set_bedtime_and_wakeup.boxersuite
+#python2.7 smoketest-odp.py  --log INFO --scheme http --host 96.118.61.32:8080 --webpa https://api.webpa.comcast.net:8090 --mac F44B2A77BF28 --cpe_ip 10.255.244.20  --service xap --api_prefix /api/v2 --suites v2/test_case_basic_scheduler/test_case_device_mgmt_set_bedtime_and_wakeup.boxersuite
+
+#python2.7 smoketest-odp.py  --log INFO --scheme http --host 96.118.61.32:8080 --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34   --service xap --api_prefix /api/v2 --suites v2/test_case_basic_scheduler/test_case_device_mgmt_block_duration.boxersuite
+
+#python2.7 smoketest-odp.py  --log INFO --scheme http --host 96.118.61.32:8080 --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34   --service xap --api_prefix /api/v2 --suites v2/test_case_basic_scheduler/test_case_device_mgmt_cancel_restore_inside_schedule.boxersuite
+# python2.7 smoketest-odp.py  --log INFO --scheme http --host 96.118.61.32:8080 --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34   --service xap --api_prefix /api/v2 --suites v2/test_case_basic_scheduler/test_case_device_mgmt_cancel_restore_outside_schedule.boxersuite
+# python2.7 smoketest-odp.py  --log INFO --scheme http --host 96.118.61.32:8080 --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34   --service xap --api_prefix /api/v2 --suites v2/test_case_basic_scheduler/test_case_device_mgmt_get_default_states.boxersuite
+# python2.7 smoketest-odp.py  --log INFO --scheme http --host 96.118.61.32:8080 --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34   --service xap --api_prefix /api/v2 --suites v2/test_case_basic_scheduler/test_case_device_mgmt_ondemand_allow.boxersuite
+# python2.7 smoketest-odp.py  --log INFO --scheme http --host 96.118.61.32:8080 --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34   --service xap --api_prefix /api/v2 --suites v2/test_case_basic_scheduler/test_case_device_mgmt_ondemand_block.boxersuite
+#python2.7 smoketest-odp.py  --log INFO --scheme http --host 96.118.61.32:8080 --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34   --service xap --api_prefix /api/v2 --suites v2/test_case_basic_scheduler/test_case_device_mgmt_update_bedtime_schedule.boxersuite
+#python2.7 smoketest-odp.py  --log INFO --scheme http --host 96.118.61.32:8080 --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34   --service xap --api_prefix /api/v2 --suites v2/test_case_basic_scheduler/test_case_device_mgmt_wakeup_duration.boxersuite
+
+#sanity_sche
+#python2.7 smoketest-odp.py  --log INFO --scheme http --host 96.118.61.32:8080 --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34   --service xap --api_prefix /api/v2 --suites v2/sanity_scheduler
+
+#test_case_group_sche
+#python2.7 smoketest-odp.py  --log INFO --scheme http --host 96.118.61.32:8080 --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34   --service xap --api_prefix /api/v2 --suites v2/test_case_group_scheduler
+
+#test 202 v2
+#python2.7 smoketest-odp.py --log INFO --scheme http --host 96.118.61.32:8080 --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34  --service xap --api_prefix /api/v2 --enable_report True --suites v2/sanity_scheduler,v2/test_case_basic_scheduler,v2/test_case_group_scheduler
+
+### started on Mon 5/22/17 using ODPjenkins, job "All XPC Test jobs"
+
+#python2.7 smoketest-xpc.py --log INFO --scheme http --host 96.118.57.13:8080 --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34 --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests/test_case_moca
+
+# Green test_case_group_bridge_mode_configuration
+# python2.7 smoketest-xpc.py --log INFO --scheme https --host xpclb-ch2-01.sys.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac ACB3130362F2 --cpe_ip 2001:0558:4000:001a:2eb3:13ff:fe03:62f2 --suites xpc_tests
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host xpclb-ch2-01.sys.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 10868CEA6D24 --cpe_ip 2001:0558:4000:001a:1286:8cff:feea:6d24 --suites xpc_tests/test_case_group_bridge_mode_configuration
+# nrn 17.4.2-32.ac8a871 at: 2017-05-03 13:23:01
+
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host red.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac F44B2A77BBEF --cpe_ip 10.255.244.197 --enable_report False --enable_graph_report False --suites xpc_tests
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host red.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac $M3 --cpe_ip $I3 --enable_report False --enable_graph_report False --suites xpc_tests
+
+#python2.7 smoketest-xpc.py --log INFO --scheme https --host yellow.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac 5C8FE07ED512 --cpe_ip 10.255.244.133 --suites sns
+#python2.7 smoketest-xpc.py --log INFO --scheme http --host 96.119.225.204:8080 --webpa https://api.webpa.comcast.net:8090 --mac $M2 --cpe_ip $I2 --suites sns
+
+#python2.7 smoketest-xpc.py --log INFO --scheme http --host 96.118.57.12:8080 --webpa https://api.webpa.comcast.net:8090 --mac 14CFE21473A2 --cpe_ip 10.255.244.86 --enable_graph_report True --smoketest_header X-Xpc-Test=smoketests-nb-n-1 --suites xpc_tests
+#python2.7 smoketest-xpc.py --log INFO --scheme http --host 96.118.57.12:8080 --webpa https://api.webpa.comcast.net:8090 --mac 14CFE21473A2 --cpe_ip 10.255.244.86 --enable_graph_report True --smoketest_header X-Xpc-Test=smoketests-nb-n-1 --suites xpc_tests/test_case_wifi_positive_onboarding_with_home_security_group
+
+lbnrn="smoketest-xpc.py --log INFO --scheme https --host red.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac $M3 --cpe_ip $I3--enable_graph_report True --enable_report True --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests/test_case_group_bridge_mode_configuration"
+nrn="smoketest-xpc.py   --log INFO --scheme http  --host 96.118.57.13:8080      --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34 --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests/sanity" 
+
+lbnan="smoketest-xpc.py --log INFO --scheme https --host amber.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac $M3 --cpe_ip $I3 --enable_graph_report True --enable_report True --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests/sanity"
+nan="smoketest-xpc.py --log INFO --scheme http  --host 96.119.243.238:8080  --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34 --smoketest_header X-Xpc-Test=smoketests-nb-N --suites xpc_tests/sanity"
+
+lbstoy="smoketest-xpc.py --log INFO --scheme https --host uiorchyellow.g.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac $M2 --cpe_ip $I2--enable_graph_report True --enable_report True --suites xpc_tests/test_case_moca"
+stoy="smoketest-xpc.py   --log INFO --scheme http  --host 96.119.225.204:8080        --webpa https://api.webpa.comcast.net:8090 --mac $M3 --cpe_ip $I3           --suites xpc_tests/sanity"
+
+lbstog="smoketest-xpc.py --log INFO --scheme https --host xpclb-ch2-01.sys.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac $M3 --cpe_ip $I3 --suites xpc_tests/sanity"
+#python2.7 $lbnrn
+
+ssr="smoketest-xpc.py --log INFO --scheme https --host red.awsxpc.comcast.net     --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34 --suites sync"
+
+ssa="smoketest-xpc.py --log INFO --scheme https --host amber.awsxpc.comcast.net   --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34 --suites sync"
+
+ssy="smoketest-xpc.py --log INFO --scheme https --host uiorchyellow.g.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac $M3          --cpe_ip $I3 --suites sync/sync_lite"
+
+orv2R="smoketest-odp.py --log INFO --scheme http --host 96.118.27.89:8080 --webpa https://api.webpa.comcast.net:8090 --mac $M3 --cpe_ip $I3 --service xap --api_prefix /api/v2 --enable_report True --suites v2/test_case_basic_scheduler"
+
+snsY="smoketest-xpc.py --log INFO --scheme http  --host 96.119.225.204:8080 --webpa https://api.webpa.comcast.net:8090 --mac $M3 --cpe_ip $I3 --suites sns"
+#python2.7 $nrn && python2.7 $nan && 
+python2.7 $stoy
+ret=$?
+echo "Last execution returned as: $ret. Bye now"
+
+
