@@ -2721,3 +2721,7 @@ alias naca='      open https://www.netacad.com/group/landing/'
 alias godr='      open https://drive.google.com/drive/my-drive'
 alias cs50='      etud; naca; godr'
 
+# VI Making a list: :put =range(11,15) ; :$put =range(11,15) ; :123put =range(11,15); :0put =range(11,15)
+# :for i in range(1,10) | put ='192.168.0.'.i | endfor
+# http://vim.wikia.com/wiki/Making_a_list_of_numbers
+

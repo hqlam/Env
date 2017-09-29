@@ -1,0 +1,12 @@
+{
+	"group_private_wifi_configuration": {
+		"wifi_security_2g": 4,
+		"wifi_security_5g": 4,
+		"wifi_passphrase_2g": "Password1",
+		"ssid_name_5g": "5g_retry",
+		"ssid_enabled_5g": true,
+		"ssid_enabled_2g": true,
+		"ssid_name_2g": "2g_retry",
+		"wifi_passphrase_5g": "Password1"
+	}
+}

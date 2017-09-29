@@ -1,0 +1,12 @@
+{
+        "broadcast_ssid_2g": true,
+        "broadcast_ssid_5g": true,
+        "ssid_enabled_2g": true,
+        "ssid_enabled_5g": true,
+        "ssid_name_2g": "m2_2g_hdn",
+        "ssid_name_5g": "m2_5g_hdn",
+        "wifi_passphrase_2g": "Password1",
+        "wifi_passphrase_5g": "Password1",
+        "wifi_security_2g": 2,
+        "wifi_security_5g": 2
+    }
