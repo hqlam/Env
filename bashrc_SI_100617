@@ -1,0 +1,2511 @@
+
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
+
+export PS1="\u@\h:\w\\$ "
+export PATH=$PATH:.
+
+### HELPERS
+
+line () {      n=$1; n=${n:-80}; echo `seq  -f = -s '' $n ` ; }
+ech2 () {      echo;echo $* ; }
+alias h='      hostname | egrep  -C1 [a-z]+'
+alias hn='     h; ifconfig | gip '
+
+# Grep on history of cmd lines
+alias ht='     history | tail -20 '
+alias hist='   HISTTIMEFORMAT=%c'
+fgh  ()  {     HISTTIMEFORMAT=%c ; history | egrep $*  ; }
+
+fkp  () {      r=`ps -ef | grep $1 | grep -v grep |awk '{print $2}' ` ; if [ ! -z "$r" ]; then sudo kill  $r; fi ; }
+
+fgbC ()   {    grep -i "$1" $2 $3 $4  $HOME/checkouts/hl/Env/bashrc_CSV ;}
+fgbZ ()   {    grep -i "$1" $2 $3 $4  $HOME/checkouts/hl/Env/bashrc_ZBRA ;}
+fgbH ()   {    grep -i "$1" $2 $3 $4  $HOME/checkouts/hl/Env/bashrc_H    ;}
+alias vicC='   view   $HOME/checkouts/hl/Env/bashrc_CSV'
+alias vicZ='   view   $HOME/checkouts/hl/Env/bashrc_ZBRA'
+alias vicH='   view   $HOME/checkouts/hl/Env/bashrc_H   '
+# Grep on file .bashrc
+fgb  ()  {     egrep -i "$1" $2 $3 $4  $HOME/.bashrc ; }
+fgbi ()  {     egrep    "$1" $2 $3 $4  $HOME/.bashrc ; }
+
+alias vic='    vi        $HOME/.bashrc'
+alias soc='    h; source $HOME/.bashrc'
+alias soc0='   unalias -a && source $HOME/.bashrc '
+
+# aliases for core nodes
+alias vicore=' vi        $HOME/Help/bash_rcFiles/core_bashrc'
+alias vidbb='  vi        $HOME/Help/bash_rcFiles/db_bashrc'
+
+# smoketest drivers
+alias drx='    vih       $HOME/checkouts/xpc-test/boxertest_client/smoketest-xpc.py'
+alias dro='    vih       $HOME/checkouts/xpc-test/boxertest_client/smoketest-odp.py'
+
+# smoketest boxerconfig
+alias bcx='    subl     $HOME/checkouts/xpc-test/boxertest_client/config-xpc.boxerconfig'
+alias bco='    subl     $HOME/checkouts/xpc-test/boxertest_client/config-xap.boxerconfig'
+
+# vi Splunk searches: 
+alias visplunk='vi       $HOME/Help/splunk/hl_spl.txt '
+
+# scp bashrc to core hosts
+c2h () {       h=$1; scp $HOME/Help/bash_rcFiles/.core_bashrc  clduser@$h:~/ ; }
+h2c () {       h=$1; scp clduser@$h:~/.bashrc                  $HOME/Help/bash_rcFiles/.core_bashrc ; }
+b2b () {       h=$1; cp  $HOME/.bashrc                         $HOME/Help/bash_rcFiles/.bashrc ; }
+
+# core_bashrc to all hook nodes
+C2hk () {      for i in  $lhkR $lhkA $lhkY; do ech2 $h; c2h $i ; done ; } 
+
+alias grep='   grep    --color=auto'
+alias egrep='  egrep   --color=auto'
+#alias vifilerc='sudo vi /usr/share/vim/vimrc'
+
+vion () {      filename=$1; old="$2"; new=$3; vi -bc ":%s/$old/$new/c|:q" $filename ; }
+vid  () {      filename=$1; pat="$2";         vi -bc ":g/$pat/d|:q"       $filename ; }
+
+vin  () {      filename=$1; num=$2;           vi      +$num               $filename ; }
+vis  () {      filename=$1; pat=$2;           vi      +/$pat              $filename ; }
+
+vinh () {      runh "vin $1 $2" ; }
+vish () {      runh "vis $1 $2" ; }
+
+vics () {      vis $HOME/.bashrc $* ; }
+vih  () {      cmd=$*; bash $HOME/proj/shell/hterm.sh basic  vis $cmd ; }
+
+# Timing
+alias t1='     starttime=$(date +"%s")'
+alias t2='     date; echo seconds=$(($(date +"%s")-$starttime)) | egrep "=[0-9]+" '
+
+alias dateT='  date    "+%FT%T"'
+alias dateU='  date -u "+%FT%T"'
+
+datems () {    node -e 'console.log(new Date().getTime())' ; }
+alias now='    echo UTC: `dateU`|cat09; echo Now: `dateT`|cat09 '
+
+##  Print Json
+alias pjson='  python -m json.tool'
+
+### ALIASES_AND_FUNCTIONS
+
+# tcl expect
+sup () {       s=$1; u=$2; p=$3; ~/proj/tclex/ssh.exp $s $u $p ; }
+siup () {      echo IP + User + Pwd;  expect -c "set timeout 20; set user [lindex $argv 1]; set password [lindex $argv 2]; puts \"hello [lindex $argv 1] \"  " ; }
+
+# scp rsync cmds
+#96.118.54.192 $ scp  -i /opt/xpc-openstack-key.pem.cer /tmp/cpe_devices_summary$day.csv clduser@96.118.59.197:/tmp/
+#96.118.54.192 $ ssh  -i /opt/xpc-openstack-key.pem.cer  root@96.118.59.197 "rm -rf /tmp/cpe_devices_summary$day.csv"
+rsy () {       mid=$3; mid=${mid:-10.1.2.3}; tarhost=$1; f=$2; rsync -av -e "ssh $mid ssh" $tarhost:~/$f  ~/ ; }
+rsy2sdev () {  f=$1; p=$2; rsync -v $f  172.20.3.178:~/$p   ; }
+scpfsdev () {  pf=$*;      scp   -r hlam001c@172.20.3.178:~/$pf   . ; }
+
+# web share a local folder
+ipad () {      python -c 'import socket; print (socket.gethostbyname(socket.gethostname())); ' ; }
+webshare () {  p=$1; p=${p:-5777}; ech2 `ipad`:$p; python -m SimpleHTTPServer $p ; }
+alias pyshare='echo Will share at localhost port 8888; python -m SimpleHTTPServer 8888 & '
+
+alias ipdrop=' python $HOME/proj/py/iDropped.py |cat09'
+ipdr () {      python -c 'import socket; print ("IP=", socket.gethostbyname(socket.gethostname()) , "If IP==127.0.0.1, Then Internet connection was dropped."  ) ' ; }
+
+# cd cmds
+alias cdthum=' cd /Volumes && ls -ltr '
+alias cdapps=' cd /Applications/'
+
+alias cddesk=' cd $HOME/Desktop/'
+alias cddoc='  cd $HOME/Documents/'
+alias cddown=' cd $HOME/Downloads/'
+
+alias cddrop=' cd $HOME/Dropbox/; ls -ltra'
+alias cdbox='  cd $HOME/box_sync; ls -ltra'
+
+alias cdhelp=' cd $HOME/Help/;p'
+alias cdbash=' cd $HOME/Help/bash_rcFiles;p'
+alias cdDaniel='cd $HOME/Help/Daniel;p'
+alias cdsplunk='cd $HOME/Help/splunk;p'
+alias cdsi='   cd $HOME/Documents/si'
+
+alias cdlogs=' cd $HOME/logs/; ls -ltraF|tail'
+alias cdpy='   cd $HOME/proj/py'
+alias cdsh='   cd $HOME/proj/shell'
+
+alias oarch='  open /Users/hlam001c/Google\ Drive/cc/si/xpc/xpc_architecture.pptx '
+alias cddoca=' cd $HOME/Documents/si/api_docs; open $HOME/Documents/si/api_docs'
+alias cdbx='   cdco; cd boxer '
+
+alias cdco='   cd $HOME/checkouts;h'
+alias cdhl='   cd $HOME/checkouts/hl; llr '
+alias cdvb='   cd $HOME/checkouts/hl/verify_bugs; llr '
+alias cdtodo=' cd $HOME/checkouts/hl/todo       ; llr '
+alias cdenv='  cd $HOME/checkouts/hl/Env; llr '
+alias cddevop='cd $HOME/checkouts/xpc-testm/devops'
+alias cddevop='cd $HOME/checkouts/xpc-testm/devops'
+
+### TIG_COMMANDS
+#   brew install tig; tig --help; tig //current branch;
+#   tig  grep hlam; --all //allbranches; develop //a specific branch; ; test..develop //diff between; 
+#   tig  refs             //all references like branches, remotes and tags
+#   git  show |tig ; git log | tig;
+#   tig  blame file ; tig master ; tig test..master; tig myFile; tig v0.0.3:README
+alias t1w='       tig --all  --since=1.week -- '
+
+### GIT_COMMANDS
+
+gith () {         runh "git help $*" ; }
+
+# Save fragments: git stash; then later:  git stash pop; list; drop
+gitsc () {        commit=$1; git show                            $commit ; }
+
+alias d_h='       co_d && echo ****Develop: `git show develop|grep Date:` ; co_h && echo ****henry  : `git show henry  |grep Date:` '
+
+alias d_m='       co_d && echo ****Develop: `git show develop|grep Date:` ; co_m && echo ****Master : `git show master |grep Date:` '
+alias m_d='       co_m && echo ****Master : `git show master |grep Date:` ; co_d && echo ****Develop: `git show develop|grep Date:` '
+
+# git log --no-merges -p 1.12.0..v1.13.0 |egrep -A4 "^commit" # git log --since="2 days ago"
+gitlastcommit () { git pull; commit=$1; commit=${commit:-1}; git log -p -$commit ; }
+gitlastcom () {    git pull 2> /dev/null; commit=$1; commit=${commit:-1}; git log -p -$commit | egrep "commit [0-9a-f]{7}" |cut -c8-14 ; }
+
+# recent commits
+git1lmerge () {   git pull;                       git log --oneline --graph ; }
+gitoneline () {   git pull;                       git log --pretty=oneline ; }
+gitby () {        n=$1;                           git log --author=$n ; }
+
+# grep text from git_log
+gitgl () {        git pull;                       git log |egrep -i "$1" $2  ; }
+
+# Review history: show history of a file
+gitfilehist () {  f=$1 ; git pull;                git log -p -- $f ; }
+alias gitfilehist2='                              git log -p --since="7 days ago" '
+alias gitll='     echo "*LATEST LOG ... :";       git log |head -7;  echo '
+
+gitdirhist () {   git pull; for f in `ls`; do echo  `gitfilehist $f|head -5|grep Date` $f ; done ; }
+gitdirsort ()   { gitdirhist > ~/fh; cat ~/fh | sort -k 3 ; rm -f ~/fh ; }
+
+# file history with tig command
+catt () {         f=$1;  tig blame $f ; }
+gitbby () {       f=$1;  git blame $f |head -1 ; }
+
+# Diff the commit to its parents: git diff efe1243^! ; OR git diff --staged;
+gitdif () {       f=$1 ; git diff  $f ; }
+alias gitdiff='   git diff HEAD HEAD^1 ; git diff HEAD HEAD^1 --stat'
+alias gitmod='    git diff `git status|grep modified:|cut: -f2` '
+gitdirty () {     topic=$1;                             echo $topic; upstr=$2; git diff --name-status $topic $upstr ; }
+gitdirty1 () {    topic=`git branch|grep "*"|cuts -f2`; echo $topic; upstr=$1; git diff --name-status $topic $upstr ; }
+
+# status, branch, last log, last commit
+alias gits='      echo "    ****STATUS:";     git status; echo '
+alias gitb='      echo -ne "****BRANCH: \t "; git branch; echo '
+alias gitst='     echo "    ****BRANCH ...:"; git status; echo; git branch -vv; ech2 "****THE LATEST LOG ... :"; git log |head -7;  echo '
+
+alias cbr='                                   git branch | grep "*" | cuts -f2'
+
+alias gitallb='   echo "All branches: ";      git pull;          git branch -av; pwd'
+
+### git pull all
+alias gitp='      t1;  git pull;  t2 '
+fgitp () {        soc; for d in `ls ..`; do echo -n "**** $d : "; cd ../$d; gitp ; done ; }
+fgitb () {        soc; for d in `ls ..`; do echo -n "**** $d : "; cd ../$d; cbr  ; done ; }
+
+alias newxa='     cdxa   && gitp '
+alias newse='     cdse   && gitp'
+alias newxt='     cdxt   && gitp'
+alias newxtm='    cdxtm  && gitp'
+
+# reset upstream: git branch mamobile_fields_ivr --set-upstream-to origin/develop
+#                 git rebase upstream/master
+# alias gitpm='   git pull   origin master'
+# alias gitpd='   git pull   origin develop'
+alias gitpusho='  git push   origin ' 
+
+### XPC check-in process
+# add then commit new files; pull uptodate; git push origin henry_ticket_branch....
+# co_b henry && git reset --hard develop OR reset_b develop OR git checkout origin develop: to have same commit as develop && git push origin henry  to make branch "origin/henry" to have the same commit as "henry" 
+# ogp; New PR; set compare to base:"henry" v/s compare:henry_ticket_br; write note to reviewer; button "Create"; email to followup.
+
+### Branch create/checkout/delete/force_delete: -D 
+created2b () {    git checkout -b $1 origin/develop ; }
+createm2b () {    git checkout -b $1 origin/master  ; }
+createh2b () {    git checkout -b $1 origin/henry  ; }
+
+alias co_resetd=' git reset --hard origin/develop; date; gitst '
+alias co_reset='  git reset --hard;                date; gitst '
+reset_b () {      bORc=$1; git reset --hard  $bORc; git pull; date; gitst ; }
+
+delete_b () {     bORc=$1; git branch -d     $bORc; date; gitst ; }
+
+co_b () {         bORc=$1; bORc=${bORc:-master} && git checkout $bORc; date && echo ___NEW_PULL__&& git pull ; }
+alias co_d='      co_b develop '
+alias co_m='      co_b master '
+alias co_h='      co_b henry  '
+
+alias co_bx='     cdxt;    ech2 co_xt_boxerclient branch...; co_b boxerclient'
+alias co_ma='     cdxtm;   ech2 co_xt_master  branch...;     co_m '
+
+#alias co_henry='  cdxa;    pwd;cbr;ech2 co_henry       branch...; co_b henry      '
+
+alias co_resetd=' git reset --hard origin/develop; date; gitst '
+alias co_reset='  git reset --hard;                date; gitst '
+
+# merge develop
+alias gitmd='line;ech2 "MERGE from develop branch ...";git merge develop; line && now && git branch '
+
+# re-fetch a file
+alias gitco='     git checkout '
+
+# Refactor filenames: rm, mv; #git mv [file-ori] [file-renamed]
+alias gitrm='     git rm --cached '
+
+# List files # git ls-files --other --ignored --exclude-standard
+alias gitlist='   git ls-files'
+
+# Open github ogh
+# all $gs= (pulls; commits; branches; releases; tags; compare; contributors; issues )
+# branches/all; branches/yours; branches/active; tree/develop;  pull/3/files; pull/3/commits; pull/new/develop; compare/develop...csv_082316; 
+#oghh   () {                                         open https://github.comcast.com/xpcs/xap/tree/henry ; }
+#oghqlam () {                                        open https://github.com/hqlam/ ; } 
+
+# Open ogh
+ogh  () {                     rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt ; }
+
+ogc () {                      rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/commits ; }
+#ogcmp () {                   rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/compare ; }
+#ogr  () {                    rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/releases ; }
+#ogt  () {                    rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/tags ; }
+ogp  () {                     rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/pulls ; }
+ogb  () {                     rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/branches ; }
+
+# open ogh branches
+#oab () {                     rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/branches/active ; }
+#oby () {                     rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/branches/yours ; }
+
+# open ogh tree
+#otb  () { b=$2;b=${b:-master};rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/tree/$b ; }
+#otd  () {                    rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/tree/develop ; }
+#otm  () {                    rt=$1; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/tree/master ; }
+
+# open ogh pull
+opr  () { pr=$1;              rt=$2; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/pull/$pr ; }
+oprf () { pr=$1;              rt=$2; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/pull/$pr/files ; }
+oprc () { pr=$1;              rt=$2; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/pull/$pr/commits ; }
+
+# open ogh commit
+ogcc  () { commit=$1;         rt=$2; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/commit/$commit?diff=split ; }
+ogcc1 () {                    rt=$1; rt=${rt:-xap}; c=`cd $HOME/checkouts/$rt && git log -n1|gc2 commit|cut -c8-14`; ogcc $c $rt ; }
+
+# open ogh compare
+compare_b  () {               rt=$3; rt=${rt:-xap}; open https://github.comcast.com/xpcs/$rt/compare/$1...$2 ; }
+cmpd_b () { branch=$1;        rt=$2; rt=${rt:-xap}; compare_b develop $branch $rt ; }
+cmph_b () { branch=$1;        rt=$2; rt=${rt:-xap}; compare_b henry   $branch $rt ; }
+
+# xpc-test $              cat .git/config url = git@github.comcast.com:xpcs/xpc-test.git
+#gcln () {                repo=$1;                           git clone git@github.comcast.com:xpcs/$repo ; } 
+gitcln () {               repo=$1; repo=${repo:-xpc-test};   git clone https://github.comcast.com/xpcs/$repo ; }
+# https://magneto.sys.comcast.net/xb_cloud/powercloud
+gitclnpc () {             repo=$1; repo=${repo:-powercloud}; git clone https://magneto.sys.comcast.net/xb_cloud/$repo.git ; }
+
+### Redis server:
+alias cdredis='           cd /app/redis/bin/     ; ls -ltr '
+alias r-c='               /app/redis/bin/redis-cli '
+alias status_serv='       service redis status '
+
+##  Get JSON values of keys, subkeys
+# >>> a=i if i else 500
+#pjkey () {                python -c "import json,sys; print json.load(sys.stdin)['$1'] " ; }
+#pk2   () {                python -c "import json,sys; ol=json.load(sys.stdin); print ol['status']; od=json.dumps(ol);print od; print (json.dumps(ol), sort_keys=True, indent=4 ); print ol['data']['moca_enabled'] " ; }
+#                         python -c "import json,sys; print json.load(sys.stdin)['payload'] "
+#                         python -c "import json,sys; obj=json.load(sys.stdin);print obj['payload'] "
+#function getJsonVal2 () { python -c "import json,sys;sys.stdout.write(json.dumps(json.load(sys.stdin)$1, sort_keys=True, indent=4))"; }
+#function getJsonVal () {  python -c "import json,sys;sys.stdout.write(json.dumps(json.load(sys.stdin)$1))"; }
+
+##  redis keys, value, subkeys 
+#getkey () {    redis-cli get $1 | python -m json.tool ; }
+#allk () {      redis-cli KEYS "*"  |sort ; }
+
+##  Pull ERROR from log_stdout
+#IWE="INFO|WARN|ERROR"
+
+### REDIS-CLI_COMMANDS
+
+# redis-cli INFO | egrep "^db|connected|role|mem"
+# redis-cli MONITOR
+# redis-cli --version  
+# redis-cli --stat   
+# redis-cli --scan   
+# redis-cli KEYS    map*; redis-cli KEYS rf*; redis-cli KEYS  "*" ; echo keys map*|redis-cli
+# redis-cli DEL     testing_key
+# redis-cli FLUSHALL           
+
+# redis-cli TYPE    rfNoise_data:70:85:C6:33:9F:09
+# redis-cli HLEN    rfNoise_data:70:85:C6:33:9F:09 
+# redis-cli HKEYS   rfNoise_data:70:85:C6:33:9F:09 
+# redis-cli HVALS   rfNoise_data:70:85:C6:33:9F:09 
+# redis-cli HGETALL rfNoise_data:70:85:C6:33:9F:09 
+
+# redis-cli HGET    rfNoise_data:70:85:C6:33:9F:09 counter
+# redis-cli HMGET   rfNoise_data:70:85:C6:33:9F:09 counter cmtsValue
+# redis-cli HEXISTS rfNoise_data:70:85:C6:33:9F:09 counter
+
+# redis-cli CONFIG  GET    "*"
+# redis-cli CLIENT  LIST
+# redis-cli SLOWLOG RESET
+# redis-cli SLOWLOG GET    25 
+# redis-cli HMSET   myhash f1 HelloWorld f2 99 f3 -256
+# redis-cli DBSIZE
+# redis-cli BGSAVE
+# redis-cli TIME   
+
+alias oredishelp='   open http://redis.io/commands/hgetall'
+
+# Monitor/Info redis keys:
+alias redmo='        redis-cli          MONITOR   '
+alias redif='        redis-cli          INFO      '
+
+### cowsay -l;   for more pics
+# $ for i in beavis.zen blowfish bong bud-frogs bunny cheese cower daemon default dragon dragon-and-cow elephant elephant-in-snake eyes flaming-sheep ghostbusters head-in hellokitty kiss kitty koala kosh luke-koala meow milk moofasa moose mutilated ren satanic sheep skeleton small sodomized stegosaurus stimpy supermilker surgery telebears three-eyes turkey turtle tux udder vader vader-koala www ; do echo $i; cowsay -f $i "=== $i === "; done
+cowR () {      cowsay -f dragon-and-cow      " TEST! $1 : `date` " ; }
+cowS () {      cowsay -f stegosaurus         " DONE! $1 : `date` " ; }
+cowT () {      cowsay -f turtle              " INFO: $1 : `date` " ; }
+
+#gcw () {       tr -s ' ' '\n' | grep $1 $2 ; }
+j122 () {      tr "\'"  "\"" ; }
+
+#headerx="Content-Type:application/xml"
+#headerj="Content-Type:application/json"
+
+#alias ojp='     open http://jsonpath.com/'
+#alias ojv='     open http://codebeautify.org/jsonviewer'
+#alias ojview='  open http://www.jsoneditoronline.org/'
+#alias timeu2e=' open http://www.epochconverter.com/'
+
+#s_red=""
+#s_com=""
+# Reset XPC Red Splunk: sshcor to root@96.119.99.46; cd /opt/splunk/bin/; ./splunk stop; ./splunk clean eventdata; ./splunk start 
+#sshrx () {      sshcor 96.119.99.46 ; }
+resetrx () {    runh runcor 96.119.99.46 /root/reset_splunk.sh ; }
+resetro () {    runh runcor 96.118.29.46 /root/splunk/reset_splunk_license.sh ; }
+
+# XPC Red Splunk: @slack odp-devops; marked 060917; ssh root@96.119.99.46; /root/reset_splunk.sh
+# root@96.119.99.46 [root@xpcsplunk-wcdcb-1d-ops ~]# find / -iname splunk
+# splunk query on os_rx sync_Red:    index=smart_internet syncnotification 5C8FE0D3C508 SYNC_NOTIFICATION
+# splunk query on os_rx sync_Amber:  index=smart_internet syncnotification 3C7A8A376BCC SYNC_NOTIFICATION
+# splunk query on os_rx sync_Yellow: index=smart_internet syncnotification 5C8FE0CF3F2E SYNC_NOTIFICATION
+
+# splunk red status_code=500 query: index=smart_internet cluster=red     "internal server error" | stats count values(host) AS host by cluster
+# index=smart_internet  status_code=409   request_end=1 cluster=red earliest=-1h
+# index=smart_internet  status_code=409   request_end=1 cluster=red earliest=-1h | stats count values(path) AS path
+
+### Green sync: At Prod Splunk> Dashboards /sync > Sync Report https://splunk.ccp.cable.comcast.com/en-US/app/search/syncnotification?form.field1.earliest=-24h%40h&form.field1.latest=now&form.span=1d
+#from_webpa       		     index=smart_internet  "*SYNC_NOTIFICATION"  source = *scytale.log* 
+
+#webpa_to_hook    		   1sindex=smart_internet cluster=green X-Webpa-Event:SYNC_NOTIFICATION host = xpchook*  source=*webserver.log 
+#sync_notif_hook_to_kafka    	   2sindex=smart_internet cluster=green  message_type=MSG_SYNC_STATUS host=xpchook* source=*producer.log  
+#sync_notif_kafka_to_spark 	   3sindex=smart_internet cluster=green  "message-type : HCPE-Sync-Status" host=xpcsprkw* NOT message_type=transactionStatusMessage 
+#spark_to_sync (to xpc fr sprk consumer)4sindex=smart_internet  "Submitting the sync status message to xpc host" host=xpcsprkw-ch2* OR host=xpcsprkw-ho* OR host=xpcsprkw-as* NOT host=*red* NOT host=*yellow* NOT host=*amber*
+
+#(Sync msg process by xpc nodes)   5sindex=smart_internet host=xpcsync* cluster=green path=*syncnotification request_end=1  
+#(Sync succ processed by xpc nodes 6sindex=smart_internet host=xpcsync* cluster=green path=*syncnotification request_end=1  status_code=200
+#(Sync failed proc by xpc nodes)   7sindex=smart_internet host=xpcsync* cluster=green path=*syncnotification request_end=1  status_code>200 
+#(notif from webpa to hooks by cmc) table: (cmc, count, %) 
+# ex for the cmc=544 	           8sindex=smart_internet cluster=green  host = xpchook*  X-Webpa-Event:SYNC_NOTIFICATION source=*webserver.log  cmc=544
+# cmc=[cmc1] 16 [cmc32_upgrade] 33 48 128 129 160 161 176 289 [cmc512_9_xPC] [cmc514_1_ACS_TR069]  [cmc516_2_WebPA] [cmc520_3_CLI] [cmc528_4_SNMP] [cmc544_5_FWUpgrade] [cmc576_6_Bootfile]  [cmc640_7_LocalUI]  656 672 768 896
+
+
+#alias os_rx_report='   echo "u:p=admin:changeme";   open http://96.119.99.46:8000/en-US/app/search/reports'
+#alias os_rx_dash='     echo "u:p=admin:changeme";   open http://96.119.99.46:8000/en-US/app/search/dashboards'
+alias os_rx='   echo "u:p=admin:changeme";          open http://96.119.99.46:8000/en-US/app/search/search?q=search%20index%3Dsmart_internet%205C8FE0D3C508&display.page.search.mode=smart&earliest=-60m%40m&latest=now&sid=1492824317.4 '
+alias os_ro='   echo "u:p=admin:changeme";          open http://96.118.29.46:8000/en-US/app/search/search?q=search%20index%3Dsmart_internet '
+
+alias os_sync=' echo "u:p=xpc_splunk:XPC_$plunk123";open https://splunk.ccp.cable.comcast.com/en-US/app/search/syncnotification '
+alias os_dash=' echo "u:p=xpc_splunk:XPC_\$plunk123";open https://splunk.ccp.cable.comcast.com/en-US/app/search/dashboards '
+alias os_='     echo "u:p=xpc_splunk:XPC_\$plunk123";open https://splunk.ccp.cable.comcast.com/en-US/app/search/search '
+#alias os_LDAP=' echo "u:p=hlam01:LDAP login;        open https://splunk.ccp.cable.comcast.com/ '
+
+#alias splu_odp='open https://splunk.ccp.cable.comcast.com/en-US/app/search/odp_operational_metrics_dashboard?form.CLUSTER=green&form.HOST=green&form.SPAN=1h&earliest=0&latest= '
+
+#Jira; Conf; github; git pull; slack; outlook henry_lam@cc.c /NT ID ; magneto; #Howto change NTid pwd: 1/on wired 2/Open system pref > User & Groups > Change pwd  3/(still on wired network) logout/log in back/restart/wait/cross-finger
+#alias oslack='  open https://cim.slack.com/messages'
+alias oop5='    open https://op5-os1.sys.comcast.net/monitor/index.php/auth/login?uri=tac%2Findex'
+oop5h () {      h=$1; h=${h:-96.118.50.52}; ech2 "u:p=hlam01:ccLdap"; ech2 "$h @ XPC:"; cdpc; grin -C1 $h; ech2 "$h @ ODP:"; cdpcxa; grin -C1 $h; open https://op5-os1.sys.comcast.net/monitor/index.php/search/lookup?query=$h ; }
+
+# Outlook no mail: Cause1/ nw connection (CCemployee?); 2/ check credential (menu Tools>Accounts); 3/ WorkOffline (menu Tools); 4/ server running MS ExchangeServer is UNavailable (menu Tools>Accounts); 5/ req SSL? (menu Tools>Accounts>Adv>Server>Use SSL) 6/ req proxy server connect to MS ExcServer? (admin)
+# Outlook scheduling a meeting: tip: search room "CSVCA-2" under “TO”, add room name, then click on “Scheduling” to see if the room is available or not before sending the invite out
+
+# open apps
+alias te='     open -a textedit '
+#alias opm='    open ~/Applications/Chrome\ Apps.localized/postman.app '
+alias opy='    open    /Applications/PyCharm\ CE.app/ '
+alias opc='    open -a /Applications/PyCharm\ CE.app '
+#alias ofacet=' open /Applications/FaceTime.app/ '
+#alias ophoto=' open /Applications/Photos.app/ '
+alias ocamera='open /Applications/Photo\ Booth.app/ '
+#alias oquickt='open /Applications/QuickTime\ Player.app/ '
+#alias oAVrec=' open /Applications/QuickTime\ Player.app/ '
+
+### JIRA filters:
+
+# 17.7.1:      project in (XPC, ODP) AND status in (Open,'Reopened','In Progress', 'BLOCKED', 'Blocked') AND assignee = hlam001c AND sprint in (17.7.1) ORDER BY assignee ASC
+
+#aJ () {        echo "text ~ device_mac AND project in (XPC, ODP) AND status in ('Open', 'Reopened', 'Closed', 'Resolved') AND assignee in (yteng200, cchao200, zyao200, dketch201, hmaddu200,  gye200 ) ORDER BY createdDate DESC" ; }
+
+# project      in ("Operational Data Platform", "xPC Platform", "Cross Platform Services") AND sprint = 17.3.2 AND assignee not in (ddicke001c, mabrah200, kpatel205, sthang001c, kshea200, jthuru200) AND Status not in (Resolved, Closed) ORDER BY assignee ASC
+# project      in (ODP,XPC)
+# sprint       = 17.3.2  ; in openSprints()
+# status       in (Open, Reopened, Blocked, Closed, Resolved, "At Risk", "In Progress")
+# assignee     = currentUser() 
+# Priority     = P0
+# reporter     in (vmiran200, aubale200, dsunde001c, kpatel01, rkumar10c, hlam001c, kshah007c,     yteng200, cchao200, zyao200, dketch201, hmaddu200, nguye011c, gye200) 
+# resolution   = Unresolved
+# issuekey     in issueHistory() 
+# reporter     = hlam001c   OR  assignee    = currentUser() ORDER BY Priority DESC
+# text         ~ "Security"      ORDER BY createdDate DESC ; ORDER BY updated DESC
+# summary      ~ "Security"
+# issuetype    != "Epic Story"
+
+### JIRA       
+ojtx () {      t=$1; t=${t:-3435}; echo "Browsing JIRA XPC ticket $t"; open https://ccp.sys.comcast.net/browse/XPC-$t ; }
+ojto () {      t=$1; t=${t:-2380}; echo "Browsing JIRA ODP ticket $t"; open https://ccp.sys.comcast.net/browse/ODP-$t ; }
+#alias ojtf='   echo "Browsing JIRA filter $t";                  open https://ccp.sys.comcast.net/issues/?jql=  '
+
+#alias assnqa=' echo "assigned to QA to verify";   open https://ccp.sys.comcast.net/issues/?filter=74509'
+# assignee in  (vmiran200, aubale200, dsunde001c, hlam001c, rsitar200) AND project in ("Operational Data Platform", "xPC Platform") ORDER BY createdDate DESC
+alias cur4qa=' echo "available 4 qa to verify";   open https://ccp.sys.comcast.net/issues/?filter=74508'
+# Status in    (Resolved) AND sprint in (openSprints()) AND project in ("Operational Data Platform", "xPC Platform") ORDER BY createdDate DESC
+
+alias curPoints='open https://ccp.sys.comcast.net/issues/?filter=85098'
+#alias curPlate='open https://ccp.sys.comcast.net/issues/?filter=74507'
+#alias curHenry='open https://ccp.sys.comcast.net/issues/?filter=73351'
+
+# reporter    = currentUser() OR assignee = currentUser() ORDER BY Priority DESC
+alias curSpr=' open https://ccp.sys.comcast.net/secure/RapidBoard.jspa?rapidView=2846&quickFilter=12617'              
+alias tester_HL=' open https://ccp.sys.comcast.net/issues/?filter=87671'
+
+# old alias    oji='open https://www.teamccp.com/jira/secure/Dashboard.jspa'
+#alias ojid='  open https://ccp.sys.comcast.net/secure/Dashboard.jspa '
+alias oji='    open https://ccp.sys.comcast.net/browse/XPC '
+alias ojira='  open http://jira.csv.comcast.com/secure/Dashboard.jspa '
+
+# open my Jira filters
+alias ojf='    open https://ccp.sys.comcast.net/secure/ManageFilters.jspa?filterView=my'
+
+# is Jira up?
+alias iju='    open https://onejira.cable.comcast.com/up '
+
+### Confluence
+#alias oconflu='open https://www.teamccp.com/confluence/#all-updates'
+alias osi='    open https://www.teamccp.com/confluence/display/SMARTINT'
+
+# open web apps
+alias obox='    open https://comcast.account.box.com/login'
+alias odropbox='cddrop; open Screenshots'
+#alias osmb='    open smb://10.172.52.221/Share'
+alias owebmail='open http://webmail.comcast.com'
+
+# Smmoketest agent/slave/build nodes
+### smoketest slave nodes of app=build , red/amber specific usage: production-96.119.83.200 red-smoketest-server-agent-96.118.55.6 
+# smoketest run details at /opt/<the smoketest name>; $ [root@smoketest-server-agent smoketest-XB6-on-amber]# ls -ltra /opt
+# all SMO_SLAVES= ttps://jenkins.awsxpc.comcast.net/computer/
+SMO_SLAVES="96.118.63.53 96.118.63.54 96.118.63.55 96.118.63.60 96.118.63.251 96.118.27.124"
+projTied () {  for i in $SMO_SLAVES ; do echo `date`; echo -n  "===== $i : "; runcor $i "cd /opt;ls -ltra;ls|wc;" ; done ; }
+projTiedh () { runh projTied ; }
+
+alias oprojTired='open https://jenkins.awsxpc.comcast.net/computer/smoketest-server-96.118.63.54/'
+alias ojenodes='  open https://jenkins.awsxpc.comcast.net/computer'
+
+alias oje='    open https://jenkins.awsxpc.comcast.net'
+alias ojenkin='open http://ci2.csv.comcast.com'
+
+alias omai='   opes http://mail.yahoo.com http://www.hotmail.com http://gmail.com https://www.linkedin.com/feed/ '
+
+### TEST_SPECIFIC 
+
+#csvLines () {      wc -l $* ; }
+#csvCommaCount () { csvf=$1; perl -ne 'print tr/,//, "\n"' < $csvf      | sort -u ; }
+#csvSumHorizon () { csvf=$1; perl -ne '@a=split(/,/);  $b=0; foreach $r (1..$#a){ $b+=$a[$r] } print "$a[0],$b\n"' -f $csvf ; }
+
+c2j () {           csvf=$1; python $HOME/proj/py/csv2json/c2j.py $csvf ; echo "Go check $(basename $csvf).json file" ; }
+csv2json () {      python -c "import csv,json;      print json.dumps(list(csv.reader(open('$1'))), sort_keys=True, indent=4, separators=(',', ': ') )" ; }
+
+csvCol () {        python $HOME/proj/py/csvcolumn.py $1 ; }
+csvFields () {     f=$1; col=$2; col=${col:-35}; r=$3; r=${r:-3}; for i in `seq $col`; do echo -ne "FIELD $i:  \t"; head -n $r $f |cut -d"," -f $i; done ; }
+csvHdup () {       f=$1; head -1 $f | UCtr |tr ',' '\n'|sort|uniq -d ; }      
+csvView () {       f=$1; sed -e 's/,,/, ,/g' $f | column -s, -t | less -#5 -N -S ; }
+
+### ALIAS_FOR_COMMON_USE
+
+alias a='         alias'
+alias clr='       cd;printf "\033c"' # or just click Ctrl k on mac os
+alias cp='        cp -i'
+
+alias duh='       pwd; du -shc'
+alias dush='      pwd; du -sh'
+alias dusk='      pwd; du -sk'
+
+alias speedtest=' python $HOME/Help/speedtest.py --share | cat09 '
+alias sptlog='    python $HOME/Help/speedtest.py --share | ftee1 speedtest_$(hostname) '
+spt () {          echo WIFI: ; cwf; system_profiler SPAirPortDataType |egrep -A10 'Current Network Information:'  ; ifconfig|gip ; line;t1;speedtest|egrep 'load:.*s$'; t2;line ; }
+ospt () {         oterm "line;t1;speedtest|egrep 'load:.*s$'; t2;line; echo WIFI: ; cwf; system_profiler SPAirPortDataType |egrep -A10 'Current Network Information:' " ; }
+
+
+alias gmac4='     egrep -io  "[0-9a-f]{1,2}\:[0-9a-f]{1,2}\:[0-9a-f]{1,2}\:[0-9a-f]{1,2}\:[0-9a-f]{1,2}\:[0-9a-f]{1,2}" '
+alias gmac:='     egrep -io  "([0-9a-f]{0,4}\:){5,7}[0-9a-f]{0,4}" '
+alias gmac='      egrep -io  "[0-9a-f]{12}" '
+
+alias gxver='     grep  -Eo  "17.[a-f0-9.-]+" '
+alias xver='      ls -ltr /app|grep "\->"|tail -1|grep -Eo 17.[a-f0-9.-]+'
+
+alias gip='       egrep      "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" '
+alias gipo='      grep  -Eo  "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" '
+alias gip6='      egrep -i   "[a-f0-9:]+" '
+gii () {          p=$1; f=$2; if [ `egrep -co "$p" $f` -gt 0 ] ; then echo YES|grep YES; else echo Noooo|grep No; fi ; }
+
+alias gateway='   netstat -nr '
+alias dnsgateway='cat /etc/sysconfig/network-scripts/ifcfg-eth0'
+alias dnsip='     cat /etc/resolv.conf'
+alias pingdns='   dnsip|grep nameserver|rights; pingf `dnsip|grep nameserver|tail -1|cuts -f2`|egrep -B5 "%.*"'
+
+alias nslu='      nslookup '
+
+#alias hip='       hostname -i'
+alias hostip='    cat /etc/hosts '
+
+# Networksetup
+# 1. an alias; 2. Automator: File>New>Service>nwu.workflow... Define a new service;  3.System Preferences > Keyboard > Shortcuts > Services 
+alias nwu='    open         /System/Library/CoreServices/Applications/Network\ Utility.app/'
+alias nwpref=' open         /System/Library/PreferencePanes/Network.prefPane/'
+alias cwf='    networksetup -getairportnetwork  en0   | right: '
+alias cnw='    cwf; system_profiler SPAirPortDataType | egrep -A10 "Current Network Information:" '
+alias wifi='   networksetup -setairportpower    airport '
+
+alias mon='    ech2 "Monitor process status and jobs running ..."; ps -ef|egrep "webshare|python|tail"; jobs; date '
+alias monkp='  pkill python && mon'
+#alias quepasa="ps auxwww"
+
+left:  () {    egrep  ".*:" ; }
+right: () {    egrep  ":.*" ; }
+lefts  () {    egrep  ".*\s" ; }
+rights () {    egrep  "\s.*" ; }
+catl () {      cat $1 | left: ; }
+catr () {      cat $1 | right: ; }
+
+# cut last field: awk '{$NF=""}1'
+# cut field 1:    sed 's/[^:]*://' OR cut -d: -f2-
+#alias cutf1='  cut -d:    -f2- '
+alias cut:='   cut -d ":"  '
+#alias cut,='   cut -d ","  '
+#alias cut.='   cut -d "."  '
+
+alias cuts='   cut -d " "  '
+#alias cutb='   cut -d "#"  '
+#alias cutp='   cut -d "|"  '
+#alias cutsc='  cut -d ";"  '
+#alias cutbf='  cut -d "\""  '
+alias cutff='  cut -d "/"  '
+
+#alias ducc='   cut -d"," -f'
+alias duc='    cut -d" " -f'
+
+#apfield () {   awk               '{print $'$1'}'; }
+fduc   () {    awk -v n=$1 -F"," '{print $n }'  ; }
+fduc1 () {     awk               '{print $1 }'  ; }
+alias lkh='    cat ~/.ssh/known_hosts | fduc1 '
+
+alias d='      date '
+alias df='     df -h'
+
+alias e='      echo '
+alias echob='  echo "*** echo BEGIN_at: `date` " '
+alias echoe='  echo "*** echo END_at: `date` " '
+#alias echod='  terminal-notifier -title "Terminal" -message "echo Done with task!" -open http://www.yahoo.com '
+
+# pipe to color fonts
+alias cred='   $HOME/proj/nodejs/colour.js --red '
+alias cgreen=' $HOME/proj/nodejs/colour.js --green'
+alias cblue='  $HOME/proj/nodejs/colour.js --blue'
+alias cyellow='$HOME/proj/nodejs/colour.js --yellow'
+alias camber=' $HOME/proj/nodejs/colour.js --amber'
+alias cpink='  $HOME/proj/nodejs/colour.js --pink '
+alias ccyan='  $HOME/proj/nodejs/colour.js --cyan '
+alias cwhite=' $HOME/proj/nodejs/colour.js --white '
+alias cblack=' $HOME/proj/nodejs/colour.js --black '
+
+f2y () {       f=$1; mv $f $f.yaml; ls -ltra; pwd ; }
+viy () {       f2y $1 ; vi $1.yaml ; }
+
+alias catco='  egrep         -C1 [a-z]+ '
+alias cat09='  egrep         -C1 [0-9]+ '
+catln () {     fileName=$1 ;  sed -n "$2p" $fileName ; }
+catn () {      f=$1; line=$2; cat -n $f|egrep -C10 $2 ; }
+
+alias ge1='    sed -e 1,/ERROR/d |head '
+fge1 () {      err=$2; err=${err:-ERROR}; grep -B2 $err  $1 |head -3 ; cat -n $1 | sed -e 1,/$err/d |head -n20 ; }
+
+alias ldir='   ls -ltraF | egrep "^d" '
+alias dir='    llr -F |egrep "^d" '
+alias dirs='   find . -type d -d 1 -print0 | xargs -0 du -sc | sort -n '
+
+alias l.='     ls -ld .* '
+alias lR='     ls -Rh'
+alias lh='     ls -tra | egrep "^\."'
+alias lkh='    cat $HOME/.ssh/known_hosts | fduc '
+alias ll='     ls -lhF'
+alias llR='    ls -lRh'
+alias lla='    ls -ltrahF'
+alias lsr='    ls -trh'
+alias llr='    ls -ltrh'
+alias llrr='   ls -ltrhF|tail '
+alias lls='    ls -sh '
+alias llss='   ls -lShF '
+alias llsd='   sudo find ./ -type d -exec du -sb {} \; | sort -g '
+alias llt='    tree -L 1 '
+alias tre1='   tree -L 1 '
+alias tre2='   tree -L 2 '
+alias lsp='    ls -p '
+
+alias mv='     mv -i'
+alias o='      open '
+alias p='      pwd; tree -L 1 '
+
+alias ping_v6='/sbin/ping6   -c2  '
+alias pingf='  ping -a -c 2  '
+ping2 () {     i=$1; r=`echo $i|gip`; if [ $? -eq 0 ] ; then ping -a -c 2 $i; else /sbin/ping6 -c2 $i; fi ; }
+alias ports='  netstat -tulan'
+
+alias py='     python '
+alias py27='   python2.7 '
+
+alias repeatls='watch -t ls '
+
+alias rm='     rm -i'
+alias rmblank='sed "/^$/d;s/^[ \t]*//;s/[ \t]*$//" '
+alias rmbline='sed "/^$/d" '
+
+alias tree_='  find . -type d | ls -lARG'
+
+alias tarextract=' tar   -xzf '
+alias tarcompress='tar   -czf '
+alias tarappend='  tar   -czfvr '
+alias tarlist='    tar   -tzfv '
+alias unziplist='  unzip -l '
+
+ffnotexec () {  d=$1; d=${d:-.}; find $d -type f ! -perm -111 -ls ; }
+
+# Find a file with a pattern in name:
+function ff() { find . -type f -iname '*'"$*"'*' -ls ; }
+
+alias u='       cd ..;ls; echo Current_dir is `pwd` '
+alias cdu='     cd        ..;ls; echo Current_dir is `pwd` '
+alias cdu2='    cd    ../..;ls; echo Current_dir is `pwd` '
+alias cdu3='    cd ../../..;ls; echo Current_dir is `pwd` '
+
+frep1 () {      while sleep 1;      do date;            $* ; echo ; done; }
+frep () {       while sleep $1;     do date;  $2 $3 $4  $5 ; echo ; done; }
+#loop150 () {   t1; for i in `seq 150`; do date; echo  $i:; $* ; echo ;            done; t2 ; } 
+loop6 () {      t1; for i in `seq 6`;   do date; ech2 "Loop $i:"; bash -ic $* ; echo ; sleep 60;  done; t2 ; } 
+loop () {       t1; for i in `seq 5`;   do date; ech2 "Loop $i:"; bash -ic $* ; echo ; sleep 5;   done; t2 ; } 
+
+# use xargs cmd
+#alias xwc='     xargs wc -l'
+#alias xcat='    xargs cat'
+#alias xhead='   xargs head'
+#alias xllr='    xargs ls -ltra '
+
+# loop files, loop dirs in a directoy
+#ffiles () {     n=0; for f in ./* ; do ((n++));ech2 $n; echo  "@ FILE: $f : "; $* $f; done ; }
+#fdirs ()  {     n=0; for d in ./* ; do pushd $d; pwd; $* ; popd; echo; done ; }
+
+# NW dynamic IP
+alias dynip='   curl -s http://checkip.dyndns.org | grep "\d*\d" '
+
+##  grep dups
+gdup () {       LCtr |sort|uniq -d ; }
+
+### USE_AWK_SED: http://sed.sourceforge.net/sed1line.txt
+#rmduplines () { cat $1 | awk '!NF || !seen[$0]++' ; }
+
+#awkfno () {     awk         -F"," '{print $'$1'}'; }
+#fmax   () {     awk -v n=$1 -F"," 'BEGIN {max = 0} {if ($n>max) max=$n} END {print max}' ; }
+#rmdup () {      awk '!($0 in array) { array[$0]; print }' ; }
+
+#alias rmblank='      sed "/^$/d;s/^[ \t]*//;s/[ \t]*$//" '
+#alias rmbline='      sed "/^$/d" '
+
+a1line () {          tr '\n' ' '  ; }
+alias anline='       perl -pe "s/,/\n/g" '
+
+#rmLeadingSpace () {  sed -e 's/^[ \t]*//' ; } 
+#rmTrailingSpace () { sed -e 's/[ \t]*$//' ; } 
+#rmSpace () {         sed -e 's/^[ \t]*// ; s/[ \t]*$//' ; } 
+#doubleSpace () {     sed G ; }
+#trippleSpace () {    sed 'G;G'; }
+#undodoubleSpace () { sed 'n;d' ; } 
+
+## Back up
+fbu  () {        cp -rfp $1 ./$(date '+%Y_%m_%d_%H_%M')_$1 ; ll|grep $1 ; }
+fori () {        cp -rfp $1 $1.ori                         ; ll|grep $1 ; }
+fstash () {      f=$1; cp -p $f $HOME/checkouts/hl/valid_respjson/  ; }
+funsta () {      f=$1; cp -p $HOME/checkouts/hl/valid_respjson/$f . ; }
+
+alias cdvr='     cd $HOME/checkouts/hl/valid_respjson/; llr'
+
+cpwithtar () {   src=$1; des=$2; cd $src ; tar cvf - ./* | (cd $des ; tar xvf - ) ; }
+
+
+### USE_PYTHON
+#import pdb; pdb.set_trace()
+# ODP smoketest debug init_pdb().set_trace() , then check context['cpe_mac']; next, cont, step inside, print, pp prettyprint, listsource/lines, args for the cur func, b 9 set breakpoint line 9, where, help, quit
+# print file extention: print '~/python/one-liners.py'.split('.')[-1]
+# yum install -y facter
+#/app/xap/conf/instance_config.py: import os; HOST_IP = os.popen('ifconfig eth0 | grep "inet\ addr" | cut -d: -f2 | cut -d" " -f1').read().strip()
+insMod () {      ech2 "Install module $1"; mod=$1; mod=${mod:-ipaddr}; pip2.7 install $mod ; } 
+
+# Testing a new py script: just enter to re-run script once
+pystestloop () { pyscript=$*; while read ; do python $pyscript ; done ; }
+
+# Testing ip
+# def validate_ip(my_ip): p=my_ip.split(".") ; return len(p)==4 and all( 0<= int(i) < 256 for i in p)' 
+pyisip () {      ip=$1; python -c 'import ipaddr,sys; print(ipaddr.ip_address(sys.argv[1]) ); ' ; }
+
+#titleUp () {     lo_title=$*;  python -c "print '$lo_title'.title()" ; }
+#week_number () { python -c 'import datetime; print(datetime.date.today().isocalendar()[1])' ; }
+
+pyh ()   {       python -c "help( '$1' )" ; }
+#pyhq ()  {       echo q | pyh $1 ; }
+pydoc () {       python -m pydoc $1 ; }
+pyd ()   {       python -c "import $1;   print  dir($1)" ; }
+
+#pypath () {      python -c 'import sys, pprint; pprint.pprint(sys.path)' ; }
+#platf () {       python -c "from sys import platform; print platform " ; } 
+
+### Parse json fields:
+
+# given an json text
+#>>> import json
+#>>> x=json.loads("""{"msec":1.69403076171875,"error":"Not Found","data":{"data":null,"isBoom":true,"isServer":false,"output":{"statusCode":404,"payload":{"statusCode":404,"error":"Not Found"},"headers":{}},"message":"Not Found"}} """)
+#>>> print x["data"]["isServer"]
+#False
+
+# given an API that returns json, parse fields like: a="http://96.118.57.11:8080/api/vi/version"
+# {"status":200,"message":"OK","data":{"xpc":{"code_git_commit":"17.5.1-28.c2916a5","document_link":"https://comcast.box.com/s/4qwa5uh0ec200q1rz745jehaggd40225","build_time":"Tue May 16 18:59:00 2017 UTC"}}}
+#>>> import urllib, json
+#>>> a="http://96.118.57.11:8080/api/vi/version"
+#>>> f=urllib.urlopen(a)
+#>>> v=json.load(f)
+#>>> f.close()
+#>>> print v["status"]
+#404
+
+
+##  Convert
+# ddate 20:08:05 21:59:
+ddate () { t1="$1"; t2="$2"; echo $t1 $t2; date -ujf%s $(($(date -jf%T "$t2" +%s) - $(date -jf%T "$t1" +%s)))     +'%-Hh %-Mm %-Ss' | sed "s/[[:<:]]0[hms] *//g" ; }
+
+#nonmacdates () { t=$1; echo $t " == " `date --date=@$1` ; }
+#nonmacdateu () { t=$1; echo $t " == " `date -d             "$t" +%s ` ; }
+dates () {       t=$1; echo $t " == " `date -r              $t `      ; }
+dateu () {       t=$1; echo $t " == " `date -jf "%Y-%m-%d" "$t" +%s ` ; }
+
+h2d () {       echo $((0x$1)) ; }
+d2h () {       printf '%x\n' $1 ; }
+# WIP d2b () { printf '%o\n' $1 ; }
+
+UCtr () {      tr 'abcdefghijklmnopqrstuvwxyz' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'   ; }
+LCtr () {      tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' 'abcdefghijklmnopqrstuvwxyz'   ; }
+
+fgbz ()  {     grep -i $1 $2 $3 $4  $HOME/Help/bash_rcFiles/bashrc.zbra ; }
+
+lastjsli () {  name=$1; tail -1  `ls -1 -th $name* | head -1` | python -m json.tool ; }
+lastfili () {  name=$1; tail -1  `ls -1 -th $name* | head -1` ; }
+
+lastline () {  sed '$!d' $1 ; }
+lastfile () {  ls -At $1* |head -1 ; } 
+
+vilf () {      d=$1; d=${d:-.}; cd $d; lf=`lastfile`; ech2 "The last file: $lf"; vih $lf ; }
+
+lastdropb () { cd $HOME/Dropbox/Screenshots; lastfile          ; }
+lastbox () {   cd $HOME/box_sync/;           lastfile          ; }
+
+lastlog () {     cd $HOME/logs; ls -ltrh |tail -1 ; }
+lastloghead () { cd $HOME/logs; ls -tr   |tail -1|xargs head -20 ; }
+lastlogmore () { cd $HOME/logs; ls -tr   |tail -1|xargs more     ; }
+
+ffg () {       fn=$1; pat=$2; sudo find ./ -name $fn -exec grep -iH $pat {} \; ; }
+
+ftee  () {     tee -a $HOME/logs/$1_$(date '+%Y.%m.%d').log ; }
+ftee1 () {     tee    $HOME/logs/$(date '+%Y.%m.%d_%H.%M')_$1.log ; }
+fteey () {     tee    $HOME/logs/$(date '+%H.%M_%m%d%Y')_$1.yaml ; }
+#for f in *; do [[ -f "$f" ]] && mv "$f" "$f.yaml"; done
+
+fman () {      cmd=$1; man $cmd | col -b > $HOME/man_$1.txt; cat -n $HOME/man_$1.txt; ls -l $HOME/man_$1.txt  ; }
+
+### clipboard: copy and paste
+# pbcopy < file.txt; pbpaste; 
+alias controlc='tee >(pbcopy)'
+alias conc='   pbcopy'
+alias conv='   echo `pbpaste` '
+
+### USE_TERMINALS
+hterm () {     colour=$1; cmd=$2; bash $HOME/proj/shell/hterm.sh $colour $cmd ; }
+runh () {      hterm novel " $*" ; }
+# runh snn2;   runh odh $m $note
+
+oterm () {     cmd=$*;   bash $HOME/proj/shell/oterm.sh "date;pwd;$cmd" ; } 
+topo   () {    osascript -e 'tell application "Terminal" to do script  "clear;echo hello; top " ' ; }
+
+### MACBOOKPRO_TIPS 
+# brew install coreutils; 
+# get the file pathname: greadlink -f fname; 
+alias chk_security='launchctl list | grep com.era*'
+alias smartdisk='diskutil info disk0  | egrep -C5 "SMART|Verified"  '
+alias smartSSD='smartctl -a    disk0  | egrep -i  "fail|smart|pass" '
+alias vcamera1='lsof  |head -1; lsof  | egrep -i  "AppleCamera|VDC" '
+alias vcamera2='ps -ef|head -1; ps -ef| egrep -i  "AppleCamera|VDC" '
+alias vcamera=' vcamera1'
+
+alias w2h='     open https://goo.gl/maps/3mU5Nybps632'
+alias w2noi='   open https://goo.gl/maps/EQKr9SM9RF72 '
+alias w2dai='   open https://goo.gl/maps/CB8P52LSk8Q2 '
+alias w2tem='   open https://goo.gl/maps/zPmk69q7NW82'
+
+alias timesh='  echo hlam001c; open -a "Safari" http://budget.cable.comcast.com'
+alias adp='     echo adphenrylam save34; open http://myAccess.adp.com'
+
+alias e_v='     open https://goo.gl/kY9EoV '				
+e2v  () {       open http://dictionary.cambridge.org/us/dictionary/english-vietnamese/$1 ; }
+alias kippbb='  open https://goo.gl/7BnUqU'
+
+alias cccache=' echo chrome://settings/clearBrowserData'
+
+alias godr='    open https://drive.google.com/drive/my-drive'
+
+alias opec='    open -a "Google Chrome" '
+alias opef='    open -a "Firefox" '
+alias opes='    open -a "Safari" '
+
+
+### Printers
+PRT1="10.172.73.1"
+PRT2="10.172.73.126"
+PRTGREENLATERN="10.172.73.188"
+
+### SI IP hosts
+
+TFTP_IP="10.255.246.110"
+XMGR="96.118.36.213"
+
+hostG="96.115.78.175"
+hostY="96.119.225.204"		#xpccore-ch2f-2d-yellow
+
+hostA="96.118.23.51"  		#xpccore-hob-2d-amber
+hostA1="96.118.23.53" 		#xpccore-hob-1d-amber 
+
+hostR="96.118.57.11"		#xpccore-asb-2d-red
+hostR1="96.118.57.10"		#xpccore-asb-1d-red
+
+hostRed="red.awsxpc.comcast.net"
+hostAmb="amber.awsxpc.comcast.net"
+hostYel="yellow.awsxpc.comcast.net"
+
+hostOYel="odpyellowuiorch.odpaws.comcast.net"
+hostOAmb="odpamberuiorch.odpaws.comcast.net"
+hostORed="odpreduiorch.odpaws.comcast.net"
+
+hostOY="96.118.58.243"		#odpcore-asb-2d-yellow 
+
+hostOA="96.118.59.58"   	#odpcore-hob-2d-amber
+hostOA1="96.118.59.56" 		#odpcore-hob-1d-amber 
+
+hostOR="96.118.61.32"		#odpcore-asb-2d-red
+hostOR1="96.118.61.36"		#odpcore-asb-1d-red
+
+licR="96.118.57.11     96.118.57.13   96.118.27.110  96.118.30.93"
+licA="96.119.227.212   96.119.227.195                               96.118.23.51   96.118.30.94"
+licY="96.119.225.204                  96.118.16.114  96.118.165.225 "
+licX="96.118.57.11     96.118.57.13   96.118.27.110  96.118.30.93   96.119.227.212 96.119.227.195 96.118.23.51  96.118.30.94 96.119.225.204   96.118.16.114  96.118.165.225 "
+
+lic13R="96.118.57.10   96.118.57.12   96.118.27.107  96.118.27.106"
+lic13A="96.119.227.189 96.119.227.222                               96.118.23.53   96.118.23.52  "
+lic13Y="96.119.225.205                96.118.16.113  96.118.16.111  96.118.165.224               "
+
+licOR="96.118.61.32    96.118.61.37   96.118.27.90   96.118.16.126"
+licOA="96.118.59.53    96.118.51.38   96.119.224.83  96.119.224.71  96.118.28.58   96.118.28.60"
+licOY="96.118.58.243   96.118.59.240  96.119.228.102 96.118.167.133 96.118.190.181"
+licO="96.118.61.32     96.118.61.37   96.118.27.90   96.118.16.126  96.118.59.53   96.118.51.38   96.119.224.83 96.119.224.71  96.118.28.58  96.118.28.60 96.118.58.243  96.118.59.240  96.119.228.102  96.118.167.133 96.118.190.181"
+
+licGreen="96.115.78.175 96.115.78.176 96.115.78.21   96.114.241.135 96.114.241.127 96.114.22.211  68.87.23.10   68.87.23.100   68.87.23.101  96.114.34.109 96.114.34.110 96.114.34.142  96.114.35.226   96.114.35.227  " 
+licG="96.115.78.175     68.87.23.10   "       
+
+GH="https://github.comcast.com"
+GHX="https://github.comcast.com/xpcs"
+
+LISTALLCPE="$HOME/devices/cpe/List_All_CPEs_OdpJenkins_052517.csv"
+CPRO_A2="$HOME/devices/cpe/cpro_a2.json"
+CDEV_ec="$HOME/devices/cpe/cdev_ec.json"
+CCIS_ef="$HOME/devices/cpe/ccis_ef.json"
+CCIS_28="$HOME/devices/cpe/ccis_28.json"
+CXB6="$HOME/devices/cpe/xb6.json"
+CXB6A="$HOME/devices/cpe/xb6a.json"
+CCIS_ef="$HOME/devices/cpe/ccis_ef.json"
+CRA="$HOME/devices/smkRA.json"
+
+# Sync:
+Mssy="5C8FE0CF3F2E"	;  Issy="10.255.244.238"	# TG1682_2.7p1s1_PROD_sey
+Mssa="3C7A8A376BCC"     ;  Issa="10.255.244.114"	# TG1682_2.7s9_PROD_sey
+Mssr="5C8FE0D3C508"	;  Issr="10.255.244.15"		# TG1682_2.7s1_PROD_sey   # telnet in failed..may need mso
+
+# Red:
+Mnrn="5C8FE0A1BE32"	;  Inrn="10.255.244.126"	# TG1682_2.7s3_PROD_sey
+Mn1rn="3C7A8A3328C8"	;  In1rn="10.255.244.14"	# TG1682_2.7p1s1_PROD_sey
+Mnrn1="3C7A8A3346AA"	;  Inrn1="10.255.244.109"	# TG1682_2.7s3_PROD_sey
+Mn1rn1="3C7A8A376B54"	;  In1rn1="10.255.244.112"	# TG1682_2.7p1s1_PROD_sey
+
+# Amber Yellow
+Mstoy="14CFE2146492"	;  Istoy="10.255.244.166"	# TG1682_2.7s9_PROD_sey TG1682_2.8s4_PROD_sey
+Mnan="5C8FE0A1BC2A"	;  Inan="10.255.244.61"		# TG1682_2.7s9_PROD_sey   # telnet in failed..may need mso
+
+# Green:
+Mstog="ACB3130362F2"	;  Istog="2001:0558:4000:001a:2eb3:13ff:fe03:62f2"	# TG1682_2.7p6s2_PROD_sey
+Mstogv="044E5A9AE8CE"	;  Istogv="10.255.244.106"	# TG1682_2.7p1s1_PROD_sey
+Mssg="3C7A8A547AE6"     ;  Issg="10.255.244.68"		# TG1682_2.6p3s2_PROD_sey
+
+# Cisco:
+Mcisr="F44B2A77BFBE"    ;  Icisr="10.255.244.24"				# DPC3941_2.6p3s2_PROD_sey # telnet in failed..may need mso
+Mcisy="F44B2A77BE79"    ;  Icisy="2001:0558:4000:001a:764b:2aff:fe77:be79"	# DPC3941_2.7p7s1_PROD_sey
+# Mcisr: vernon cisco - F44B2A77BE79_IPbe79; HL cisRed F44B2A77BBEF; HL_KS F44B2A77BF2D_IPbf2d; HL F44B2A77BFBE_IP24
+Mxb6="F8A097EEF795"	;  Ixb6="2001:0558:4000:001a:faa0:97ff:feee:f795"	# TG3482_2.3p20s2_PROD_sey
+
+M1="ACB3130356A2"	;  I1="2001:0558:4000:001a:aeb3:13ff:fe03:56a2"		# TG1682_2.6p6s2_PROD_sey
+M2="044E5A9AE8EC"	;  I2="10.255.244.34"		# TG1682_2.7s9_PROD_sey
+M30="F44B2A77BBEF" 	;  I30="10.255.244.197"		  			# DPC3941_2.2s26_PROD_sey
+M3="F44B2A77BE1A" 	;  I3="2001:0558:4000:001a:f64b:2aff:fe77:be1a"       	# DPC3941_2.6p7s2_PROD_sey
+M4="14CFE2146E92"	;  I4="10.255.244.79"		# TG1682_2.7s1_PROD_sey
+M5="F8A097EF0CDA"	;  I5="2001:558:4000:1a:faa0:97ff:feef:cda"		# TG3482_2.3p20s2_PROD_sey
+M6="F8A097EF091F"	;  I6="2001:0558:4000:001a:faa0:97ff:feef:091f"		# TG3482_2.3p17s1_PROD_sey
+M7="044E5A22CB9A"       ;  I7="2001:558:4000:1a:64e:5aff:fe22:cb9a"		# old "10.255.244.6" # TG1682_DEV_master_20170901172904sdy
+
+M6A="F8A097EF0CDA"	;  I6A="2001:0558:4000:001a:faa0:97ff:feef:0cda"	# TG3482_2.3p20s2_PROD_sey
+MAuprod="10868C6D5F1E"	;  IAuprod="2001:558:4000:1a:1286:8cff:fe6d:5f1e"	# TG1682_2.1p1s1_PROD_sey
+
+MVm="5C8FE07EE442"	;  IVm="10.255.245.93"		# TG1682_2.7p1s1_PROD_sey                         # telnet in failed..may need mso
+MVm2="14CFE2146802"	;  IVm2="10.255.245.117"	# TG1682_2.5p2s1_PROD_sey
+MVmcis="F44B2A77BE79" 	;  IVmcis="2001:558:4000:1a:764b:2aff:fe77:be79"	# DPC3941_2.7p7s1_PROD_sey
+MVmpro="ACB31302F7B2" 	;  IVmpro="2001:558:4000:1a:2eb3:13ff:fe02:f7b2"	# TG1682_2.7p6s2_PROD_sey
+
+MAu="5C8FE07EDE92"	;  IAu="10.255.244.58"		# TG1682_2.7p1s1_PROD_sey
+
+MDan="9C34263FAA06"	;  IDan="10.255.244.151"	# TG1682_2.7s9_PROD_sey                           # telnet in failed..may need mso
+
+MMy="ACB313035F82"	;  IMy="10.255.244.39";         # TG1682_2.7s9_PROD_sey
+MMy_prod="ACB31302BEF2"	;  IMy_prod="2001:558:4000:1a:2eb3:13ff:fe02:bef2";	 UM_prod="SI_XPC_UID18"	# TG1682_2.5p2s1_PROD_sey
+
+MKs_122="5C8FE07EE122"	;  IKs_122="10.255.244.89"	# TG1682_2.7s3_PROD_sey
+
+# D2 dev dan1  9c34263f9adf
+CDEV_IP="10.255.244.34"
+CCIS_IP="10.255.244.20"
+
+alias cpro_acct='open https://customertimeline.cable.comcast.com/#/account/8155100181702543'
+alias cpro1='  pjson  $HOME/devices/cpe/cpro_24.json | right: '
+alias cpro='   pjson  $HOME/devices/cpe/cpro_a2.json | right: '
+alias cdev='   pjson  $HOME/devices/cpe/cdev_ec.json | right: '
+#alias ccis='  pjson  $HOME/devices/cpe/ccis_28.json | right: '
+#alias ccis='  pjson  $HOME/devices/cpe/ccis_2d.json | right: '
+alias ccis='   pjson  $HOME/devices/cpe/ccis_1a.json | right: '
+alias cxb6='   pjson  $HOME/devices/cpe/xb6.json     | left: '
+alias cxb6a='  pjson  $HOME/devices/cpe/xb6a.json    | left: '
+alias ccisR='  pjson  $HOME/devices/cpe/ccis_ef.json | right: '
+alias c_RA='   pjson  $HOME/devices/cpe/smkRA.json   | right: '
+alias minfo='  echo $M1 $M2 $M3i $M4 $M5 $M6'
+
+gmif () {      egrep "CMAC|IPv|UID" ; }
+#alias m2if='  echo mac=$M2, ip=$I2, fwcpe=`wp_rdkb $M2|gc2 value` ,         UICloudPortal=$I2,         UID=cusadmin, UIPwd=Xfinity '
+#alias m3if='  echo mac=$M3, ip=10.255.244.20 fwcpe=`wp_rdkb $M3|gc2 value`, UICloudPortal=internet.xfinity.com, UID=SI_XPC_UID24, UIPwd=Csv1050xPC  '
+alias m10if='  cpro1 | gmif ; ech2 "fwcpe=`wp_rdkb $M10|gc2   value` " '
+alias m1if='   cpro  | gmif ; ech2 "fwcpe=`wp_rdkb $M1 |gc2   value` " '
+alias m2if='   cdev  | gmif ; ech2 "fwcpe=`wp_rdkb $M2 |gc2   value` " '
+alias m3if='   ccis  | gmif ; ech2 "fwcpe=`wp_rdkb $M3 |gc2   value` " ' 
+alias m4if='   ech2 $M4 $I4 ; ech2 "fwcpe=`wp_rdkb $M4 |gc2   value` " ' 
+alias m5if='   cxb6a | gmif ; ech2 "fwcpe=`wp_rdkb $M5 |gc2   value` " '
+alias m6if='   cxb6  | gmif ; ech2 "fwcpe=`wp_rdkb $M6 |gc2   value` " '
+alias m6aif='  cxb6a | gmif ; ech2 "fwcpe=`wp_rdkb $M6A|gc2   value` " '
+alias m7if='   ech2 $M7 $I7 ; ech2 "fwcpe=`wp_rdkb $M7 |gc2   value` " '
+
+### UI
+# https://customer.xfinity.com/#/services/internet
+# https://internet.xfinity.com/more/portforwarding
+# https://internet.staging.xfinity.com/no-configset
+# https://internet.staging.xfinity.com/devices/device/D4BED919A337
+
+# soft launch - cpe UI - Xfinity Cloud Portal / Production/ Green     https://internet.xfinity.com/
+# soft launch - cpe UI - Xfinity Cloud Portal / Production/ lui       https://my.xfinity.com/
+# soft launch - cpe UI - Xfinity Cloud Portal / Staging   / Yellow    https://internet.staging.xfinity.com/
+#cui () {      i=$1;  ech2 "Comcast  UI: u:p=SI_XPC_UID65:Csv1050xPC";  open https://login.comcast.net/login ; } 
+# ACB3130356A2  BLASTTEST7 u:p=xpcstonecutter5@comcast.net:Csv1050xPC
+Cui () {       i=$1;  ech2 "Cloud    UI: ACB31302F7B2 BLASTTEST3 u:p=xpcstonecutter5@comcast.net:Csv1050xPC";  open https://si-components-amber.g1.app.cloud.comcast.net ; }
+
+#Iui () {      i=$1;  ech2 "Internet UI: u:p=xpcstonecutter9@comcast.net:Csv1050xPC";  open https://internet.xfinity.com/ ; }
+Gui () {       i=$1;  ech2 "Green    UI: u:p=xpcstonecutter9@comcast.net:Csv1050xPC";  open https://internet.xfinity.com/ ; }
+
+Mui () {       i=$1;  ech2 "My       UI: u:p=xpcstonecutter9@comcast.net:Csv1050xPC";  open https://my.xfinity.com/ ; }
+
+#Yui () {      i=$1;  ech2 "Yellow   UI: u:p=xpcstonecutter5@comcast.net:Csv1050xPC";  open https://internet.staging.xfinity.com/ ; }
+Sui () {       i=$1;  ech2 "Staging  UI: u:p=xpcstonecutter5@comcast.net:Csv1050xPC";  open https://internet.staging.xfinity.com/ ; }
+
+### Local UI: u:p=cusadmin:Xfinity
+lui4 () {      i=$1; i=${i:-$I2}; ech2 "Local UI: u:p=cusadmin:Xfinity";            open http://$i ; }
+lui_v6 () {    i=$1; i=${i:-$I1}; ech2 "Local UI: u:p=cusadmin:Xfinity";            open http://[$i] ; }
+lui    () {    i=$1; i=${i:-$I2}; ech2 "Local UI: u:p=cusadmin:Xfinity"; r=`echo $i|gip`; if [ $? -eq 0 ] ; then echo $i;open http://$i; else echo $i; open http://[$i] ; fi ; }
+
+#alias lui_pro='m1if;  ech2 "Local UI: u:p=cusadmin:Xfinity";            open   https://internet.xfinity.com/'
+#alias lui_dev='m2if;  lui $I2'
+#alias lui_dwf='m2if;  ech2 "Local UI: u:p=cusadmin:Xfinity";  open   http://10.255.244.34/wireless_network_configuration.php'
+#alias lui_cis='m3if;  lui $I3'
+#alias lui_m4=' m4if;  lui $I4'
+#alias lui_xb6='m6if;  lui $I6'
+#alias lui_xb6a='m6aif;lui $I6A'
+
+alias lui_stg='echo xpcstonecutter9@comcast.net/Csv1050xPC CMMAC=ACB3130356A2; open https://internet.staging.xfinity.com/'
+
+### Portal: 1/General>App>NWModem: Modem device info; 2/General>App>POD: Pwd of the day for mso
+iportal_POD="http://ip-edge-portal.cable.comcast.com/index.php"
+alias oPOD='   open $iportal_POD '
+alias modemIP='echo "View cpro_a2 device info at: General>Apps>NW modems and CM_MAC" ; open http://ip-edge-portal.cable.comcast.com/login.php'
+
+# Go iportal to 1.get POD: navigate menu General > POD > vendor= ArrisWG, copy the POD
+# Go iportal to 2.get info of modem/CPE, similar info get from Kevin's spreadsheet 
+# enable telnet at local ui> Advanced > Remote Mgmt, must use u:p=mso/POD
+lui_mso () {   cpeip=$1; echo "Browse CPE_IP: $cpeip, u:p= mso/POD "; open http://$cpeip ; }
+alias lui_dev_mso='lui_mso $CDEV_IP'
+
+### boxer: checkout github; install boxer
+alias installboxer='cdbx  ; echo Python should be 2.7; python setup.py develop'
+
+# Jenkins monitor jobs
+alias oje='    open https://jenkins.awsxpc.comcast.net/'
+
+# Webex room
+alias owebex=' open https://icollaborate.webex.com/meet/henry_lamcomcast.com'
+
+# CPE m2i: 1/[live webpa]$gowpa $m; 2/[last success in smoketest]$open je...; 3/[Production CPEs]$oPOD; 
+# CPE i2m: 1/teli $i; ifconfig -a wan0| egrep -o HW.*; 2/possibly SNMP ??? 
+
+# Enable telnet: 1/iportal 'oPOD' 2/lui mso:POD 3/Advance > Remote Mgmt > enable Telnet
+# telnet to XB3 Arris cpe u:p=[none]:arristi (or factory pwd from Kevin). Type "quit": to shell; type "exit": back to console; Exit out Ctrl }, Ctrl d
+# telnet to XB3 cisco u:p=admin:POD; mainMenu>shell; tail -f /rdklogs/logs/WEBPAlog.txt.0
+# telnet to XB6 Arris u:p=admin:POD
+RDKlog="/rdklogs/logs/WEBPAlog.txt.0"
+WAPlog="/rdklogs/logs/WEBPAlog.txt.0"
+cpe_al () {      echo " alias cfg='cat /nvram/syscfg.db' && alias llr='ls -ltraF' && alias cdlr='cd /rdklogs/logs && llr' && alias tlr='tail  -f /rdklogs/logs/WEBPAlog.txt.0' && alias mi='ifconfig -a wan0' && alias catcfg='cat /nvram/webpa_cfg.json'  " ; }
+# cpe_al 2: ps|grep webpa; kill -9 webpa process; cd ./fss/gw/usr/ccsp/webpa; ./webpa -subsys eRT. &
+
+# telnet works with both IPv4 and IPv6
+telI () {      i=$1; i=${i:-$I2}; cpe_al;    telnet $i ; }
+teli  () {     c=$2; c=${c:-basic}; hterm $c "telI  $1" ; }
+
+### tail log WebPA aka rdk log aka RDKB device log aka cpe_log: 1/ telnet to CPE_IP, pwd=arristi, type quit to enter cli; 2/ cdlr;tlwpa 
+#alias llr='ls -ltraF';alias cdlr='    cd            /rdklogs/logs/ && ls -ltra|tail -n20'; alias tlr='     tail -n200 -f /rdklogs/logs/WEBPAlog.txt.0 '
+cpe_log="/rdklogs/logs/WEBPAlog.txt.0"
+alias tlwpa='  tail -n200 -f /rdklogs/logs/WEBPAlog.txt.0 '
+alias cpe_log_download='open https://sitools.sys.comcast.net/RDKBWebApplication/'
+alias cpe_log_realtime='open https://prodlogs.teamccp.com/searchsuite/browselogfirst.action; ech2 "with MAC number + 2" '
+
+### Non-xmanage: start magneto 051117
+#odp, use :         http://repos.awsxpc.comcast.net/version/env_info.py?color=red
+alias odpR='   open http://repos.awsxpc.comcast.net/version/env_info.py?color=red'
+alias odpA='   open http://repos.awsxpc.comcast.net/version/env_info.py?color=amber'
+alias odpY='   open http://repos.awsxpc.comcast.net/version/env_info.py?color=yellow'
+alias odpG='   open http://repos.awsxpc.comcast.net/version/env_info.py?color=green'
+
+#xpc, use magneto :   https://magneto.sys.comcast.net/xb_cloud/powercloud/tree/dev/hiera
+alias mag='    open https://magneto.sys.comcast.net/xb_cloud/powercloud/tree/dev/hiera'
+alias magR='   open https://magneto.sys.comcast.net/xb_cloud/powercloud/blob/dev/hiera/red.yaml'
+alias magA='   open https://magneto.sys.comcast.net/xb_cloud/powercloud/blob/dev/hiera/amber.yaml'
+alias magY='   open https://magneto.sys.comcast.net/xb_cloud/powercloud/blob/dev/hiera/yellow.yaml'
+alias magG='   open https://magneto.sys.comcast.net/xb_cloud/puppet_xpc/blob/master/hiera/xpc.yaml'
+
+alias magO='   open https://magneto.sys.comcast.net/xb_cloud/powercloud_xap/tree/dev/hiera'
+alias magOR='  open https://magneto.sys.comcast.net/xb_cloud/powercloud_xap/blob/dev/hiera/red.yaml'
+alias magOA='  open https://magneto.sys.comcast.net/xb_cloud/powercloud_xap/blob/dev/hiera/amber.yaml'
+alias magOY='  open https://magneto.sys.comcast.net/xb_cloud/powercloud_xap/blob/dev/hiera/yellow.yaml'
+
+
+#Muthu 051117:      https://magneto.sys.comcast.net/xb_cloud/powercloud OR _xap 
+alias magpc='  open https://magneto.sys.comcast.net/xb_cloud/powercloud'
+alias magxa='  open https://magneto.sys.comcast.net/xb_cloud/powercloud_xap'
+
+# One Stop Page: Production servers:
+alias magP='   open https://magneto.sys.comcast.net/xb_cloud/puppet_xpc/tree/master/hiera'
+
+#checkenvhost: 1/env host (api curl get, api postman, pingf, dig, sshcor, runcor, tail logs, ps-ef, servive, supervisorctl); 2/celeRflower tasks; 3/
+
+
+### Xmanage shows servers ip, hostname xpccore*, or odpcore*, 24=N, 13=N-1, 
+# alias_cxi_red='curl -s http://$hostR:9900/env'
+cxi_ () {      c=$1; c=${c:-red} ; curl -s http://96.118.36.213:8000/api/v1/xmanage/env/list-new/$c | python -m json.tool ; }
+
+# replace xmanage by magneto
+#cxi () {      c=$1; c=${c:-red} ; cat ~/devices/mag/$c.yaml ; } 
+cxi () {       c=$1; c=${c:-red} ; cat $HOME/checkouts/powercloud/hiera/$c.yaml ; } 
+cxI () {       c=$1; c=${c:-red} ; cat $HOME/checkouts/powercloud_xap/hiera/$c.yaml ; } 
+
+# use node 2,4 as code N level
+alias gx24='   egrep -A1   "core.*-[24]" '
+alias gx13='   egrep -A1   "core.*-[13]" '
+
+# use node 2 as flower
+alias gxflower='egrep -A4   "xpccore.*-2d" '
+alias goflower='egrep -A4   "odpcore.*-1d" '
+
+# list apps nodes
+gx () {         egrep -A1 "$*" ; }
+#alias gxredis=' gx           redis- '
+#alias gxsparkm='gx           sprkm- '
+#gx xpc/red/xpcproxy- 	5
+#gx xpc/red/xpcconsul- 	6
+#gx xpc/red/xpccore- 	8
+#gx xpc/red/xpccworker-	8
+#gx xpc/red/xpcdb- 	10
+#gx xpc/red/xpcsync-    8
+#gx xpc/red/xpcsprkm-   4
+#gx xpc/red/xpcsprkw-   12
+#gx xpc/red/xpchook- 	4
+#gx xpc/red/xpcque- 	6
+#gx xpc/red/xpczoo-     6
+#gx xpc/red/xpcrabbit- 	6
+#gx xpc/red/xpcredis- 	6
+#gx xpc/red/xpclb-      4 	EQUIV $ dig red.awsxpc.comcast.net ; 
+#gx xpc/red/xpcrdkc-    3
+
+### xpcbuild as slave nodes
+
+### godx red "db|redis" ~ ean
+godx () {      e=$1; a=$2; ech2 "Env=$e, App=$a"; cxi $e| gx $a ; }
+
+### god command: show env, App (core) , Version { host ODP, IP, SHA = odpcore-ch2f-1d-yellow 96.119.228.111 17.3.1-58.8136fb2 }
+god () {        c=$1; c=${c:-red}; a=$2; a=${a:-core}; u="http://repos.awsxpc.comcast.net/version/god_command_with_versions.py?color=$c&app=$a"; ech2 "$u u:p=devops:onlydevops"; open $u ; }
+
+
+### Env_App info http://repos.awsxpc.comcast.net/version/env_info.py?color=green&app=core,sync&region=e1a,e1b
+# eaif red "core,db"
+#eaif () {      e=$1; a=$2; ech2 "Env=$e, App=$a"; open http://repos.awsxpc.comcast.net/version/env_info.py?color=$e\&app=$a ; }
+
+# Newton lb nodes
+lbNewton="96.118.146.82"
+lbNewton1="96.118.146.57"
+
+### Nodes within lb, XPC_INSTANCE
+lbRED="https://red.awsxpc.comcast.net"
+lbAMBER="https://amber.awsxpc.comcast.net"
+lbYELLOW="https://yellow.awsxpc.comcast.net"
+lbSTAGING="https://xpcapi-stg.xpc.comcast.net"
+lbGREEN="https://xpcapi-si.xpc.comcast.net"
+GREEN2="https://xpcanalytics.gslb2.comcast.com"
+
+lbyellow_xpc="https://yellow.awsxpc.comcast.net"
+lbyellow_odp="https://odpyellowapi.odpaws.comcast.net/"
+
+lbamber_odp="https://odpamberuiorch.odpaws.comcast.net/"
+
+alias lbRAY='  dig red.awsxpc.comcast.net amber.awsxpc.comcast.net yellow.awsxpc.comcast.net'
+gRAY () {      egrep -i "red|amber|yellow" ; }
+
+nodee () {    for x in proxy consul core db sync sprkm sprkw hook que zoo rabbit redis lb rdkc; do echo;echo $x; cxi $1 |grep xpc$x- ; done ; }
+
+### celery flower ; 1/to get IP, 2/of5 on dashboards and task, check for status="FAILURE", or chk if hob celery workers not running for RED, due to rabbit-hob-3d had its queue full
+of5 () {        i=$1; ech2 "u:p=color:color or u:p=admin:xpc/odpadmin"; open http://$i:5555/dashboard ; }
+
+# celery flower:5555 xpc core 2d $ ean red xpccore 2; Flower:5555 odp core 1d $ eaN red odpcore 1;
+licf  () {      cxi $1 | grep -A1 xpccore-.*-2d ; }
+licfO () {      cxI $1 | grep -A1 odpcore-.*-1d ; }
+
+# celery flower: on red - asb - xpc: $echo "u:p= red/red"; open http://96.118.57.11:5555/tasks
+cfR () {        licf         ; for i in `licf        |gipo|a1line`; do ech2 $i; of5 $i; done ; }
+cfOR () {       licfO        ; for i in `licfO       |gipo|a1line`; do ech2 $i; of5 $i; done ; }
+
+# celery flower Yellow
+cfY () {        licf   yellow; for i in `licf  yellow|gipo|a1line`; do ech2 $i; of5 $i; done ; open http://68.87.33.80:5555/dashboard ; }
+cfOY () {       licfO  yellow; for i in `licfO yellow|gipo|a1line`; do ech2 $i; of5 $i; done ; }
+
+# celery flower Green 76.96.27.96:5555 or 76.96.26.193:5555
+#alias cfG='         ech2 "Celery Flower Green u:p=?:?"; open http://76.96.27.96:5555/dashboard'
+alias cfG='          ech2 "u:p=admin:xpcadmin for AS  "; open http://xpccore-as-01.sys.comcast.net:5555/tasks'
+alias cfOG='         ech2 "u:p=admin:odpadmin for AS  "; open http://odpcore-as-01.sys.comcast.net:5555/tasks'
+
+# broad celery flower:5555 u:p=admin/xpcadmin OR admin/odpadmin
+alias celeflower='   ech2 u:p=admin:xpcadmin; open http://68.87.33.80:5555/dashboard'
+
+
+### Env_App_NodeNum1234 ~ godx
+ean () {       e=$1; e=${e:-red}; a=$2; a=${a:-core}; n=$3; n=${n:-24}; echo $e xpc $a $n :; cxi $e | egrep -A1 $a.*-[$n] ; }
+eaN () {       e=$1; e=${e:-red}; a=$2; a=${a:-core}; n=$3; n=${n:-24}; echo $e xpc $a $n :; cxI $e | egrep -A1 $a.*-[$n] ; }
+
+ipcR () {      n=$1; n=${n:-24}; echo red_xpccore $n :; ean red    core    $n | cred   ; }
+ipcA () {      n=$1; n=${n:-24}; echo amb_xpccore $n :; ean amber  core    $n | camber ; }
+ipcY () {      n=$1; n=${n:-24}; echo yel_xpccore $n :; ean yellow core    $n | cyellow ; }
+
+
+### Jenkins
+# Jenkins henrylam ci job: jeci="henrylam-ci-xap-96.118.53.221"
+# Jenkins job download   jedlfw="download-rdkb-image"
+# Jenkins job XB6         jexb6="smoketest-XB6-on-amber"
+# Jenkins jobs            jeXPC="https://jenkins.awsxpc.comcast.net/"; jeODP="https://jenkins.awsxpc.comcast.net"; nRedn="smoketest-n-on-red-n"
+# utilities$ vih rdkb_auto_upgrade.py : def get_rdkb_last_successful_build(): u:p= base_url = https://xpcjenkins:rYxK8TeU)2@jenkins.ccp.xcal.tv/jenkins/job/ARRISXB3-Yocto-Build
+# TG1682_DEV_master...bin; script utilities/unsigned.py; jenkins job= upgrade_rdkb_unsigned
+# script utilities/rdkb_auto_upgrade.py; jenkins job, runs at 4am   = download_rdkb_image
+# FW upgrade; 1/je job: jefwup="upgrade-rdkb"; 2/Kevin 3/SItools; 4/CLIs
+alias ofwup='    open  https://jenkins.awsxpc.comcast.net/job/upgrade-rdkb/build?delay=0sec'
+#alias olistcpe=' open  https://jenkins.awsxpc.comcast.net/view/List_All_smoketest_cpes/'
+
+### sitools
+# upgrade fw rdkb for cisco/XB6/Green/Production: use sitools
+#alias ofwup_sitools='  echo "Use NTid to login, input: MAC, image, http/tfpt to proceed"; open https://sitools.sys.comcast.net/siweb/'
+alias sit_='    ech2 "sitools" ; open https://sitools.sys.comcast.net/siweb/'            
+alias sit_wpa=' ech2 "Input with cpe mac, make sure cpe online"; open https://sitools.sys.comcast.net/RDKBWebApplication/deviceLogs'
+alias sit_spl=' ech2 "Input with cpe mac"; open https://sitools.sys.comcast.net/SplunkQuery/'                 
+alias sii_api=' ech2 "$OBJ"| tr " " "\n" ; open https://sitools.sys.comcast.net/api/api-docs'
+
+# jenkins job for latency report, runs everyday at 7am - https://jenkins.awsxpc.comcast.net/job/latency_test
+# script: utilities/latency.py aka sshDan d /root/webpa-restart; run $ ./latency.py 9C34263FAA06
+tmer () {      s=$1; s=${s:-480}; now; ech2 "START WAITING $s SECONDS ... "; sleep $s ; ech2 "DONE $s SECONDS SLEEP... "; cowT $2 |cgreen  ; } 
+timer () {     runh tmer $1 $2 ; }
+
+### Dawg-house tool: to reboot CPE, beside 1/powercycle; 2/snmp sReboot; 3/SItools; 4/telnet CPE run OS reboot -f 5/webpa and obj?
+odhm () {      m=$1; n=$2; n=${n:-reboot_}; echo "1GO: link Open; 2MAC=$m right?; 3REBOOT: CPE $n"; open http://dawg-house.cvs-a.ula.comcast.net:8080/dawg-house/webpa/?q=$m ; tmer 1000  Dawg_House_reboot; ech2 Check online; gowpa $m ; }
+odh () {       runh "odhm $1 $2" ; }
+
+### Manual sync test in ENV: 1/trigger a change on CPE (either snmpset new ssid, or local UI change) then 2/wait then check DB thru API call priv wifi 3/Splunk 4/cmc_cid match thru APIs webpa vs sync_info 5/RDK log aka webpa log aka cpe log
+ms_cpe    () { i=$1; i=${i:-$I2}; sSSID      $i && ech2 "=== TRIGGER ==="; ssSSID     $i  HLsync_sS_2g && tmer 30 60sec_spot_sync_sS_2g && sSSID      $i ; }
+db_cloud () {  m=$1; m=${m:-$M2}; h=$2; h=${h:-$hostR}; b=`bmh $m $h|grep 200`; if [ $? -eq 0 ]; then ech2 "=== DB shows ==="; apw $m $h; smh $m $h; wp_syn $m; fi ; }
+
+ms_  () {      m=$1; m=${m:-$M2}; i=$2; i=${i:-$I2}; h=$3; h=${h:-$hostR}; ms_cpe $i && db_cloud $m $h ; }
+ms_reset () {  m=$1; m=${m:-$M2}; i=$2; i=${i:-$I2}; ssSSID $i 2gTest_SSID_NAME; cle $m  ; }
+
+msy () {       m=$1; m=${m:-$M2}; i=$2; i=${i:-$I2}; h=$3; h=${h:-$hostR}; ms_reset $m $i && ms_cpe $i && db_cloud $m $h && sleep 5 && ms_reset $m $i ; }
+
+ms_R () {      ms_cpe        && db_cloud            ; }
+ms_A () {      ms_cpe    $I3 && db_cloud $M3 $hostA ; }
+ms_Y () {      msy   $M1 $I1                 $hostY ; }
+
+### #force sync: 1/learn cmc cid: api/v1/internal/gateway-cpe/<cpe>/synccsidcmc; 2/post noti /syncnotification with the 2 values: notification/gateway-cpe/<cpe>/syncnotification
+
+### SNMP and OID
+# talk2cpe: [snmp] sFW $I2; [WebPA] wp_ $M2; olob $M2; [Cloud API, XPC DB] aws $M2
+# check if webpa servive pointing/running right…snmpget -v2c -c hDaFHJG7 10.255.244.38 .1.3.6.1.4.1.17270.50.4.1.2.0
+# check if correct web server="fabric.webpa.comcast.net" : 1/ telnet in to view file: /nvram/webpa_cfg.json OR 2/ snmpget cli: # snmpget -v2c -c hDaFHJG7 10.255.244.93 .1.3.6.1.4.1.17270.50.4.1.2.0 SNMPv2-SMI::enterprises.17270.50.4.1.2.0 = STRING: "fabric.webpa.comcast.net"
+
+OID_SSID=".1.3.6.1.4.1.17270.50.2.2.2.1.1.3.10001"
+alias oOIDsnmp='open https://www.teamccp.com/confluence/display/SMARTINT/SNMP'
+
+sS_ssid () {      cip=$1; n=$2;snmpset -v2c -c hDaFHJG7      $cip .1.3.6.1.4.1.17270.50.2.2.2.1.1.3.10001  s "$n" ; }
+sS_ssid_v6 () {   cip=$1; n=$2;snmpset -v2c -c hDaFHJG7 udp6:$cip .1.3.6.1.4.1.17270.50.2.2.2.1.1.3.10001  s "$n" ; }
+ssSSID () {       cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then      sS_ssid   $cip $2; else      sS_ssid_v6   $cip $2; fi ; }
+
+sG_ssid () {      cip=$1;      snmpget -v2c -c hDaFHJG7      $cip .1.3.6.1.4.1.17270.50.2.2.2.1.1.3.10001         ; }
+sG_ssid_v6 () {   cip=$1;      snmpget -v2c -c hDaFHJG7 udp6:$cip .1.3.6.1.4.1.17270.50.2.2.2.1.1.3.10001         ; }
+sSSID () {        cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then      sG_ssid   $cip   ; else      sG_ssid_v6   $cip   ; fi ; }
+
+sS_UIenab () {    cip=$1;      snmpset -v2c -c hDaFHJG7      $cip  .1.3.6.1.4.1.4115.1.3.4.1.2.6.0   i  1 ; }
+sS_UIenab_v6 () { cip=$1;      snmpset -v2c -c hDaFHJG7 udp6:$cip  .1.3.6.1.4.1.4115.1.3.4.1.2.6.0   i  1 ; }
+
+sG_UIenab () {    cip=$1;      snmpget -v2c -c hDaFHJG7      $cip  .1.3.6.1.4.1.4115.1.3.4.1.2.6.0        ; }
+sG_UIenab_v6 () { cip=$1;      snmpget -v2c -c hDaFHJG7 udp6:$cip  .1.3.6.1.4.1.4115.1.3.4.1.2.6.0        ; }
+
+#sS_telnet_v6 () { cip=$1;     snmpset -v2c -c hDaFHJG7 udp6:$cip  1.3.6.1.4.1.1429.78.1.1001.1.0    i  1 ; }
+sS_enaTel () {    i=$1 pod=$2; snmpset -v2c -c hDaFHJG7 $i 1.3.6.1.4.1.4115.1.3.4.1.2.1.0 s $pod 1.3.6.1.4.1.4115.1.3.4.1.2.2.0 i 1 ; }   
+
+sS_factor () {    cip=$1;      snmpset -v2c -c hDaFHJG7      $cip  1.3.6.1.4.1.17270.50.2.1.1.1002.0 i  1 && tmer 600 SNMP_REBOOTi_$2_$cip ; }
+sS_reboot () {    cip=$1;      snmpset -v2c -c hDaFHJG7      $cip  1.3.6.1.2.1.69.1.1.3.0            i  1 && tmer 600 SNMP_REBOOTi_$2_$cip ; }
+sS_reboot_v6 () { cip=$1;      snmpset -v2c -c hDaFHJG7 udp6:$cip  1.3.6.1.2.1.69.1.1.3.0            i  1 && tmer 600 SNMP_REBOOTi_$2_$cip ; }
+sReboot () {      cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then runh sS_reboot $cip $2; else runh sS_reboot_v6       $cip $2; fi   ; }
+sFactory () {     cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then runh sS_factor $cip $2; else runh sS_factor     udp6:$cip $2; fi   ; }
+
+sS_wpastart () {  cip=$1;      snmpset -v2c -c hDaFHJG7      $cip  .1.3.6.1.4.1.17270.50.4.1.1.0     i  1 ; now ; }
+sS_wpastop  () {  cip=$1;      snmpset -v2c -c hDaFHJG7      $cip  .1.3.6.1.4.1.17270.50.4.1.1.0     i  2 ; now ; }
+
+sG_wpa      () {  cip=$1;      snmpget -v2c -c hDaFHJG7      $cip  .1.3.6.1.4.1.17270.50.4.1.2.0          ; }
+sG_wpa_v6   () {  cip=$1;      snmpget -v2c -c hDaFHJG7 udp6:$cip  .1.3.6.1.4.1.17270.50.4.1.2.0          ; }
+sWPA () {         cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then      sG_wpa    $cip   ; else      sG_wpa_v6    $cip   ; fi ; }
+
+sG_wan () {       cip=$1;      snmpget -v2c -c hDaFHJG7      $cip .1.3.6.1.4.1.17270.50.2.3.9.2.1.0                                 ; }
+sG_wan_v6 () {    cip=$1;      snmpget -v2c -c hDaFHJG7 udp6:$cip .1.3.6.1.4.1.17270.50.2.3.9.2.1.0 | tr ';<<' '\n' | column -s: -t ; }
+sWAN () {         cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then      sG_wan    $cip   ; else      sG_wan_v6    $cip   ; fi ; }
+
+sG_fw  () {       cip=$1;      snmpget -v2c -c hDaFHJG7      $cip  1.3.6.1.2.1.1.1.0 | tr ';<<' '\n' | column -s: -t ; }
+sG_fw_v6 () {     cip=$1;      snmpget -v2c -c hDaFHJG7 udp6:$cip  1.3.6.1.2.1.1.1.0 | tr ';<<' '\n' | column -s: -t ; }
+sFW () {          cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then      sG_fw     $cip   ; else      sG_fw_v6     $cip   ; fi ; }
+
+sG_lan () {       cip=$1;      snmpget -v2c -c hDaFHJG7      $cip .1.3.6.1.4.1.17270.50.2.3.2.1.3.32                                ; }
+sLAN () {         cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then      sG_lan    $cip   ; else      sG_lan  udp6:$cip   ; fi ; }
+
+sG_r2g () {       cip=$1;      snmpget -v2c -c hDaFHJG7      $cip .1.3.6.1.4.1.17270.50.2.2.7.1.1.1.10000                           ; }
+sR2G () {         cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then      sG_r2g    $cip   ; else      sG_r2g  udp6:$cip   ; fi ; }
+
+sG_r5g () {       cip=$1;      snmpget -v2c -c hDaFHJG7      $cip .1.3.6.1.4.1.17270.50.2.2.7.1.1.1.10100                           ; }
+sR5G () {         cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then      sG_r5g    $cip   ; else      sG_r5g  udp6:$cip   ; fi ; }
+
+# cisco
+#share sWPA, sFW, sWAN, get sSSID
+sc_factor () {    cip=$1;      snmpset -v2c -c hDaFHJG7      $cip  1.3.6.1.4.1.1429.77.1.3.18.0      i  1 && tmer 600 SNMP_REBOOTi_$2_$cip ; }
+sc_reboot () {    cip=$1;      snmpset -v2c -c hDaFHJG7      $cip  .1.3.6.1.4.1.1429.77.1.3.17.0     i  1 && tmer 600 SNMP_REBOOTi_$2_$cip ; }
+scReboot () {     cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then runh sc_reboot $cip $2; else runh sc_reboot     udp6:$cip $2; fi  ; }
+scFactory () {    cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then runh sc_factor $cip $2; else runh sc_factor     udp6:$cip $2; fi  ; }
+
+#sc_lan () {       cip=$1;      snmpget -v2c -c hDaFHJG7      $cip .1.3.6.1.4.1.1429.79.2.3.2.1.3.32                                 ; }
+#scLAN () {        cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then      sc_lan    $cip   ; else      sc_lan  udp6:$cip   ; fi ; }
+
+sc_r2g () {       cip=$1;      snmpget -v2c -c hDaFHJG7      $cip .1.3.6.1.4.1.1429.79.2.2.7.1.1.1.32                               ; }
+scR2G () {        cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then      sc_r2g    $cip   ; else      sc_r2g  udp6:$cip   ; fi ; }
+
+sc_r5g () {       cip=$1;      snmpget -v2c -c hDaFHJG7      $cip .1.3.6.1.4.1.1429.79.2.2.7.1.1.1.112                              ; }
+scR5G () {        cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then      sc_r5g    $cip   ; else      sc_r5g  udp6:$cip   ; fi ; }
+
+sc_enaTel () {    i=$1 pod=$2; snmpset -v2c -c hDaFHJG7      $i   1.3.6.1.4.1.1429.78.1.1001.1.0     i  1                           ; }
+
+### Upgrade FW via SNMP 4x - https://etwiki.sys.comcast.net/display/SMARTINT/QA+Cheat+Sheet
+#set the server:    snmpset -v2c -c hDaFHJG7 <CM IP of your XB3> .1.3.6.1.2.1.69.1.3.1.0 a 10.255.246.110
+#set the image:     snmpset -v2c -c hDaFHJG7 <CM IP of your XB3> .1.3.6.1.2.1.69.1.3.2.0 s <image name>
+#start the upgrade: snmpset -v2c -c hDaFHJG7 <CM IP address> .1.3.6.1.2.1.69.1.3.3.0 i 1 
+#check the version: snmpget -v2c -c hDaFHJG7 <CM IP of your XB3> 1.3.6.1.2.1.1.1.0
+
+### thru WebPA/SATtoken
+wp_ () {       m=$1;   o=$2; o=${o:-Device.DeviceInfo.X_COMCAST-COM_WAN_IP}; ech2 "$o: "; py ~/get_thru_webpa.py  $m   $o ; }
+wp_rdkb () {   cip=$1; ech2 "RDKB FW at CPE  (thru WebPA/SATtoken):  $cip "; python ~/get_fwcpe_thru_webpa.py     $cip ; }
+wp_wan () {    m=$1;   ech2 "WAN IP for CPE  (thru WebPA/SATtoken):  $m ";   python ~/get_wan_thru_webpa.py       $m   ; }
+
+wp_syn () {    m=$1;   ech2 "(thru WebPA/SATtoken):  $m ";   python ~/get_syn_thru_webpa.py   $m   ; }
+
+### check cpe IP (and others: )  thru WebPA/SATtoken, tunnel: $ wp_ $M2 Device.X_CISCO_COM_CableModem.IPv6Address
+#tunnel Device.WiFi.SSID.10001.SSID \           
+#tunnel Device.WiFi.SSID.10101.SSID \           
+#tunnel Device.WiFi.SSID.10001.Stats.BytesSent \
+#tunnel Device.WiFi.SSID.10001.Stats.BytesReceived \
+#tunnel Device.WiFi.SSID.10101.Stats.BytesSent \
+#tunnel Device.WiFi.SSID.10101.Stats.BytesReceived \
+#tunnel Device.WiFi.Radio.10000.Enable
+#tunnel Device.WiFi.Radio.10000.Channel
+#tunnel Device.WiFi.Radio.10000.AutoChannelEnable
+#tunnel Device.WiFi.Radio.10100.OperatingStandards
+#tunnel Device.WiFi.Radio.10100.OperatingChannelBandwidth
+#tunnel Device.DeviceInfo.HardwareVersion
+#tunnel Device.DeviceInfo.SerialNumber
+#tunnel Device.DeviceInfo.SoftwareVersion
+#tunnel Device.DeviceInfo.ProductClass
+#tunnel Device.DeviceInfo.Manufacturer
+#tunnel Device.DeviceInfo.X_COMCAST-COM_WAN_IP \
+#tunnel Device.DeviceInfo.X_COMCAST-COM_CM_IP \
+#tunnel Device.DeviceInfo.X_RDKCENTRAL-COM_ConfigureWiFi \
+#tunnel Device.DeviceInfo.Webpa.X_COMCAST-COM_CMC \
+#tunnel Device.DeviceInfo.Webpa.X_COMCAST-COM_CID \
+#tunnel Device.DeviceInfo.X_CISCO_COM_FirmwareName \
+#tunnel Device.DeviceInfo.X_RDKCENTRAL-COM_CloudUIEnable \
+#tunnel Device.DeviceInfo.X_RDKCENTRAL-COM_EnableXDNS \
+#tunnel Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.Mesh.URL \
+#tunnel Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.Mesh.Enable \
+#tunnel Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.Mesh.Status \
+#tunnel Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.Mesh.State \
+#tunnel Device.DeviceInfo.X_RDKCENTRAL-COM_Connected-Client \         
+#tunnel Device.X_Comcast_com_ParentalControl.ManagedDevices.Enable \
+#tunnel Device.X_Comcast_com_ParentalControl.ManagedDevices.Device. \		# get blocl rule
+#tunnel Device.X_Comcast_com_ParentalControl.ManagedDevices.AllowAll \
+#tunnel Device.X_CISCO_COM_DeviceControl.LanManagementEntry.1.LanIPAddress \
+#tunnel Device.X_CISCO_COM_DeviceControl.LanManagementEntry.1.LanSubnetMask \
+#tunnel Device.X_CISCO_COM_CableModem.IPv6Address  \
+#tunnel Device.X_CISCO_COM_CableModem.CMStatus \     
+#tunnel Device.X_CISCO_COM_DeviceControl.LanManagementEntry.1.LanMode \		# get bridge_mode, false==router       
+#tunnel Device.X_RDKCENTRAL-COM_Report.NetworkDevicesStatus. "
+#tunnel Device.DHCPv4.Server.Pool.1.StaticAddress.32.        			# as new mac binding rule added in 
+#tunnel Device.DHCPv4.Client.1.IPRouters
+#tunnel Device.NAT.X_CISCO_COM_DMZ.InternalIP
+#tunnel Device.NAT.X_CISCO_COM_DMZ.Enable
+#tunnel Device.NAT.X_Comcast_com_EnablePortMapping
+
+#xpc-test/xpcfunctionaltest/utilities/cleanup_cpe.py
+cle () {       m=$1;       ech2 "Clean CPE $m from envs";    cd;  python cleanup_cpe.py   --cpe $m ; line ; }
+onb () {       m=$1; e=$2; ech2 "Onboard CPE $m to env $e."; cd; (python onboard_cpe.py   --cpe $m --env $e)|cblue; line ; }
+
+# onb 2 secs: cqlsh> select * from default_setting ;
+# onb check api: http://96.118.57.13:8080/api/v1/gateway-cpe/5CE30E50E458/gateway_default_cpe_setting
+
+# check if CPE mac is online thru webpa, and if onboard on any host/env
+#getipcm () {   m=$1; python $HOME/get_ipcpe_thru_webpa.py   $m |gc2 value ; }
+#getipv6 () {   m=$1; python $HOME/get_ipv6cpe_thru_webpa.py $m |gc2 value ; }
+gowpa () {     m=$1; m=${m:-$M2}; ech2 "Chk CPE (thru WebPA/SATtoken)"; line; bash ~/checkouts/xpc-testm/xpc-test/xpcfunctionaltest/utilities/check_device_webpa.sh $m;ech2 ; }
+
+olob () {      m=$1; ech2 "Check if online thru WebPA ..."; gowpa $m|cblue; ech2 "Check if onboard ..."; cle     $m ; }
+# olob GREEN: 1/postman 2/GET https://xpclb-ch2-01.sys.comcast.net/api/v1/gateway-cpe/044E5A9AE8EC/association 3/NTid:pwd
+# apw  GREEN: https://xpclb-ch2-01.sys.comcast.net/api/v1/gateway-cpe/044E5A9AE8EC/configuration?group_id=group_private_wifi_configuration
+
+### Repositories:
+se="xpc-solutions-eng"
+xt="xpc-test"
+
+### cd
+alias sxa='    subl  $HOME/checkouts/xap'
+alias sse='    subl  $HOME/checkouts/$se     '
+alias sxt='    subl  $HOME/checkouts/xpc-test'
+
+alias cdxa='   cd    $HOME/checkouts/xap'
+alias cdse='   cd    $HOME/checkouts/xpc-solutions-eng;  cbr|cblue;  pwd'
+alias cdxt='   cd    $HOME/checkouts/xpc-test;           cbr|ccyan;  pwd|grep test '
+alias cdxtm='  cd    $HOME/checkouts/xpc-testm/xpc-test; cbr|cgreen; pwd|grep test '
+alias cdpc='   cd    $HOME/checkouts/powercloud;         cbr|cgreen; pwd'
+alias cdpcxa=' cd    $HOME/checkouts/powercloud_xap;     cbr|cgreen; pwd'
+alias cdhi='   cdpc;   cd hiera; p '
+alias cdhixa=' cdpcxa; cd hiera; p '
+
+alias cdrunodp='cd   $HOME/checkouts/xap/smoketests/test_odp;   ech2 Current branch is `cbr|ccyan`; p '
+alias cdrunat='cd    $HOME/checkouts/xpc-test/boxertest_client; ech2 Current branch is `cbr|ccyan`; p '
+
+alias cdcurls='cd    $HOME/checkouts/xpc-testm/xpc-test/testscripts/curlscripts; ech2 Current branch is `cbr|ccyan`; ls; pwd '
+alias cdcerts='cd    $HOME/checkouts/xpc-testm/xpc-test/testscripts/signed_cert; ech2 Current branch is `cbr|ccyan`; ls; pwd '
+
+alias runat='  subl  $HOME/checkouts/xpc-test/boxertest_client/run_any.sh'
+alias onrn='   open https://jenkins.awsxpc.comcast.net/view/All%20XPC%20Test%20jobs/job/smoketest-n-on-red-n/'
+alias onan='   open https://jenkins.awsxpc.comcast.net/view/All%20XPC%20Test%20jobs/job/smoketest-n-on-amber-n/'
+
+alias run0='   grep python2 $HOME/checkouts/xpc-test/boxertest_client/run_any.sh |grep -v "\#"|cpink && runat && lastbox && p && onrn ; hterm pro "msy"; runh "msy $M4 $I4 $hostA"; hterm basic "msy $M1 $I1 $hostY"; verR; verA; verY '
+
+runl () {      cdrunat; c=$1; c=${c:-basic}; hterm $c "now;echo $2;run_any.sh|fteey && cowS $2 |cgreen" ; }
+alias run1='   runl           basic'
+alias run2='   runl           pro '
+alias run3='   runl           homebrew'
+#alias run4='   runl           ocean   '
+#alias run5='   runl           novel   '
+
+# cd smoketest locations
+alias cdlat='  cd     $HOME/checkouts/xap/smoketests/test_xpc/latency/  ; p '    
+alias cdlatmm='cdlat; cd test_case_latency_moca_mode;p '
+alias cdlatbm='cdlat; cd test_case_latency_bridge_mode;p '
+alias cdlatr2='cdlat; cd test_case_latency_radio_2g; p '
+alias cdlatr5='cdlat; cd test_case_latency_radio_5g; p '
+alias cdr2='   cd     $HOME/checkouts/hl/latency/r2; p '
+alias cdr5='   cd     $HOME/checkouts/hl/latency/r5; p '
+alias cdsts='  cd     $HOME/checkouts/xap/smoketests/test_xpc/xpc_tests/; p '      
+alias cdst='   cd     $HOME/checkouts/xap/smoketests ; p '           
+#alias cdmesh=' cd    $HOME/checkouts/xap/smoketests/test_odp/test_case_mesh/;llt;cbr|cred; pwd '
+
+# cdutil at xt master only
+alias cdutil=' ech2 util only exists in branch master of xpc-testm/xpc-test repos; d="$HOME/checkouts/xpc-testm/xpc-test/xpcfunctionaltest/utilities"; subl $d ; cd $d; p '
+
+alias cdhelper='cd   $HOME/checkouts/xpc-test/boxertest_client/util'
+#alias vixhelper='vis $HOME/checkouts/xpc-test/boxertest_client/util/xpc_helpers.py compare_response_data'
+#alias vixh='   runh  "vixhelper" '
+#alias s2gcom=' cd    $HOME/checkouts/xap/smoketests/test_xpc/xpc_tests/sanity; subl test_case_group_radio_2g_onboard.xb3.boxersuite'
+
+#alias obt='    open https://github.comcast.com/xpcs/xpc-test/tree/boxerclient/boxertest_client'
+
+#alias osts='   open https://github.comcast.com/xpcs/xap/tree/develop/smoketests/test_xpc/xpc_tests'
+#alias ost='    open https://github.comcast.com/xpcs/xap/tree/develop/smoketests'
+
+#alias oxa='    open https://github.comcast.com/xpcs/xap'
+#alias oxt='    open https://github.comcast.com/xpcs/xpc-test'
+alias ocurls=' open https://github.comcast.com/xpcs/xpc-test/tree/master/testscripts/curlscripts'
+
+### BOX API
+APIX="XPC-Platform-API-V2.0.9.5-LifecycleAndConfigSetManagement_Phase2.1MVP_M0.1v1.2s.pdf"
+
+alias boxobj=' echo Platform_CloudParameters_V-2.1.docx; open https://comcast.app.box.com/files/0/f/5008533769/1/f_196941031837'
+alias boxapio='open https://comcast.app.box.com/files/0/f/9067651730/1/f_76978037221; ech2 ODP-Platform-API-V1-OperationalDataManagement_Phase1v0 8.3.31.pdf'
+alias boxapix='open https://comcast.app.box.com/files/0/f/9067651730/1/f_98327234961; ech2 XPC-Platform-API-V2.0.9.5-LifecycleAndConfigSetManagement_Phase2.1MVP_M0.1v1.2s.pdf'
+alias boxapi=' open https://comcast.app.box.com/files/0/f/9067651730/SprintN;         ech2 XPC/OPD-Platform-API.*.pdf'
+
+gc2 () {       egrep $*|cut -d: -f2- |tr ',\"' ' ' ; }
+gbx  () {      egrep -n "context|Starting|expect|status|method|-|endpoint|query|before|after"; }
+gbx2 () {      egrep -n "action|request|response|context|Starting|expect|status|method|-|endpoint|query|before|after"; }
+cgbx () {      tc=$1; cat $tc|gbx ; }
+
+### check association and get csid:
+#purge cpe: delc () {      m=$1; h=$2; curl -s -X DELETE http://$h:8080/api/v1/gateway-cpe/$m   |pjson|cblue ; }
+isa () {       m=$1; h=$2; curl -s -X GET                                http://$h:8080/api/v1/gateway-cpe/$m/association   |pjson|cblue ; }
+#isaS() {      m=$1; h=$2; h=${h:-xpcapi-si.xpc.comcast.net}; curl -s -X GET https://$h/api/v1/gateway-cpe/$m/association   |pjson|cblue ; }
+
+isA () {       m=$1; h=$2; u="http://$h:8080/api/v1/gateway-cpe/$m/association"; echo "GET $u"; python -c "import sys,json,os,requests; resp = json.loads(requests.get('$u',cert='./client.pem',verify=False).text); print json.dumps(resp)" | python -m json.tool |cgreen ; }
+
+
+# check if m1 or m2 being used, detect data in API asso
+#cm1 () {       n=$1; n=${n:-3}; for c in `seq $n`; do echo $c; m="M$c"; echo ${m}; cle $m; done ; }
+
+### create new csid (empty body) via curl POST API configset, via Python requests.post()
+csid0 () {     h=$1; h=${h:-$hostR}; u="http://$h:8080$CSBU"; ech2 "POST $u"; curl -s -X POST $u |pjson|cblue ; }
+cPcsid () {    h=$1; h=${h:-$hostR}; csid0 $h ; }
+
+create_csid0 () { h=$1; h=${h:-$hostR}; u="http://$h:8080/api/v1/gateway-configset"; echo "For host $h, creating CSID with  URL $u"; python -c "import sys,json,os,requests; resp= json.loads(requests.post('$u', cert='./client.pem', verify=False ).text) ; print json.dumps(resp, indent=4) " | python -m json.tool  ; }
+
+### create new csid (with  body) via curl POST API configset
+cPcsid () {    h=$1; h=${h:-$hostR}; u="http://$h:8080$CSBU";     cP    $u ; }
+cDcsid () {  c=$1; h=$2;           u="http://$h:8080$CSBU/$c";    cDel  $u ; }
+
+
+### func a, b, c, d, p, l, i, s for Asso, onB, Clean, Detach/Disasso, Clean, Purge/Delete CPE, Log, Info, Sync
+amh () {       m=$1; h=$2;       isA                                 $m  $h    ; }
+bmh () {       m=$1; h=$2;       python $HOME/onboard.py             $m  $h    |cblue ; }
+bmhc () {      m=$1; h=$2; c=$3; python $HOME/onboard.py             $m  $h $c |cblue ; }
+dmh () {       m=$1; h=$2;       python $HOME/detach.py              $m  $h    ; }
+cmh () {       m=$1; h=$2;       python $HOME/clean_ac.py            $m  $h    ; }
+cmh0 () {      m=$1; h=$2;       python $HOME/clean_ac_emptycsid.py  $m  $h    ; }
+swapmhc () {   m=$1; h=$2; c=$3; python $HOME/swap_onb.py            $m  $h $c |cblue ; }
+pmh () {       m=$1; h=$2;       python $HOME/purge_cpe_frDB.py      $m  $h    ; }
+t_h () {             h=$1; ech2 Tail_Log_Xpc;             tlx   $h             ; }
+gmh () {       m=$1; h=$2; ech2 Grep_tail_xpc_log;      ( tlx   $h ) | grep $m ; } 
+gmH () {       runh  gmh $1 $2  ; } 
+#forget              lmh () { ; }
+#log                 lmh () { ; }
+#refresh/renew/reset rmh () { ; }
+imh () {       m=$1; h=$2;                 ech2 Info_cpe;     amh $m $h; aci  $m $h; aga  $m $h; acd  $m $h; mpf $m $h; mmb $m $h; echo; now ; }
+imh2 () {      m=$1; h=$2;                 ech2 Info_cpe;     amh $m $h; aci2 $m $h; aga  $m $h; acd2 $m $h; mpf $m $h; mmb $m $h; echo; now ; }
+imhR () {      m=$1; h=$2; h=${h:-$hostR}; ech2 Info_cpe;     amh $m $h; aci2 $m $h; aga  $m $h; acd2 $m $h; mpf $m $h; mmb $m $h; echo; ech2 "ODP:"; ogbt $m $hostOR; now ; }
+imhY () {      m=$1; h=$2; h=${h:-$hostY}; ech2 Info_cpe;     amh $m $h; aci2 $m $h; aga  $m $h; acd2 $m $h; mpf $m $h; mmb $m $h; echo; ech2 "ODP:"; ogbt $m $hostOY; now ; }
+smh () {       m=$1; h=$2;                 ech2 Sync_info;    amh $m $h; asi  $m $h; asc  $m $h; now ; }
+snmh () {      m=$1; h=$2;                 ech2 Sync_Now;                asn  $m $h;             now ; }
+
+### reset M2
+m2__ () {      m=$1; m=${m:-$M2}; h=$2; h=${h:-$hostR}; cmh0 $m $h && bmh $m $h && bjp b_pw_m2.json && cPpw $m $h &&  imh $m $h  ; }
+
+### firmware and tftp
+# upgrade fw for Red/Amber/Yellow: jenkins job upgrade-rdkb to CPE: 0/fr Yocto ofw, scp 2Dan_2TFTP 1/smktest job shows CPE MAC 2/gowpa MAC 3/fill jenkins params: cpemac, cpeid, New FW image, document old FW, and running job number. OR 3bis/reboot cpemac, wait and fill params
+
+xb6_fw="TG3482"
+xb3_arris_fw="TG1682"
+xb3_cisco_fw="DPC3941"
+
+### Firmware at Yocto, u:p=hlam01/LDAP_pwd ;  upgrade firmware/RDKB :
+alias ofw='    ech2 "u:p=hlam01/LDAP_pwd"; open  https://nexus.teamccp.com/nexus/content/repositories/arris_xb3/images/signing_stage/ArrisXB3-Yocto-Release/'
+
+# scp image to Dan
+i2d () {       img=$1; cd $HOME/Download; scp -r ./$img root@69.252.255.146:/ ; } 
+alias imgDan=' sshDan -t "ls -ltr / " '
+
+# scp image from Dan to TFTP
+i2t () {       img=$1; cd /;          scp -r  /$img root@10.255.246.110:/var/www/html/images/  ; }
+alias imgTFTP='sshDan -t "ssh 10.255.246.110 ls -ltr /var/www/html/images" '
+
+# Dan's jumper host: lta27 aka 10.1.50.27 aka 69.252.255.146
+alias sshDan=' ssh root@69.252.255.146 '
+alias sshtftp='ssh root@69.252.255.146 -t "ssh 10.255.246.110" '
+
+# [root@lta27 webpa-restart]# vim rdkb_auto_upgrade.py
+alias viDanFwUpd='sshDan -t "vim      /root/webpa-restart/rdkb_auto_upgrade.py" '
+alias lsDanFwUpd='sshDan -t "ls -ltra /root/webpa-restart/*.py" '
+
+### ssh core as clduser or root
+# $ brew install csshx; vi $HOME/.ssh/config; identityFile $HOME/.ssh/xpc-openstack-key.txt; csshx --login clduser  96.119.227.248 96.119.227.25
+sshc () {      csshx -l clduser  $* ; }
+sshC () {      csshx -l root     $* ; }
+
+### sshcore ,  run cmds on ssh core nodes and other apps nodes                
+
+hkR="96.118.27.121"
+kkR="96.118.27.149"
+zoR="96.118.27.247"
+syR="96.118.27.245"
+swR="96.118.27.234"
+
+redisR="96.118.25.60"
+redisA="96.118.19.198"
+redisY="96.118.20.177"
+
+dbR="96.118.27.118"		# xpcdb-hob-2d-red
+dbA="96.118.23.77"		# xpcdb-hob-2d-amber
+dbY="96.119.231.125"		# xpcdb-ch2f-2d-yellow
+
+dbOR="96.118.27.190" 		# odpdb-hob-2d-red.sys.comcast.net
+dbOA="96.118.28.71"		# odpdb-hob-2d-amber
+dbOY="96.118.50.52"             # odpdb-asb-2d-yellow
+#dbOY="96.119.228.177"          # odpdb-ch2f-2d-yellow
+
+#sshhk   () {  coreip=$1; coreip=${coreip:-$hkR};       ssh -i $HOME/.ssh/xpc-openstack-key.txt    root@$coreip ; }
+sshhk    () {  ssh -i $HOME/.ssh/xpc-openstack-key.txt    root@${1:-$hkR} ; }
+sshkk    () {  ssh -i $HOME/.ssh/xpc-openstack-key.txt    root@${1:-$kkR} ; }
+sshzoo   () {  ssh -i $HOME/.ssh/xpc-openstack-key.txt    root@${1:-$zoR} ; }
+sshsync  () {  ssh -i $HOME/.ssh/xpc-openstack-key.txt    root@${1:-$syR} ; }
+sshsprkw () {  ssh -i $HOME/.ssh/xpc-openstack-key.txt    root@${1:-$swR} ; }
+sshredis () {  ssh -i $HOME/.ssh/xpc-openstack-key.txt    root@${1:-$redisR} ; }
+
+sshdb   () {   ssh -i $HOME/.ssh/xpc-openstack-key.txt    root@${1:-$dbR} ; } #ech2 "CLI: nodetool status; to debug DB" 
+alias sshdbOR=' sshdb $dbOR'
+alias sshdbOY=' sshdb $dbOY'
+alias sshdbY='  sshdb $dbY'
+
+sshcor  () {   coreip=$1; coreip=${coreip:-96.118.57.11};  ssh -i $HOME/.ssh/xpc-openstack-key.txt    root@$coreip ; }
+sshcore () {   coreip=$1; coreip=${coreip:-96.118.57.11};  ssh -i $HOME/.ssh/xpc-openstack-key.txt clduser@$coreip ; }
+sshcorexplat () {   coreip=$1; coreip=${coreip:-96.118.57.11};  ssh -i $HOME/.ssh/xpc-openstack-key.txt xplat@$coreip ; }
+
+alias sshxplat='ssh -i $HOME/.ssh/id_rsa xplat@odpredis-as-01q.sys.comcast.net'
+sshprivh () {  coreip=$1; coreip=${coreip:-odpredis-as-01q.sys.comcast.net};  ssh -i $HOME/.ssh/id_rsa hlam001c@$coreip ; }
+sshprivx () {  coreip=$1; coreip=${coreip:-odpredis-as-01q.sys.comcast.net};  ssh -i $HOME/.ssh/id_rsa    xplat@$coreip ; }
+
+sshcorh () {   hterm novel "sshcor    $1" ; }
+sshph () {     hterm ocean "sshprivh  ${1:-$hostR}" ; }
+
+runph  () {    coreip=$1; coreip=${coreip:-96.118.147.38}; ssh -i $HOME/.ssh/id_rsa               hlam001c@$coreip -t "hostname; $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14 $15" ; }
+runcor  () {   coreip=$1; coreip=${coreip:-96.118.57.11};  ssh -i $HOME/.ssh/xpc-openstack-key.txt    root@$coreip -t "hostname; $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14 $15" ; }
+runcore () {  coreip=$1; coreip=${coreip:-96.118.57.11};   ssh -i $HOME/.ssh/xpc-openstack-key.txt clduser@$coreip -t "hostname && $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14 $15" ; }
+
+hncore () {    eh=$1; eh=${eh:-96.118.57.11}; runcore $eh "hostname" | cpink ; }
+hnip () {      i=$1; e=`hncore $1|cut -d"-" -f4`; echo "$i $e" ; cxi $(e)|egrep -n -C2 $i ; }
+
+### cd at an env host
+AXPC="/app/logs/api/xpc.log"
+alias cdul='   cd      /app/logs/uwsgi;             ls -ltra; pwd '
+alias cdal='   cd      /app/logs/api;               ls -ltra; pwd '
+alias txl='    tail -f /app/logs/api/xpc.log '
+alias tul='    tail -f /app/logs/uwsgi/uwsgi_xpc.log '
+
+# glx $M2 96.118.166.130 #xpcsync-wcdcc-2d-yellow
+glxpc () {       m=$1; h=$2; runcor $h grep --color -i $m /app/logs/api/xpc.log ; }
+tlx   () {             h=$1; runcor $h tail -n100 -f      /app/logs/api/xpc.log ; }
+#[root@xpccore-ch2f-2d-amber $HOME]# tail -f /app/logs/api/xpc.log| egrep -i --color "5C8FE0A1BC2A|error|webpa|request|async"
+
+
+# WIP sudo tail /var/log/yum.log
+# WIP tail -f   /app/logs/api/xpc.log|egrep --color -i  "mac=[a-f0-9]{12}|_sns_|smoketests|forget_device|authhint|path|duration|backup|restore|webpa.*timeout"
+# WIP tail -f   /app/logs/uwsgi/uwsgi_xpc.log | egrep --color "sync|8888"
+
+# watch env hosts if service API is running
+#weh () {       i=$1; sec=$2; watch -n $sec -t "ssh root@$i -i $HOME/.ssh/xpc-openstack-key.txt supervisorctl status all ;date" ; }
+#alias wehR='   weh $hostR 900'
+#alias wehA='   weh $hostA 900'
+#alias wehY='   weh $hostY 900'
+
+#serviceA () {  e=$1; e=${e:-R}; for i in `seq 10`; do echo $i; serviceAR; now; line; sleep 900; done ; }
+#alias servAA=' serviceA A'
+
+### Check services on env hosts
+# check python web server status on env hosts: $ for i in $licR; do echo;echo $i; runcor $i service uwsgi status; done
+# sudo service splunk status
+# sudo service ntpd   status
+# sudo service puppet status ; if want to push new SHA: run $ puppet agent -t
+servicePup="sudo service puppet status"
+
+# supervisorctl       status all   # services as: api, consul_agent, flower, xmagent, xmanage 
+#alias serviceUR='(for i in $licR;   do echo;echo $i; runcor $i service uwsgi status;     done)|cred'
+
+#alias serviceAllR='(for i in $licR 96.118.57.10 96.118.57.12 96.118.27.107 96.118.27.106;   do echo;echo $i; runcor $i supervisorctl status all; done)|cred'
+
+alias serviceAR='(for i in `ean red    core 24|gipo|a1line`;   do echo;echo $i; runcor $i supervisorctl status all; done)|cred'
+alias serviceAA='(for i in `ean amber  core 24|gipo|a1line`;   do echo;echo $i; runcor $i supervisorctl status all; done)|camber'
+alias serviceAY='(for i in `ean yellow core 24|gipo|a1line`;   do echo;echo $i; runcor $i supervisorctl status all; done)|cyellow'
+
+
+#alias serviceAOR='(for i in $licOR; do echo;echo $i; runcor $i supervisorctl status all; done)|camber'
+#alias serviceAOA='(for i in $licOA; do echo;echo $i; runcor $i supervisorctl status all; done)|camber'
+#alias serviceAOY='(for i in $licOY; do echo;echo $i; runcor $i supervisorctl status all; done)|camber'
+
+alias llcR='for i in `ean red    core 24|gipo|a1line`; do echo;echo $i; runcor $i ls -ltra /app/logs/api|tail; done'
+# check last file of api/ logs:                $ for i in $licR; do echo;echo $i; runcor $i ls -ltra /app/logs/api|tail; done
+# When API ver got err: 1/pingf $hostR; 2/dig it for DNS; 3/sshcor it for supervisorctl status api first, then uwsgi next; 4/check logs/api/*.log; 5/ps -ef some more 6/ check webpa via snmp query for fabric.webpa.comcast.net...ex: sWPA $I2
+
+#tlu () {       h=$1; runcor $h tail -f /app/logs/api/uwsgi_xpc.log ; }
+#tlx () {       h=$1; runcor $h tail -f /app/logs/api/xpc.log ; }
+#tlh () {       h=$1; runcor $h tail -f /app/logs/api/$2.log ; }
+#tlhg () {      h=$1; runcor $h tail -f /app/logs/api/$2.log | grep -iE "error|fail" ; }
+
+### SHA
+# get the latest SHA, by API version
+sha1 () {      rp=$1; rp=${rp:-xap}; echo "@ `date` : "|cblue; cd $HOME/checkouts/$rp; echo -n "The lastest SHA: "; echo -n "/$rp/ <*`cbr`> : "|cpink; git log -p -1 | egrep -o "commit [0-9a-f]{7}" |cut -c8-14 ; }
+
+# get SHA,     by sshcore and check yum log info
+coresha () {   coreip=$1; coreip=${coreip:-96.118.57.13}; ssh -i $HOME/.ssh/xpc-openstack-key.txt clduser@$coreip -t "echo `seq  -f = -s '' 20 `; date; hostname; sudo tail -4 /var/log/yum.log" | tee -a $HOME/logs/snn.log ; }
+csha () {      coreip=$1; coreip=${coreip:-96.118.57.13}; ssh -i $HOME/.ssh/xpc-openstack-key.txt clduser@$coreip -t "echo `seq  -f = -s '' 20 `; date; hostname; yum info xap      " | tee -a $HOME/logs/snn.log ; }
+#alias shared=' for i in 57.11 57.13 27.110 30.93 ; do coresha 96.118.$i ; done '
+
+# get the latest SHA  from github versus current on Red/A/Y hosts
+g_c () {       cdxa; git pull 2> /dev/null; commit=$1; commit=${commit:-1}; gc=`git log -p -$commit | egrep -o "commit [0-9a-f]{7}" |cut -c8-14`; echo "GitHub xap repos: SHA=$gc"; echo; for i in `ean red    core 24|gipo|a1line` ; do echo -n red_core_$i: SHA=; cc=`curl -s $i:8080/api/v1/version|pjson|grep commit|tr ',\"' ' '|cut -d. -f4`; echo  $cc ; [ $gc != $cc ] && echo ">>>> NOT_matched `date` <<< " && echo ; done ; }
+g_cA () {      cdxa;git pull 2> /dev/null;                                  gc=`git log -p -1       | egrep -o "commit [0-9a-f]{7}" |cut -c8-14`; echo "GitHub xap repos: SHA=$gc"; echo; for i in `ean amber  core 24|gipo|a1line` ; do echo -n amb_core_$i: SHA=; cc=`curl -s $i:8080/api/v1/version|pjson|grep commit|tr ',\"' ' '|cut -d. -f4`; echo  $cc ; [ $gc != $cc ] && echo ">>>> NOT_matched `date` <<< " && echo ; done ; }
+g_cY () {      cdxa;git pull 2> /dev/null;                                  gc=`git log -p -1       | egrep -o "commit [0-9a-f]{7}" |cut -c8-14`; echo "GitHub xap repos: SHA=$gc"; echo; for i in `ean yellow core 24|gipo|a1line` ; do echo -n yel_core_$i: SHA=; cc=`curl -s $i:8080/api/v1/version|pjson|grep commit|tr ',\"' ' '|cut -d. -f4`; echo  $cc ; [ $gc != $cc ] && echo ">>>> NOT_matched `date` <<< " && echo ; done ; }
+
+### get version of core at slave: runcor 96.118.55.6 "curl  -X GET  http://96.118.57.12:8080/api/v1/version;"
+# debug get_version() fails on smktest je job: run gver of core host from slave; then check uwsgi if running; check je smktest job config right?
+# ex: slave=96.118.55.6: $ gverFrSlave $hostR 96.118.55.6
+slaveR="96.118.55.6"
+gverFrSlave () { h=$1; s=$2; u="http://$h:8080/api/v1/version"; ech2 "GET $u"; runcor $s "hostname -i;curl -s -X GET $u;"  ; }
+
+# petasos-prod-1000137.webpa.comcast.net (96.118.183.38)
+#alias pingwp=' pingf fabric.webpa.comcast.net'
+#pingwpFrSlave () { h=$1; s=$2;                                           runcor $s "hostname -i;ping -c2 96.118.183.38           ;"  ; } 
+#pingwpFrSlave () { h=$1; s=$2;                                           runcor $s "hostname -i;ping -c2 fabric.webpa.comcast.net;"  ; }
+
+### get version SHA
+gOver () {     h=$1; u="http://$h:8080/api/v1/operational/version"; ech2 "GET $u"; curl -s -X GET $u|pjson ; }
+gverO () {     h=$1; curl -s -X GET http://$h:8080/api/v1/operational/version|pjson|gc2 commit ; }
+gver () {      h=$1; curl -s -X GET http://$h:8080/api/v1/version|pjson|gc2 commit ; }
+#gver () {     h=$1; if u="";  else u=""; fi; echo $u; curl -s -X GET http://$h:8080/api/v1/version|pjson|gc2 commit ; }
+
+gver2 () {     h=$1; u="http://$h:8080/api/v1/version"; echo $u; curl -s -X GET $u ; ech2 ; }
+
+ver24R () {    for h in `ean red    core-[ah] 24|gipo|a1line` ; do echo -n "Red_core_$h: ";     gver $h ;       done ; }
+ver24A () {    for h in `ean amber  core 24|gipo|a1line` ; do echo -n "Amb_core_$h: ";     gver $h ;       done ; }
+ver24Y () {    for h in `ean yellow core-[cw] 24|gipo|a1line` ; do echo -n "Yel_core_$h: ";     gver $h ;       done ; }
+
+verOR () {     for i in `eaN red    core-[a]|gipo|a1line`  `eaN red   core 13|gipo|a1line` ; do echo -n "ODP_red_core_$i: "; gverO $i; done; }
+verOA () {     for h in `eaN amber  core|gipo|a1line`  `eaN amber core 13|gipo|a1line` ; do echo -n "ODP_amb_core_$h: "; gverO $h; done; }
+verOY () {     for h in `eaN yellow core|gipo|a1line`  `eaN yellow core 13|gipo|a1line`; do echo -n "ODP_yel_core_$h: "; gverO $h; done; }
+
+verog () {     open https://xpcapi-si.xpc.comcast.net/api/v1/version; }
+verOG () {     for d in as ch2 ho; do ech2 "Grn odplb $d"; open https://odplb-$d-01.sys.comcast.net/api/v1/version; done; verog ; }
+
+ver13R () {    for h in $lic13R;do echo -n "Red13_core_$h: ";   gver $h ;       done ; }
+ver13A () {    for h in $lic13A;do echo -n "Amb13_core_$h: ";   gver $h ;       done ; }
+ver13Y () {    for h in $lic13Y;do echo -n "Yel13_core_$h: ";   gver $h ;       done ; }
+
+verR () {      ver24R;  ver13R ; }
+verA () {      ver24A;  ver13A ; }
+verY () {      ver24Y;  ver13Y ; }
+
+verg () {      open  https://xpcapi-si.xpc.comcast.net/api/v1/version ; }
+verG () {      for d in as ch2 ho; do ech2 "Grn xpclb $d"; open https://xpclb-$d-01.sys.comcast.net/api/v1/version; done; verg ; }
+
+# get ver N, N-1
+verN () {      ver24R; verOR ; }
+verN1 () {     verY;   verOY ; }
+ 
+vern () {      gver    $hostR ; }
+vern1() {      gver    $hostY ; }
+
+# get current SHA at N, N-1
+snn1 () {      sha1  xap ; echo "Code level   N : `vern`"|cred; echo "Code level N-1 : `vern1`"|camber  ; }
+snn2 () {      (newxa && snn1 && varl && varY) | tee -a $HOME/logs/snn.log ; }
+# [xap]$ git log -n1; curl http://$hostR:8080/api/v1/version
+
+varl () {      h=$1; h=${h:-$hostR}; runcor $h     "tail /var/log/yum.log;" ; now ; }
+alias varY='   varl $hostY'
+
+# use this `rpm -qa | grep xap`
+rver () {    h=$1; h=${h:-$hostR}; ech2 $h; runph   $h "rpm -qa | grep -Eio --color xap.* ;" ; }
+alias xapR='   runcor $hostR "rpm -qa | grep xap;" '
+alias rverY='  rver $hostY'
+
+###swagger UI Yellow https://odpyellowuiorch.odpaws.comcast.net/docs
+
+#swagger UI hostR http://96.118.57.11:8080/docs/#!/v1
+#swagger UI hostR http://96.118.57.11:8080/docs/#!/v1/Cscpe_Apply_Association_POST
+#swagger UI hostR http://96.118.57.11:8080/docs/#!/v1/Cs_Create_Config_Set_POST
+#http://96.118.57.11:8080/docs/#!/v1/Cs_Association_DELETE
+
+#alias apixpc='open http://96.119.227.212:8080/docs/#!/v1'
+#alias apiodp='open http://96.118.27.12/docs/#!/v1'
+#oah () {      h=$1; open           http://$h:8080/docs ; }
+#cah () {      h=$1; curl -s -X GET http://$h:8080/docs/api-docs/api/v1|pjson|grep path  ; }
+
+#swagger webpa: https://swagger.webpa.comcast.net/
+alias oswag_webpa='open https://swagger.webpa.comcast.net/'
+
+### API
+CSBU="/api/v1/gateway-configset"
+CPEBU="/api/v1/gateway-cpe"
+
+CSo1="/api/v1/operational/gateway-configset"
+CPEo1="/api/v1/operational/gateway-cpe"
+
+CSo2="/api/v1/operational/gateway-configset"
+CPEo2="/api/v1/operational/gateway-cpe"
+
+# Green lb XPC
+# open $gho$CPEBU/$M3/webpa_stat
+glb="https://xpcapi-si.xpc.comcast.net"
+glb2="https://xpcanalytics.gslb2.comcast.com"
+
+glbas="https://xpclb-as-01.sys.comcast.net"
+glbch="https://xpclb-ch2-01.sys.comcast.net"
+glbho="https://xpclb-ho-01.sys.comcast.net"
+glbwc="https://xpclb-wc-01.sys.comcast.net"
+
+# Green lb ODP
+glbo="https://odpapi-si.xpc.comcast.net"
+
+glbe1a="https://odplb-e1a-01.odp.comcast.net"
+glbe1b="https://odplb-e1b-01.odp.comcast.net"
+glbw2a="https://odplb-w2a-01.odp.comcast.net"
+glbw2b="https://odplb-w2b-01.odp.comcast.net"
+
+# Yellow lb XPC ODP
+ylb="https://yellow.awsxpc.comcast.net"         
+ylbo="https://odpyellowuiorch.odpaws.comcast.net"
+
+ylbch="https://96.119.225.209"
+ylbhob="https://96.118.16.138"
+ylbhoc="https://96.118.244.9" 
+ylbwc="https://96.118.165.223"
+
+# Red lb XPC ODP
+rlb="https://red.awsxpc.comcast.net"
+rlbo="odpreduiorch.odpaws.comcast.net"
+
+rlbas="https://red.awsxpc.comcast.net"
+rlbch="https://red.awsxpc.comcast.net"
+rlbho="https://red.awsxpc.comcast.net"
+rlbwc="https://red.awsxpc.comcast.net"
+
+### Green ODP APIs
+AO () {        eo=$1;  a="$2"; a=${a:-version};        open $eo/api/v1/operational/$a ; }
+
+GO2 () {       a="$1"; a=${a:-version};                open $glbo/api/v2/operational/$a ; }
+
+GO () {        a="$1"; a=${a:-version};                open $glbo/api/v1/operational/$a ; }
+YO () {        a="$1"; a=${a:-version};                AO   $ylbo                    $a ; }
+
+GOc () {       a="$1"; a=${a:-association};            open $glbo$CSo1/$a ; }
+GOm () {       m=$1;   a="$2";                         open $glbo$CPEo1/$m/$a ;                       echo "assoN meshagent meshstatus xdns_content_filtering" ; }
+GOd () {       m=$1;   a=$2;                           open $glbo$CPEo1/$m/devices/$a ;               echo "identity summary device_management_group_configuration device_management* traffic_data?start_time= &end_time= " ; } 
+
+GOsum () {     m=$1;   a=$2;                           open $glbo$CPEo1/$m/devices/summary; }                                 # summary            :
+#GOsum () {    m=$1;   a=$2;                           open $glbo$CPEo1/$m/devices/summary; }                                 # summary w/ filters : summary?start_time= or device_type=
+
+GOid () {      m=$1;   a=$2;                           open $glbo$CPEo1/$m/devices/interface_data; }                          # interface_data : i_d/latest i_d/latest?device_mac
+
+GOdmc () {     m=$1;   a=$2;                           open $glbo$CPEo1/$m/devices/device_management_group_configuration  ; } # dev mgmt conf : set_bedtime delete_bt wakeup 
+#GOdmc () {    m=$1;   a=$2;                           open $glbo$CPEo1/$m/devices/device_management_group_configuration  ; } # dev mgmt      : (state) block allow          
+
+GOddl () {     m=$1; d=$2;                             open $glbo$CPEo1/$m/devices?device_macs=$d ;  } # forget device :
+GOddm () {     m=$1; d=$2; a=$3;                       open $glbo$CPEo1/$m/devices/$d/$a ;            echo "summary; device_management_configuraN" ; }
+GOtmo () {     m=$1; o=$2;                             open $glbo/api/v1/operational/internal/gateway-cpe/$m/tunnel?names=$o ; echo "Device.X_Comcast_com_ParentalControl.ManagedDevices.Device." ; }
+
+### Green XPC APIs
+AX () {        e=$1;   a=$2; a=${a:-version};          open $e/api/v1/$a ; } #echo "version common/sat"; 
+
+GX () {                a=$1; a=${a:-version};          AX   $glb      $a ; }
+YX () {                a=$1; a=${a:-version};          AX   $ylb      $a ; }
+RX () {        a=$1; a=${a:-version};e=$2;e=${e:-$rlb};AX   $e        $a ; }
+
+GXc () {       c=$1;   a="$2"; a=${a:-association};    open $glb$CSBU/$c/$a ;                         echo "assoN configuraN/ webpa_stat gateways device_class wifi_personalN" ; }
+GXm () {       m=$1;   a="$2"; a=${a:-association};    open $glb$CPEBU/$m/$a ;                        echo "assoN configuraN/ webpa_stat gateways device_class wifi_personalN" ; } 
+
+GXgic () {     c=$1;   a="$2";                         open $glb$CSBU/$c/configuration?group_id=$a ;  echo "pw pl ga pf mb wc bm mm pwa pws hw hs ci r2 r5 cd pns pws mc sd sr tr wr" ; }
+GXgi () {      m=$1;   a="$2";                         open $glb$CPEBU/$m/configuration?group_id=$a ; echo "pw pl ga pf mb wc bm mm pwa pws hw hs ci r2 r5 cd pns pws mc sd sr tr wr" ; }
+
+GXctc () {     c=$1;   a="$2";                         open $glb$CSBU/$c/configuration_table/$a ;     echo "pf mb" ; }
+GXct () {      m=$1;   a="$2";                         open $glb$CPEBU/$m/configuration_table/$a ;    echo "pf mb" ; } 
+
+# Lower env
+#RX () {        a=$1; a=${a:-version}; h=$2; h=${h:-$hostR}; e=""; AX $e $a ; }
+
+# sync API: syncsidcmc == cmc_cid
+api () {      m=$1; h=$2; u="http://$h:8080/api/v1/tools/gateway-cpe/$m/ping_internet";  ech2 "POST $u"; curl -s -X POST $u -H 'content-type: application/json'       |cpink ; echo ; }
+asn () {      m=$1; h=$2; u="http://$h:8080/api/v1/tools/gateway-cpe/$m/syncnow";        ech2 "POST $u"; curl -s -X POST $u -H 'content-type: application/json' |pjson|cpink ; echo ; }
+acc () {      m=$1; h=$2; u="http://$h:8080/api/v1/internal/gateway-cpe/$m/cmc_cid";     ech2 "GET  $u"; curl -s -X GET  $u |pjson|ccyan ; }
+asc () {      m=$1; h=$2; u="http://$h:8080/api/v1/internal/gateway-cpe/$m/synccsidcmc"; ech2 "GET  $u"; curl -s -X GET  $u |pjson|ccyan ; }
+asi () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/sync_info";                         ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }
+
+# rules pf + mb, configuration_table
+mpf () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration_table/portforwarding_configuration_table";       ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+mmb () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration_table/mac_address_binding_configuration_table";  ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+cpf () {      c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration_table/portforwarding_configuration_table";        ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+cmb () {      c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration_table/mac_address_binding_configuration_table";   ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+
+ainP () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/initialization";             ech2 "POST $u"; curl -s -X POST $u |pjson|cpink ; }
+
+aws () {      m=$1; h=$2; h=${h:-$hostR}; u="http://$h:8080$CPEBU/$m/webpa_stat"; ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }      
+adc () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/device_class";               ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }   
+agw () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/gateways";                   ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }      
+awp () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/wifi_personalization";       ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }      
+
+# configuration?group_id=
+aco0 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration";                                              ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+aco () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration";                                             ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+
+aca () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_cpe_action";                   ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+cPca () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_cpe_action";                   cP        $u ; }
+
+aga0 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_all";                           ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+aga () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_all";                          ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+aga2 () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_all&refresh";                  ech2 "GET $u"; curl -s -X GET $u |pjson|cred  ; }
+
+aci0 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_cpe_information";               ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+aci () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_cpe_information";              ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+aci2 () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_cpe_information&refresh";      ech2 "GET $u"; curl -s -X GET $u |pjson|cred  ; }
+
+acidef () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/gateway_default_cpe_setting";                               ech2 "GET $u"; curl -s -X GET $u |pjson|cgreen ; }
+
+#adm () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_device_management_configuration";             ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+acd () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_connected_device_information"; ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+acd2 () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_connected_device_information&refresh";        ech2 "GET $u"; curl -s -X GET $u |pjson|cred  ; }
+
+abm0 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_bridge_mode_configuration";     ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+abm () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_bridge_mode_configuration";    ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+wp_bm () {    m=$1; o="Device.X_CISCO_COM_DeviceControl.LanManagementEntry.1.LanMode";                           wp_  $m   $o ; }
+
+apns () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_network_ethernet_statistics";         ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+
+apws () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_wifi_statistics";                     ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+apwa () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_wifi_advanced_configuration";         ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+apwa2 () {    m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_wifi_advanced_configuration&refresh"; ech2 "GET $u"; curl -s -X GET $u |pjson|cred  ; }
+
+apw0 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_private_wifi_configuration";    ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }
+apw () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_wifi_configuration";   ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }
+cPpw () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_wifi_configuration";                  cP     $u ; }
+
+amc0 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_mesh_configuration";            ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+amc  () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_mesh_configuration";           ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+
+apl0 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_private_lan_configuration";     ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+apl () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_lan_configuration";    ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+cPpl () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_lan_configuration";                   cP     $u ; }
+
+
+ar20 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_radio_2g_configuration";        ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+ar2 () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_radio_2g_configuration";       ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+
+ar50 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_radio_5g_configuration";        ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+ar5 () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_radio_5g_configuration";       ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+
+amm0 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_moca_mode_configuration";       ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+amm () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_moca_mode_configuration";      ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+
+awc0 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_wan_configuration";             ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+awc () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_wan_configuration";            ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+awc2 () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_wan_configuration&refresh";    ech2 "GET $u"; curl -s -X GET $u |pjson|cred  ; }
+
+apf0 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_port_forwarding_configuration"; ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+apf () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_port_forwarding_configuration";ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+cPpf () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_port_forwarding_configuration";               cP     $u ; }
+cPmb () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration_table/mac_address_binding_configuration_table";              cP     $u ; }
+
+
+asd () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_ssid_scan_data";               ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+
+asr () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_network_devices_status_report_configuration"; ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+atr () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_network_devices_traffic_report_configuration";ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+awr () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_interface_devices_wifi_report_configuration"; ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+
+ahsm2 () {    m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_home_security_wifi_configuration&refresh";    ech2 "GET $u"; curl -s -X GET $u |pjson|cred  ; }
+ahsm () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_home_security_wifi_configuration";            ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+ahsc () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_home_security_wifi_configuration";             ech2 "GET $u"; curl -s -X GET $u |pjson|cpink ; }
+
+ahwm () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_home_wifi_hotspot_configuration";             ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+cPhw () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_home_wifi_hotspot_configuration";             cP     $u ; }                      
+
+### ODP v1 APIs
+# devices: HL: 5440ADE5515E ; SamsTab: B0DF3A0BF1F6
+DHL="5440ADE5515E"
+DST="B0DF3A0BF1F6"
+DM1="111111111111"
+# http://{{host}}/api/v1/operational/gateway-cpe/{{CPEMAC1}}/devices/summary
+odi () {      m=$1; h=$2; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/devices/identity"                     ; ech2 "GET  $u"; curl -s -X GET  $u -H 'content-type: application/json' |pjson|cpink ; }
+ods () {      m=$1; h=$2; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/devices/summary"                      ; ech2 "GET  $u"; curl -s -X GET  $u -H 'content-type: application/json' |pjson|cpink ; }
+
+oxd () {      m=$1; h=$2; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/xdns_content_filtering"               ; ech2 "GET  $u"; curl -s -X GET  $u -H 'content-type: application/json' |pjson|cpink ; }
+cPxd () {     m=$1; h=$2; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/xdns_content_filtering"               cP $u ; }
+
+odl () {      m=$1; h=$2; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/devices/xdns_content_filtering"       ; ech2 "GET  $u"; curl -s -X GET  $u -H 'content-type: application/json' |pjson|cpink ; }
+cPdl () {     m=$1; h=$2; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/devices/xdns_content_filtering"       cP $u ; }
+
+oma () {      m=$1; h=$2; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/meshagent"                            ; ech2 "GET  $u"; curl -s -X GET  $u -H 'content-type: application/json' |pjson|cpink ; }
+oms () {      m=$1; h=$2; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/meshstatus"                           ; ech2 "GET  $u"; curl -s -X GET  $u -H 'content-type: application/json' |pjson|cpink ; }
+ 
+omaP () {     echo "body== `cat b.json`"; m=$1; h=$2; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/meshagent"; ech2 "POST $u"; curl -s -X POST $u -H 'content-type: application/json' -d @b.json|pjson|cpink ; }
+cPma () {     m=$1; h=$2; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/meshagent";                           cP $u ; }
+
+dm_db () {    m=$1; h=$2; me=$3; me=${me:-GET}; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/devices/device_management"  ; ech2 "GET  $u"; curl -s -X $me  $u | pjson ; }
+odsdm () {    m=$1; h=$2; d=$3; d=${d:-$DM1}; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/devices/device_mac/$d/summary"; ech2 "GET  $u"; curl -s -X GET  $u -H 'content-type: application/json' |pjson|cpink ; }
+
+dm_cpe () {  m=$1;                curl -s -X GET   http://api.webpa.comcast.net:8090/api/v2/device/mac:$m/config?names=Device.X_Comcast_com_ParentalControl.ManagedDevices.Device.  ; }
+
+
+### bedtime group and single rule:
+# GET sched & POST {"action":"allow"} :"block" :"delete_bedtime" :"set_bedtime" https://odpyellowuiorch.odpaws.comcast.net/api/v1/operational/gateway-cpe/044E5A9AE8EC/devices/111111111111/device_management_configuration 
+
+ogbt () {     m=$1; h=$2;                     u="http://$h:8080/api/v1/operational/gateway-cpe/$m/devices/device_management_group_configuration";    ech2 "GET  $u"; curl -s -X GET   $u     |pjson|cpink ; }
+cPgbt () {    m=$1; h=$2;                     u="http://$h:8080/api/v1/operational/gateway-cpe/$m/devices/device_management_group_configuration";                    cP               $u ; }
+
+obt () {      m=$1; h=$2; d=$3; d=${d:-$DM1}; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/devices/$d/device_management_configuration";       ech2 "GET  $u"; curl -s -X GET   $u     |pjson|cpink ; }
+cPbt () {     m=$1; h=$2; d=$3; d=${d:-$DM1}; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/devices/$d/device_management_configuration";                       cP               $u ; }
+
+
+### Get Post Env: use $M2, onb first: bmh $M2 $hostR; gp_R
+gp_Q () {     m=$1; m=${m:-$M2}; h=$2; echo $h; u="http://$h:8080/api/v1/gateway-cpe/$m/configuration?group_id=group_private_wifi_configuration"; echo $u; curl -X GET $u -H 'content-type: application/json' |pjson    ;   curl -X POST $u  -H 'content-type: application/json'  -d '{ "wifi_passphrase_2g": "2gtestssidQUICK" }' |pjson  ; }
+gp_R () {     m=$1; m=${m:-$M2}; gp_Q $m $hostR ; }
+gp_A () {     m=$1; m=${m:-$M2}; gp_Q $m $hostA ; }
+gp_Y () {     m=$1; m=${m:-$M2}; gp_Q $m $hostY ; }
+
+#gp_Y () { curl -X GET   'http://96.119.225.204:8080/api/v1/gateway-cpe/044E5A9AE8EC/configuration?group_id=group_private_wifi_configuration'   -H 'content-type: application/json' |pjson    ;   curl -X POST   'http://96.119.225.204:8080/api/v1/gateway-cpe/044E5A9AE8EC/configuration?group_id=group_private_wifi_configuration'   -H 'content-type: application/json'      -d '{ "wifi_passphrase_2g": "2gtestssidQUICK" }'   ; }
+
+
+# POST only aca () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_cpe_action";                   ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+
+# GET  only aci () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_cpe_information        ";      ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+# GET  only  apws () {  m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_wifi_statistics";      ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+# GET  only  awr () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_interface_devices_wifi_report_configuration"; ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; } 
+# GET  only  awc () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_wan_configuration";            ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+# GET  only  asr () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_network_devices_status_report_configuration";ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+# GET  only  atr () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_network_devices_traffic_report_configuration";ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+# GET  only  apne () {  c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_private_network_ethernet_statistics";  ech2 "GET $u"; curl -s -X GET $u |pjson|cpink ; }
+
+### GET_POST $M $hostE:
+gp_abm () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_bridge_mode_configuration";        ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "bridge_mode_enabled": false} ' |pjson ; }
+gp_amm () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_moca_mode_configuration";          ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "moca_enabled":true} '          |pjson ; }
+
+#gp_apl () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_lan_configuration";       ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "ip_address": "192.168.1.1", "netmask": "255.255.255.0" } ' |pjson ; }
+#gp_apwa () {  m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_wifi_advanced_configuration";         ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "wifi_passphrase_2g": "Password1_gp_apwa" }' |pjson ; }
+#gp_apw () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_wifi_configuration";      ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "wifi_passphrase_2g": "Password1_gp_apw" }' |pjson ; }
+
+gp_ar2 () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_radio_2g_configuration";           ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "radio_enabled": true, "channel": 2 }'     |pjson ; }
+gp_ar5 () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_radio_5g_configuration";           ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "radio_enabled": true, "channel": -1 }'    |pjson ; }
+
+gp_ahsm () {  m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_home_security_wifi_configuration"; ech2 "GET $u"; curl -s -X GET $u |pjson|cblue; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "wifi_passphrase_2g": "Password1_gp" }' |pjson ; }
+gp_apf () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_port_forwarding_configuration";    ech2 "GET $u"; curl -s -X GET $u |pjson|cblue; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "portforward_enabled": false }'         |pjson ; }
+
+# List, pick or vi b.json
+bjl () {       f=$1;   cd; ls -tr b*json;     ech2 "The json= $f"; python -m json.tool ${1:-b.json} ; }
+bjp () {       f=$1;   cd; cp -f $1 b.json;   ech2 "b.json=";      python -m json.tool b.json       ; } 
+bjv () {       f=$1;   f=${f:-$HOME/b.json};  ech2 "The json= $f"; vi     $f ; }
+bjs () {       p="$*"; f=$HOME/b*.json;       grep -i $p $f ; }
+
+### CURL
+cDel () {     u="$1";       ech2 "DELETE $u";                curl -s -X DELETE $u -H "Content-Type: application/json"             | pjson | cred ; }
+cPat  () {    u="$1";       ech2 "PATCH  $u";cd; cat b.json; curl -s -X PATCH  $u -H "Content-Type: application/json"  -d @b.json | pjson | cpink ; }
+cPut  () {    u="$1";       ech2 "PUT    $u";cd; cat b.json; curl -s -X PUT    $u -H "Content-Type: application/json"  -d @b.json | pjson | cgreen ; }
+
+cPost () {    u="$1"; j=$2; ech2 "POST   $u";  ech2 $j;      curl -s -X POST   $u -H "Content-Type: application/json" --data '$j' | pjson | cblue ; }
+cP () {       u="$1";       ech2 "POST   $u";cd; cat b.json; curl -s -X POST   $u -H "Content-Type: application/json"  -d @b.json | pjson | cblue ; }
+#cP () {      u="$1"; j=$2; ech2 "POST   $u"; ech2 $j;    curl -s -X POST   $u -H "Content-Type: application/json"  -d $j      | pjson | cblue ; }
+# used this to reset value:false for XDNS: POST $ cP http://$hostR:8080/api/v1/internal/gateway-cpe/10868CEA6D24/tunnel @xvF.json
+# file xvF.json: {"parameters":[ {"name":"Device.DeviceInfo.X_RDKCENTRAL-COM_EnableXDNS","value": "false", "dataType":3}]}
+
+# DELETE, rePOST, GET, forget, then re GET
+cDpf () {   m=$1; h=$2; u="http://$h:8080/api/v1/gateway-cpe/$m/configuration_table/portforwarding_configuration_table";        cDel   $u ; }
+cDmb () {   m=$1; h=$2; u="http://$h:8080/api/v1/gateway-cpe/$m/configuration_table/mac_address_binding_configuration_table";   cDel   $u ; }
+
+cPpf () {     m=$1; h=$2; u="http://$h:8080/api/v1/gateway-cpe/$m/configuration_table/portforwarding_configuration_table";      cP     $u ; }
+cPmb () {     m=$1; h=$2; u="http://$h:8080/api/v1/gateway-cpe/$m/configuration_table/mac_address_binding_configuration_table"; cP     $u ; }
+
+# XPC api forget...related webpa log traces of Device.NAT.PortMapping
+cPforget () { m=$1; h=$2; u="http://$h:8080/api/v1/internal/gateway-cpe/$m/configuration_table/forget_devices";                 cP     $u ; }
+
+# ODP api forget ... DELETE http://{{host}}/api/v1/operational/gateway-cpe/{{CPEMAC2}}/devices?device_macs=D4BED919A337
+cDforget () { m=$1; h=$2; d=$3; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/devices?device_macs=$d";                    cDel   $u ; }
+
+# ODP Delete all device mgmt entries (+rules)
+cDdm () {     m=$1; h=$2;       u="http://$h:8080/api/v1/operational/gateway-cpe/$m/devices/device_management";                 cDel   $u ; }
+
+### CURL GET again to verify $mpf $M2 $hostOR; mmb ....
+cG () {       u="$1"; ech2 "GET $u"; curl -s -X GET $u -H "Content-Type: application/json" | pjson | ccyan ; }
+
+cGver () {    h=$1;       u="http://$h:8080/api/v1/version";                cG $u ; }
+cGcpe () {    m=$1; h=$2; u="http://$h:8080/api/v1/gateway-cpe/$m";         cG $u ; }
+cGcsid () {   c=$1; h=$2; u="http://$h:8080/api/v1/gateway-configset/$c";   cG $u ; }
+# learn info of csid: csid2cpemac csidif () {   c=$1; h=$2; cGcsid $c $h ; }
+
+### check smkt sync failed at 1_SparkMaster + 2_Hook + 3_Kafka + (assumed OK at 4_WebPA + 5_RDKB)
+# sync at 1_Spark via Xmanage, via webserver port 8080
+s1_Sparkm () { c=$1; c=${c:-red}; ech2 $c; cxi_ $c |grep -A4 sprkm-|egrep -ni "is_active|sprkm-|ip|ch2f|hob|asb|wcdcc" ; ech2 "Verify spark master sync... active true and false" ; ech2 "@@@ get ip ... to run ow8 next" ; }
+s1_sprkm () {  c=$1; c=${c:-red}; s=`ean $c sprkm 1234|gipo|a1line`; for i in $s; do line;ech2 $i; ow8 $i; done; s1_Sparkm $c ; }
+ow8 () {       i=$1; u="http://$i:8080"; ech2 "verify spark master sync...$u... state: S/B Running, on app id"; opes $u; curl -is $u|egrep -i "runn|waiting" ; }
+#ow8_swagger () { i=$1; u="http://$i:8080/docs"; ech2 "Swagger $u, click v1/v2"; open $u; curl -is $u ; }
+
+# sync at 2_Hook
+hkWeb="/app/logs/hooks/webserver.log"
+hkPrd="/app/logs/hooks/producer.log"
+hkXpc="/app/logs/hooks/xpc.log"
+
+#sshc $lsyR
+lsyR="96.118.57.14    96.118.57.15   96.118.57.16   96.118.57.17   96.118.27.240  96.118.27.245  96.118.27.246  96.118.30.92"
+lsyA="96.119.226.201  96.119.227.230 96.119.226.202 96.119.227.233                               96.118.23.64   96.118.23.65  96.118.23.61  96.118.31.1"
+lsyY="96.119.231.173  96.119.231.171 96.119.224.61  96.119.228.8   96.118.166.129 96.118.166.130 96.118.172.89  96.118.185.22  96.118.18.203 96.118.18.204 96.118.18.205"
+
+sshsyR () {   sshcor   96.118.57.14   ; }
+sshsyY () {   sshcor   96.119.231.173 ; }
+ssyR () {     csshx -l root $lsyR ; }
+ssyA () {     csshx -l root $lsyA ; }
+ssyY () {     csshx -l root $lsyY ; }
+
+lhkR="96.118.57.20    96.118.57.21   96.118.27.122  96.118.27.121"
+lhkA="96.119.227.248  96.119.227.25                                96.118.23.67  96.118.23.68"
+lhkY="96.119.226.171  96.119.226.176 96.118.167.88  96.118.167.89  96.118.16.136 96.118.16.137"
+
+sshhkR () {   sshcor   96.118.57.20   ; }
+sshhkY () {   sshcor   96.119.226.171 ; }
+shkR () {     sshc $lhkR ; }
+shkA () {     sshc $lhkA ; }
+shkY () {     sshc $lhkY ; }
+
+sshchk () {   lhk=$*; sshc $lhk ; }
+s2_hk () {    e=$1; e=${e:-red}; cxi $e |  egrep -A1 xpchook ; }
+
+alias cdhk='  cd      /app/logs/hooks'
+alias tlwp='  cdhook; tail -f webserver.log  producer.log '
+
+#hktable () {  tr ' <>' '\n'| column -s= -t ; }
+#alias vhkwp=' conv |  hktable '
+#ghk () {      egrep -i "webserver.log|producer.log|SYNC_NOTIFICATION|cid|cmc.*|mac|topic|hCPE_Events|error" ; }
+
+# sync at 3_Kafka , server named as "xpcque" and related "xpczoo"
+# to check messages in kafka: cd /app/kafka/bin; ./kafka-console-consumer.sh --zookeeper 96.118.188.122:2181 --topic hCPE_Events
+s3_k () {     e=$1; e=${e:-red}; cxi $e | gx "que|zoo" ; }
+alias cdkcons='cd     /app/logs/consumer'
+alias cdkxpcl='cd     /app/logs/xpclog'
+
+lkkR="96.118.57.88   96.118.57.89   96.118.57.9    96.118.27.145  96.118.27.149  96.118.27.152"
+lkkA="96.119.230.15  96.119.230.151 96.119.230.152 96.118.23.82   96.118.23.80"
+lkkY="96.119.226.122 96.119.226.132 96.119.226.161 96.118.167.103 96.118.167.104 96.118.167.105 96.118.16.147 96.118.16.148 96.118.16.149"
+
+# sync at 4_SparkWorker
+#s4_s () {     e=$1; e=${e:-red}; cxi $e | gx "sprkw" ; }
+
+lswR="96.118.57.26   96.118.57.27   96.118.57.28   96.118.57.29   96.118.27.237  96.118.27.234  96.118.27.235  96.118.30.78"
+lswA="96.119.227.240 96.119.227.243 96.119.228.38  96.118.23.60   96.118.23.59   96.118.23.6"
+lswY="96.119.226.63  96.119.226.64  96.119.229.91  96.118.167.61  96.118.167.62  96.118.167.63  96.118.18.200  96.118.18.201  96.118.18.202"
+
+### Redis nodes
+# log into a xpcredis or odpredis- node; ls /app/redis/; export PATH=$PATH:/app/redis/bin ; /app/redis/bin/redis-cli keys "sat*" ; /app/redis/bin/redis-cli get sat_token_yyyymm..
+# find an odpcore node, sshcorh in; run curl on api get resdis sat-token $curSat 
+# $ ipc red; #get a core host; then $ curSat 96.118.57.11
+# alternately, can get sat-token from sat-server, thru webpa api, line in script get_fwcpe_thru_webpa.py
+# ex: for i in $licR; do line; echo $i; runcor $i curl -s localhost:8080/api/v1/common/sat?source=current ; line; done
+
+sat () {        open    https://red.awsxpc.comcast.net/api/v1/common/sat ; }
+curSat () {     eh=$1;  runcore $eh  curl -s localhost:8080/api/v1/common/sat?source=current         \| python -m json.tool ; }
+#curSatVerb () { eh=$1; runcore $eh  curl -s localhost:8080/api/v1/common/sat?source=current&verbose \| python -m json.tool ; }
+
+# local and redis should matched
+#curSatLoca () { eh=$1; runcore $eh  curl -s localhost:8080/api/v1/common/sat?source=local           \| python -m json.tool ; }
+#curSatRedi () { eh=$1; runcore $eh  curl -s localhost:8080/api/v1/common/sat?source=redis           \| python -m json.tool ; }
+
+### Remedial step: re-create sat-token (if found that it is expired, not refreshed, or invalid) from source CodeBig2
+remSat () {     eh=$1; runcore $eh  curl -s localhost:8080/api/v1/common/sat                        \| python -m json.tool ; }
+
+# @core: cdredis-cli  /app/redis/bin/redis-cli
+# $ ipr red ; #get a "redis-" host: ex: 96.118.25.55; then $ rcli 96.118.25.55 keys sat*; then $ rcli 96.118.25.55 get  sat_token_2     01704061800
+rcli () {       rh=$1; c2=$2; c3=$3; c4=$4; c5=$5; c6=$6; runcore $rh /app/redis/bin/redis-cli  $c2 $c3 $c4 $c5 $c6 ; }
+
+
+### SNS endpoints to notif per changes within CPE. egrep "event|_change"; using /api/v1/sns/gateway-cpe/$m/notifications
+#sns1. SSID Change
+#sns2. PWD change
+#sns3. SSID Hide/Unhide
+#sns4. Security change to Open
+#sns5. Lan IP change
+#sns6. FW upgraded
+#sns7. New device connected
+RED_HTTP_ENDPOINT="http://ec2-54-213-77-81.us-west-2.compute.amazonaws.com/api/v1/sns/subscribe"
+AMBER_HTTP_ENDPOINT="http://ec2-54-186-182-99.us-west-2.compute.amazonaws.com/api/v1/sns/subscribe"
+YELLOW_HTTP_ENDPOINT="http://ec2-54-244-5-162.us-west-2.compute.amazonaws.com/api/v1/sns/subscribe"
+PURPLE_HTTP_ENDPOINT="http://ec2-54-201-81-78.us-west-2.compute.amazonaws.com//api/v1/sns/subscribe"
+RED_SNS_ENDPOINT="http://ec2-54-213-77-81.us-west-2.compute.amazonaws.com/api/v1/sns/gateway-cpe/044E5A9AE8EC/notifications"
+snsR_endp () {  m=$1; $2 $3 http://ec2-54-213-77-81.us-west-2.compute.amazonaws.com/api/v1/sns/gateway-cpe/$m/notifications; now  ; }
+snsA_endp () {  m=$1; $2 $3 http://ec2-54-186-182-99.us-west-2.compute.amazonaws.com/api/v1/sns/gateway-cpe/$m/notifications; now  ; }
+snsY_endp () {  m=$1; $2 $3 http://ec2-54-244-5-162.us-west-2.compute.amazonaws.com/api/v1/sns/gateway-cpe/$m/notifications; now  ; }
+gsns () {       egrep -i "event|_change" ; }
+
+snsR () {       m=$1; m=${m:-$M2}; snsR_endp $m  open ; }
+snsA () {       m=$1; m=${m:-$M2}; snsA_endp $m  open ; }
+snsY () {       m=$1; m=${m:-$M2}; snsY_endp $m  open ; }
+snsYc () {      m=$1; m=${m:-$M2}; snsY_endp $m  curl -s | pjson | gsns ; }
+
+# POST body { "is_whitelisted": true } ; GET http://ec2-54-213-77-81.us-west-2.compute.amazonaws.com/api/v1/sns/gateway-cpe/F8A097EF091F/whitelist
+cPwl () {       m=$1; cP http://ec2-54-213-77-81.us-west-2.compute.amazonaws.com/api/v1/sns/gateway-cpe/$m/whitelist ; }
+cGwl () {       m=$1; cG http://ec2-54-213-77-81.us-west-2.compute.amazonaws.com/api/v1/sns/gateway-cpe/$m/whitelist ; }
+ 
+
+#### set CPE level XDNS policy filter_level:1; ex: 96.118.61.32 odpcore-asb-2d-red
+#filter_level_1 () {  echo "set CPE level XDNS policy filter_level:1: 96.118.61.32 odpcore-asb-2d-red, MAC=10868CEA6D24"; \
+#  curl --request POST \
+#  --url    http://96.118.61.32:8080/api/v1/operational/gateway-cpe/10868CEA6D24/xdns_content_filtering \
+#  --header 'cache-control: no-cache' \
+#  --header 'content-type: application/json' \
+#  --header 'postman-token: 19f76f36-d05a-b68c-bf4d-c6a55a888414' \
+#  --data   '{"filter_level": 1}' | pjson | cpink ; }
+#
+#### set device level:                         ex: 96.118.51.38 odpcore-asb-4d-amber
+#set_dev_lev () {    curl --request POST \
+#  --url    http://96.118.51.38:8080/api/v1/operational/gateway-cpe/10868CEA6D24/devices/xdns_content_filtering \
+#  --header 'cache-control: no-cache' \
+#  --header 'content-type: application/json' \
+#  --header 'postman-token: 2903837a-8818-b8c8-a3f8-175b9f7c6134' \
+#  --data   '{ "xdns_content_filtering_list": [{"device_mac": "dd00dd00dd00", "filter_level": 0}, {"device_mac": "dd11dd11dd11", "filter_level": 1}, {"device_mac": "dd22dd22dd22", "filter_level": 2}, {"device_mac": "dd33dd33dd33", "filter_level": 3}]}' | pjson | cpink ; }
+#
+#### Graphana: URL:http://96.119.229.177:8080/dashboard/db/qa-metrics-red; u:p=admin:root12345
+alias ographana=' echo "URL:http://96.119.229.177:8080/dashboard/db/qa-metrics-red; u:p=admin:root12345"; open http://96.119.229.177:8080/dashboard/db/qa-metrics-red '
+
+### greenpostman https://xpcapi-si.xpc.comcast.net/api/v1/gateway-configset/ Note: Do not run negative test on this endpoint as this will generate alerts
+#   greenpostman https://xpcapi-si.xpc.comcast.net/api/v1/gateway-configset/5CB066241153/configuration?group_id=group_private_wifi_configuration
+
+### reset flag CloudUIEnable steps:
+#0/this to get version   : https://red.awsxpc.comcast.net/api/v1/version   
+#1/this to get sat token : https://red.awsxpc.comcast.net/api/v1/common/sat
+#put key in Authorization : Bearer <sat_token>
+#curl -X GET 'https://api.webpa.comcast.net:8090/api/v2/device/mac:044E5A9AE8EC/config?names=Device.DeviceInfo.X_RDKCENTRAL-COM_CloudUIEnable' -H 'authorization: Bearer  eyJraWQiOiJzYXQtcHJvZC1rMS0xMDI0IiwiYWxnIjoiUlMyNTYifQ.eyJqdGkiOiI2MGZhODU0Mi1kNzNmLTRhZjktYWIxYi05ZTg4NTAxNDViZjYiLCJpc3MiOiJzYXRzLXByb2R1Y3Rpb24iLCJzdWIiOiJ4MTpwcm9kOnhwYzowOTA4OWMiLCJpYXQiOjE0OTYyNTYwMTQsIm5iZiI6MTQ5NjI1NjAxNCwiZXhwIjoxNDk2MzQyNDE3LCJ2ZXJzaW9uIjoiMS4wIiwiYWxsb3dlZFJlc291cmNlcyI6eyJhbGxvd2VkUGFydG5lcnMiOlsiY29tY2FzdCJdfSwiY2FwYWJpbGl0aWVzIjpbIngxOndlYnBhOmFwaTpkZXZpY2UvLiovY29uZmlnXFxiOmFsbCIsIngxOndlYnBhOmFwaTpkZXZpY2UvLiovY29uZmlnXFxiOmdldCIsIngxOndlYnBhOmFwaTpkZXZpY2UvLiovc3RhdFxcYjpnZXQiLCJ4MTp3ZWJwYTphcGk6aG9va1xcYjpwb3N0IiwieDE6d2VicGE6YXBpOmhvb2tzXFxiOmdldCJdLCJhdWQiOltdfQ.YrtVQQtrwmCHVcpeuC1mEfMpGBexUIX54Bxo61xMDIAvg_9VXYIW2qSdKED2-Bcj-GJHXCLqMTpEt5S7I4rNV7PIBoLx5Rj46LdmJSQr9khK56LKgCA0vvkcLPJd7mePmlannS5Bl7HHNUHg7hwrSd41LZyAfCneyw8O2HBOjXk' -H 'content-type: application/json' 
+#
+#curl -X PATCH https://api.webpa.comcast.net:8090/api/v2/device/mac:044E5A9AE8EC/config -H 'authorization: Bearer  eyJraWQiOiJzYXQtcHJvZC1rMS0xMDI0IiwiYWxnIjoiUlMyNTYifQ.eyJqdGkiOiI2MGZhODU0Mi1kNzNmLTRhZjktYWIxYi05ZTg4NTAxNDViZjYiLCJpc3MiOiJzYXRzLXByb2R1Y3Rpb24iLCJzdWIiOiJ4MTpwcm9kOnhwYzowOTA4OWMiLCJpYXQiOjE0OTYyNTYwMTQsIm5iZiI6MTQ5NjI1NjAxNCwiZXhwIjoxNDk2MzQyNDE3LCJ2ZXJzaW9uIjoiMS4wIiwiYWxsb3dlZFJlc291cmNlcyI6eyJhbGxvd2VkUGFydG5lcnMiOlsiY29tY2FzdCJdfSwiY2FwYWJpbGl0aWVzIjpbIngxOndlYnBhOmFwaTpkZXZpY2UvLiovY29uZmlnXFxiOmFsbCIsIngxOndlYnBhOmFwaTpkZXZpY2UvLiovY29uZmlnXFxiOmdldCIsIngxOndlYnBhOmFwaTpkZXZpY2UvLiovc3RhdFxcYjpnZXQiLCJ4MTp3ZWJwYTphcGk6aG9va1xcYjpwb3N0IiwieDE6d2VicGE6YXBpOmhvb2tzXFxiOmdldCJdLCJhdWQiOltdfQ.YrtVQQtrwmCHVcpeuC1mEfMpGBexUIX54Bxo61xMDIAvg_9VXYIW2qSdKED2-Bcj-GJHXCLqMTpEt5S7I4rNV7PIBoLx5Rj46LdmJSQr9khK56LKgCA0vvkcLPJd7mePmlannS5Bl7HHNUHg7hwrSd41LZyAfCneyw8O2HBOjXk' -H 'content-type: application/json' -d '{"parameters":[ {"name":"Device.DeviceInfo.X_RDKCENTRAL-COM_CloudUIEnable","value": "false", "dataType":3} ]}'
+
+
+### DB cassandra cql_u:p=cassandra:cassandra    cassandra:c@ss@n6R@    xpcuser:ye!!eNV     odpuser2:Y3LLeNV
+# DB debugging: use nodetool
+dbnode () {    n=$1; n=${n:-$dbR}; runcor $n   "nodetool status;" ; }
+
+alias cql_='   open https://docs.datastax.com/en/dse/5.1/cql/cql/cql_reference/cql_commands/cqlCommandsTOC.html'
+
+# LDB List DB tables:
+# LDB cql_update stmt: red DB 96.118.61.254 odpdb-asb-1d-red  cassandra@cqlsh:odp> update cpe_devices_summary set last_seen_hostname='henry' where cpe_mac='10868CEA6D24' and device_mac='2C200B1A237F' ;
+# LDB XPC-4046: radio params fetched into DB for the CPE in test: xpc.radio_config; xpc.radio_ssid_config;  xpc.wan_config; xpc.hcpe_lan_config
+# LDB cqlsh:xpc> select * from xpc.radio_ssid_config where cpe_mac='5C8FE0A1BE32' and radio_index=10100 and ssid_index=10101; OR 10000 and 10001
+# LDB @cqlsh:xpc> select cpe_mac, table_id, row_id, row_index, params, writetime(params), dateOf(now()) from xpc.xpcconifg_table where table_id='portforwarding_configuration_table' AND cpe_mac='044E5A9AE8EC';
+# LDB xpc> select * from xpcconifg_table  where cpe_mac='044E5A9AE8EC' AND table_id='mac_address_binding_configuration_table';
+# LDB cqlsh:odp> select create_timestamp, writetime(create_timestamp), dateOf(now()) from odp.cpe_forget_device where cpe_mac='14CFE21474F2' AND device_mac='ECF4BB684322';
+
+# LDB cql_use: cqlsh> use odp;
+# LDB cql_descs: cql_desc:: cqlsh 96.118.54.192 -u cassandra -p cassandra --ssl; cassandra@cqlsh> use odp; desc tables; desc table device_somthing
+# LDB cqlsh               -u cassandra -p cassandra --ssl  $(hostname -i)
+# LDB XPC 96.119.231.124 [root@xpcdb-ch2f-1d-yellow ~]# cqlsh -u cassandra -p c@ss@n6R@ $(facter ipaddress) --ssl -e "select * from xpc.hcpe_port_forward_config where cpe_mac='' "
+
+# LDB ods device d=sum: odp> select * from odp.cpe_devices_summary where cpe_mac='044E5A9AE8EC';
+# LDB fw ver check and mesh/plume: odp.cpe_firmware_support.mesh_agent_support
+# LDB fw ver check and xdns:       odp.cpe_firmware_support.xdns_support
+
+# LDB ODP bedttime schedule: odp> select * from odp.device_management_gateway_schedules ;
+
+# LDB [root@odpdb-asb-10d-yellow ~]# cqlsh --ssl -u cassandra -p c@ss@n6R@ $(facter ipaddress)
+# LDB [root@odpdb-asb-10d-yellow ~]# cqlsh -u odpuser2 -p Y3LLeNV --ssl $(hostname -i) -e "select * from odp.device_management_celery_tasks           where cpe_mac = '3C7A8A3762DA' and device_mac = '11111D8CA420' " > nullData_3C7A8A3762DA_3C7A8A3762DA.txt
+# LDB [root@odpdb-asb-10d-yellow ~]# cqlsh -u odpuser2 -p Y3LLeNV --ssl $(hostname -i) -e "select * from odp.device_management_config                 limit 10"
+# LDB [root@odpdb-asb-10d-yellow ~]# cqlsh -u odpuser2 -p Y3LLeNV --ssl $(hostname -i) -e "select * from odp.device_management                        limit 10" 
+# LDB [root@odpdb-asb-10d-yellow ~]# cqlsh -u odpuser2 -p Y3LLeNV --ssl $(hostname -i) -e "select * from odp.device_management_gateway_schedules      limit 10"
+# LDB [root@odpdb-asb-10d-yellow ~]# cqlsh -u odpuser2 -p Y3LLeNV --ssl $(hostname -i) -e "select * from odp.device_management_cloud_schedules_config limit 10" 
+# LDB INSERT INTO odp.device_management_cloud_schedules_config ("cpe_mac", "device_mac", "status") VALUES (14CFE2146992, 6C72E7A51AFA, 1)
+# LDB cql_update stmt: red DB 96.118.61.254 odpdb-asb-1d-red  cassandra@cqlsh:odp> update odp.cpe_devices_summary set last_seen_hostname='henry' where cpe_mac='10868CEA6D24' and device_mac='2C200B1A237F' ;
+# LDB speedup, acceleration, last_speed_up_success_time: odp> select last_attempt_response_status, * from odp.device_status_host_version where cpe_mac='044E5A9AE8EC';
+
+
+
+# GET/DELETE info of dev_mgmt in ODP DB on an env:  http://{{host}}/api/v1/operational/gateway-cpe/{{CPEMAC3}}/devices/device_management
+# $ dm_db $M2 $hostR GET
+#dm_db () {   m=$1; e=$2; meth=$3; u="http://$e:8080/api/v1/operational/gateway-cpe/$m/devices/device_management"; ech2 "GET $u"; curl -s -X $meth $u | pjson ; }
+### Get DM obj within CPE thru WebPA API:
+# DELETE index of CPE: https://api.webpa.comcast.net:8090/api/v2/device/mac:044E5A9AE8EC/config/Device.X_Comcast_com_ParentalControl.ManagedDevices.Device.15.
+# GET    info of dev_mgmt right on the CPE thru WebPA: means need SAT token: https://api.webpa.comcast.net:8090/api/v2/device/mac:{{CPEMAC3}}/config?names=Device.X_Comcast_com_ParentalControl.ManagedDevices.Device.
+#dm_cpe () {  m=$1;                curl -s -X GET   http://api.webpa.comcast.net:8090/api/v2/device/mac:$m/config?names=Device.X_Comcast_com_ParentalControl.ManagedDevices.Device.  ; } 
+
+
+# Vernon QUORUM/Nanda 051217
+# set config:      /app/xap/conf/instance_config.py		# check at Yellow, this will override the default settins
+# default set ODP: /app/xap/src/settings/odp_settings.py	# check Red, Amber only, can't check the staging env
+# default set XPC: /app/xap/src/settings/xpc_settings.py	# check Red, Amber only
+
+### List smoketests:
+# smoketest GREEN:  3x: smoketest-on-green smoketest-on-green-validation smoketest-sync-green
+#                       smoketest-celery-task-xpc-green  smoketest-celery-task-xpc-green-ho smoketest-celery-task-odp-green
+# smoketest YELLOW: 3x: smoketest-on-yellow latest-rdkb-smoketest-on-yellow smoketest-sync-yellow 
+#                       smoketest-on-yellow-expanded 
+
+### Python 2.7.11 : [Tan] curl -OL http://www.python.org/ftp/python/2.7.11/Python-2.7.11.tgz ; tar xzvf Python-2.7.11.tgz ; cd Python-2.7.11 ; ./configure --prefix=/usr/local --enable-shared ; make ; make install ; which python ; python --version
+
+### Python module tabulate: download https://pypi.python.org/pypi/tabulate#downloads and run $ sudo pip2.7 install tabulate
+# pip freeze | grep tabulate
+# sudo easy_install -U requests
+# sudo pip install requests==2.8.1
+# ls -l /usr/bin/python; versus: ls -l /usr/local/bin/python
+# unlink python2.7; unlink python2
+
+### LB, SparkM nodes, checks out of mem: 
+# ean amber lb; for i in 96.119.228.186 96.119.244.139 96.118.23.63; do ech2 $i; df;  uptime; done
+dfn () {       e=$1; a=$2; l=$3; for i in `ean $e $a $l|gc2 ip|a1line` ; do ech2 "===== $i:"; runcor $i "df;uptime;" ; done ; }
+dfN () {       e=$1; a=$2; l=$3; for i in `eaN $e $a $l|gc2 ip|a1line` ; do ech2 "===== $i:"; runcor $i "df;uptime;" ; done ; }
+
+topn () {      e=$1; a=$2; l=$3; for i in `ean $e $a $l|gc2 ip|a1line` ; do ech2 "===== $i:"; runcor $i "top -bn1|head;"  ; done ; }
+topN () {      e=$1; a=$2; l=$3; for i in `eaN $e $a $l|gc2 ip|a1line` ; do ech2 "===== $i:"; runcor $i "top -bn1|head;"  ; done ; }
+
+
+### DEVICES: Name: CMMAC: IP_ADDR: FW:
+# smoketest-n-1-on-amber-n-1	CMMAC=-3C7A8A3769C4 IP_ADDR=10.255.244.21 not5 TG1682_2.7s1_PROD_sey
+# 044E5A9AE8CE  10.255.244.106 TG1682_2.6p3s2_PROD_sey
+#-14CFE21479D2  10.255.244.75  TG1682_2.7s1_PROD_sey
+#-14CFE2147E42  10.255.244.63  TG1682_2.7s1_PROD_sey
+
+### Check CPE WebPA: root@Docsis-Gateway:/# ps|grep subsys
+ #/usr/bin/log_agent -subsys eRT.
+ #/usr/bin/PsmSsp -subsys eRT.
+ #/usr/bin/CcspCMAgentSsp -subsys eRT.
+ #/usr/bin/CcspPandMSsp -subsys eRT.
+ #/usr/bin/CcspWecbController -subsys eRT.
+ #/usr/bin/CcspMtaAgentSsp -subsys eRT.
+ #/usr/bin/CcspMoCA -subsys eRT.
+ #/usr/bin/CcspTandDSsp -subsys eRT.
+ #/usr/bin/webpa -subsys eRT.
+ #/usr/bin/CcspXdnsSsp -subsys eRT.
+ #/usr/bin/CcspLMLite -subsys eRT.
+#1/usr/bin/CcspTr069PaSsp -subsys eRT.
+
+#Yong Teng [2:25 PM] CPE_MAC=F44B2A77BCCB; curl -X DELETE http://localhost:8000/api/v1/operational/internal/gateway-cpe/$CPE_MAC/tunnel_delete?names=Device.X_Comcast_com_ParentalControl.ManagedDevices.Device.30569.
+
+
+### Find file in repos
+fin  () {      f=$1; find ./ -name *$f* ; }
+finxa () {     cdxa; fin   $1 ; }
+finxt () {     cdxt; fin   $1 ; }
+#finse () {    cdse; fin   $1 ; }
+
+### Grep trings in repos
+grin  () {     egrep -rin "$1" $2 $3 $4 $5 $6 $7 $8 $9 * ; }
+fgxa  () {     cdxa; grin  $*  ; }
+fgxt  () {     cdxt; grin  $*  ; }
+fgse  () {     cdse; grin  $*  ; }
+grind () {     cd ~/Documents/si; egrep -rin "$*" * ; pdfgrep -rin --color auto $1 * ; }
+grinsp () {    cdsplunk         ; egrep -rin "$*" * ; }
+grinhi () {    egrep -rin "$1" $2 $3 $4  $HOME/checkouts/powercloud*/hiera/* ; }
+
+### Grep field name in DB table
+gft  () {      egrep -i "$1" $2 $3 $4 $HOME/Help/cassandra_db/table*.txt ; }
+gfto () {      egrep -i "$1" $2 $3 $4 $HOME/Help/cassandra_db/tableodp.txt ; }
+
+### Vi setting in code repos
+alias visettings=' vi      ~/checkouts/xap/src/settings/xpc_settings.py'
+gsettings () {  grep "$*"  ~/checkouts/xap/src/settings/odp_settings.py ; } 
+
+### Grep code/pattern/flags:  
+# ODP-3050  XPC node: runcor $i "grep -rin _FORGET_CELERY_ENABLED /app/xap/*;";  done
+# ipcOA=`eaN amber core 1234|gipo|a1line`; for i in $ipcOA; do echo $i; runcor $i "grep -rin _FORGET_CELERY_ENABLED /app/xap/*;" | grep "="; done
+
+# Grep flag XPC
+gfX () {       e=$1; f=$2; l=$3; l=${l:-1234}; for i in `ean $e core $l|gipo|a1line`; do echo $i; runcor $i "grep -rin $f /app/xpc/*;"           ; done ; }
+gfx () {       e=$1; f=$2; l=$3; l=${l:-1234}; for i in `ean $e core $l|gipo|a1line`; do echo $i; runcor $i "grep -rin $f /app/xpc/*;" | grep "="; done ; }
+
+gfx1 () {      h=$1; f=$2; runcor $h "grep -rin $f /app/xpc/*;" ; }
+gfxR () {      gfx1 $hostR   "$*" ; } 
+gfxR1 () {     gfx1 $hostR1  "$*" ; } 
+gfxY () {      gfx1 $hostY   "$*" ; } 
+
+# Grep flag ODP
+gfo () {       e=$1; f=$2; l=$3; l=${l:-1234}; for i in `eaN $e core $l|gipo|a1line`; do echo $i; runcor $i "grep -rin $f /app/xap/*;" | grep "="; done ; }       
+# for ODP amber N cores:   $ gfo amber _FORGET_CELERY_ENABLED 24
+# for XPC Red   N-1 cores: $ gfx red   _FORGET_CELERY_ENABLED 13
+gfo1 () {      h=$1; f=$2; runcor $h "grep -rin $f /app/xap/*;" ; }
+gfoR () {      gfo1 $hostOR   "$*" ; }
+gfoR1 () {     gfo1 $hostOR1  "$*" ; }
+gfoY () {      gfo1 $hostOY   "$*" ; }
+
+
+### Grep code or configuration on server ip, pattern/flags:  gconf $hostR ODP_DB_CALL_OPTIMIZATION_ENABLED
+#gconO () {    i=$1; p=$2; runcor $i  "egrep -rin  $p  /app/xap/conf/*;" ; }
+gco () {       i=$1; p=$2; runcor $i  "egrep -rin  $p  /app/xap/*;"      ; }
+
+#gconf () {    i=$1; p=$2; runcor $i  "egrep -rin  $p  /app/xpc/conf/*;" ; }
+gcx () {       i=$1; p=$2; runcor $i  "egrep -rin  $p  /app/xpc/*;"      ; }
+
+# grep log XPC+ODP
+glog () {      i=$1; p=$2; runcor $i  "egrep -rin  $p  /app/logs/*;"     ; }
+
+
+
+# runcor ODP- hlam001c@cacsvlo-16686:~$ (runcor 96.118.58.242 "grep -rinE --color 'ODP_WEBPA5.._HANDLER_ENABLED|ODP_WEBPA503_DEFAULT_' /app/xap")| grep app
+#live code/conf/setting in core: /app/xap/conf/instance_config.py:171:ODP_WEBPA503_HANDLER_ENABLED = True
+
+### Grep pattern in code in core nodes
+# search log RAY: fglR $licOR SNS_NOTIFICATION
+#fglR () {       p="$2"; for i in $1;     do echo $i; runcor $i "grep -rin $p /app/xpc/* /app/xap/*;"  ; done ; }
+
+### API networking on version, status details
+# https://xpcapi-si.xpc.comcast.net/api/v1/networking/version
+# https://xpcapi-si.xpc.comcast.net/api/v1/networking/gateway-cpe/ACB31302AE42/status?details 
+# index=smart_internet path=*networking* "I xbo" OR "I tyrion"
+
+# [root@xpcdb-asb-2d-red ~]# /usr/bin/cqlsh $(facter ipaddress) -u cassandra -p c@ss@n6R@ --ssl -e "select * from xpc.cpe_account limit 10"
+
+# Cloud UI and FW: https://internet.xfinity.com/more/deviceinfo u:p=SI_XPC_UID65:Csv1050xPC
+
+### Grep SmokeTest hightlights for Fail, Error, Passed, eXception
+gst () {       grep -iEo "............................$1........................................................................" ; }
+gstf () {      echo $2 && runh "conv|gst fail"      ;  }
+gste () {      echo $2 && runh "conv|gst error"     ;  }
+#gstx () {     echo $2 && runh "conv|gst exception" ;  }
+gstst () {     echo $2 && runh "conv|grep -Eo '...............Sync Test..........' " ; }
+gstp () {      echo $2 && runh "conv|grep -Eo '...............Test Passed..........' " ; }
+gst2 () {      gstf; gstp ; ech2 $2 ; }
+
+# See dups:
+# hlam001c@cacsvlo-16686:~$ conv | tr '| ' '\n'|sort|uniq -c|grep -E "^   2.*"
+alias seedupx='conv|grep -io  "CMMAC=............"  |sort|uniq -c'
+alias seedupo='conv|grep -io  "CPE_MAC=............"|sort|uniq -c'
+alias seedupa='conv|grep -ioE "CPE_MAC=............|CMMAC=............"|sed '/=/s/^.*=//'|sort|uniq -c'
+
+# last argv; lasta () { echo $*; eval last=\${$#}; echo $last ; }
+
+
+# log in to production redis 96.115.132.120:   $  ssh -i ~/.ssh/id_rsa hlam001c@odpredis-as-01q.sys.comcast.net
+#alias sshStgRedis='ssh -i ~/.ssh/id_rsa hlam001c@odpredis-as-01q.sys.comcast.net'
+
+# http://macappstore.org/pdftotext/
+# http://macappstore.org/pdfgrep/
+alias grepp='  pdfgrep --color auto '
+
+# cql_insert: insert into values $ insert into radio_config (cpe_mac, radio_index, auto_channel_enabled, beacon_interval, channel, channel_width, fragmentation_threshold, min_basic_rate, operating_standards, radio_enabled, tx_power) values (?, 10010, True, 100, 6, 2, 23, 1, 'n', True, 4)
+
+# cql_delete: cassandra@cqlsh:xpc> delete from bssid_cpe_mac where bssid in ('FC51A41ABCB3', 'FC51A41ABCB34');
+# cql_select: root_dbR$ cass  -e  "SELECT * FROM xpc.bssid_cpe_mac"
+# to see timestamp of DB entry insertion: cassandra@cqlsh:xpc> SELECT WRITETIME(cpe_mac) FROM bssid_cpe_mac where bssid='9C34263F9ADC' ;
+# http://docs.datastax.com/en/cql/3.1/cql/cql_using/use_writetime.html &&  www.epochconverter.com
+
+# Link to manage your VPN credential https://vipssp.comcast.net/dmzssp/
+# VPN, idm, Joanne, 072817: NTid login https://idm.cable.comcast.com/iam/im/comcast/ui7/index.jsp, ticket submit thru Service Catalog
+
+# new CPE, save file, json, Mx, Ix, mXif; olob, msy: ok_wpa_api_snmp; 5 item m i u p fw; enable telnet: teli ; local ui: u:p; 
+
+### format strings:
+format_cm () { p=$1; echo $p| UCtr |sed 's/://g' ; }	# remove :
+#format_ip () { ; } #format_hex () { ; }
+
+# DB tables xpc radio_config, csradio_config, radio_ssid_config, csradio_ssid_config
+# radio_index=100.. ==2g
+# radio_index=101.. ==5g
+# ssid_index= ..001 ==private   wifi 2g
+# ssid_index= ..101 ==private   wifi 5g
+# ssid_index= ..002 ==home secu wifi 2g
+# ssid_index= ..102 ==home secu wifi 5g
+
+flip_v6_to_v4 () { i=$1; echo "pwd_tvworks"; echo "flipToIPv4.s ipv6 then reset"; sshcor tvworks@opstools-mv.cvs-a.ula.comcast.net -t "./flipToIPv4.sh $i;"  ; }
+
+# 082817: NEWTON: Created CH2-H XPC red site in openstack new version.  Below are the details of lb nodes.  xpc_lb_red_ch2h_host:
+#- hostname: xpclb-ch2h-1d-red ipaddress: 96.118.146.57
+#- hostname: xpclb-ch2h-2d-red ipaddress: 96.118.146.82
+#whole stack node details can be found in the below link: https://magneto.sys.comcast.net/xb_cloud/powercloud/blob/dev/hiera/red.yaml
+
+
+#runcor $hostY "tail /var/log/yum.log;grep -rin VALID_FIRMWARE_MESHAGENT_ /app/xpc/*;"
+#for i in `ver24Y|gipo|a1line`; do echo $i; runcor $i "tail /var/log/yum.log;grep -rin VALID_FIRMWARE_MESHAGENT_ /app/xpc/*;" ; done
+
+# Green deploy: --scheme https --host xpclb-ch2-01.sys.comcast.net (chnage XPC_INSTANCE)
+# Green deploy: --scheme https --host xpclb-ho-01.sys.comcast.net
+# Green deploy: --scheme https --host xpclb-as-01.sys.comcast.net
+# Green deploy: --scheme https --host xpcapi-si.xpc.comcast.net    --suites sync 
+
+# /api/v1/operational/internal/gateway-cpe/$CPE/tunnel?names=Device.X_Comcast_com_ParentalControl.ManagedDevices.Device.
+otn () {      m=$1; h=$2; o=$3; o=${o:-Device.DeviceInfo.X_COMCAST-COM_WAN_IP}; u="http://$h:8080/api/v1/internal/gateway-cpe/$m/tunnel?names=$o"      ; ech2 "GET $u"; curl -s -X GET $u -H 'content-type: application/json' |pjson|cpink ; }
+
+# Steps to stop  XPC service: service puppet status; date; service puppet stop; puppet agent --disable;  supervisorctl stop api; date
+# Steps to start XPC service: 1. service puppet start; 2. puppet agent --enable; 3. supervisorctl start api; date; supervisorctl status all; ps -aef | grep uwsgi;date
+# Steps to disable ODP service: comment out on an XPC core: the flag ODP_HAPROXY_BASE_URL in instance_config.py. For ex: 1/ #/app/xap/conf/instance_config.py:101:ODP_HAPROXY_BASE_URL = 'https://odpredsync.odpaws.comcast.net'; 2/ #/app/xpc/conf/instance_config.py:101:ODP_HAPROXY_BASE_URL = 'https://odpredsync.odpaws.comcast.net';
+
+# Vernon 090817 https://www.teamccp.com/confluence/pages/viewpage.action?pageId=328636834
+
+
+# get all fw: hlam001c@cacsvlo-16686:~$ for i in 10.255.244.238  10.255.244.114  10.255.244.15 10.255.244.126 10.255.244.14 10.255.244.109 10.255.244.112 10.255.244.166 10.255.244.61 2001:0558:4000:001a:2eb3:13ff:fe03:62f2 10.255.244.106 10.255.244.68 10.255.244.24  2001:0558:4000:001a:764b:2aff:fe77:be79  2001:0558:4000:001a:faa0:97ff:feee:f795 ; do ech2 $i; sFW $i; done
+
+# CUJO: http://96.118.61.37:8080/api/v1/operational/gateway-cpe/9C34263F9ADE/devices/DDDD5555DDDD/fingerprint_feedback; 200=in odp.device_fingerprint table; or 400 is not in
+
+alias orunbook=' open https://www.teamccp.com/confluence/display/SMARTINT/XPC+Runbook'
+
+alias ocheatsheet_oncall='open https://etwiki.sys.comcast.net/pages/viewpage.action?pageId=325125791'
+
+
+# Shiva's curl in bash: 45  app/cron/aurora-jobs/create_daily_table.sh
+
+### scripts run on DB nodes:
+# grep csid on ODP cs* table: check config data copied, after detach CPE or run api "/backup"
+# POST path=/api/v1/operational/internal/gateway-cpe/ACB3130356A2/gateway-configset/d0b8bbf2-04a1-484c-a1e4-e21021df0fd2/backup    half_sync_backup_cpe() starting... finished
+gcstables () { c=$1;  for t in odp.cscpe_devices_summary                          odp.csdevice_traffic_delta_daily_counter_2017_7 odp.cscpe_xdns_policy                              odp.csdevice_traffic_delta_daily_counter_2017_8 odp.csdevice                                       odp.csdevice_traffic_delta_daily_counter_2017_9 odp.csdevice_mac_addresses                         odp.csdevice_traffic_delta_hourly_counter_2016_10 odp.csdevice_management_cloud_schedules_config     odp.csdevice_traffic_delta_hourly_counter_2016_11 odp.csdevice_management_config                     odp.csdevice_traffic_delta_hourly_counter_2016_12 odp.csdevice_management_gateway_schedules          odp.csdevice_traffic_delta_hourly_counter_2016_6 odp.csdevice_management_mac_raw                    odp.csdevice_traffic_delta_hourly_counter_2016_7 odp.csdevice_management_macs                       odp.csdevice_traffic_delta_hourly_counter_2016_8 odp.csdevice_management_raw                        odp.csdevice_traffic_delta_hourly_counter_2016_9 odp.csdevice_managements                           odp.csdevice_traffic_delta_hourly_counter_2017_1 odp.csdevice_status_host_version                   odp.csdevice_traffic_delta_hourly_counter_2017_10 odp.csdevice_traffic_delta                         odp.csdevice_traffic_delta_hourly_counter_2017_11 odp.csdevice_traffic_delta_daily_counter_2016_10   odp.csdevice_traffic_delta_hourly_counter_2017_12 odp.csdevice_traffic_delta_daily_counter_2016_11   odp.csdevice_traffic_delta_hourly_counter_2017_2 odp.csdevice_traffic_delta_daily_counter_2016_12   odp.csdevice_traffic_delta_hourly_counter_2017_3 odp.csdevice_traffic_delta_daily_counter_2016_6    odp.csdevice_traffic_delta_hourly_counter_2017_4 odp.csdevice_traffic_delta_daily_counter_2016_7    odp.csdevice_traffic_delta_hourly_counter_2017_5 odp.csdevice_traffic_delta_daily_counter_2016_8    odp.csdevice_traffic_delta_hourly_counter_2017_6 odp.csdevice_traffic_delta_daily_counter_2016_9    odp.csdevice_traffic_delta_hourly_counter_2017_7 odp.csdevice_traffic_delta_daily_counter_2017_1    odp.csdevice_traffic_delta_hourly_counter_2017_8 odp.csdevice_traffic_delta_daily_counter_2017_10   odp.csdevice_traffic_delta_hourly_counter_2017_9 odp.csdevice_traffic_delta_daily_counter_2017_11   odp.csdevice_traffic_raw odp.csdevice_traffic_delta_daily_counter_2017_12   odp.csdevice_uuid odp.csdevice_traffic_delta_daily_counter_2017_2    odp.csdevice_xdns_content_filtering odp.csdevice_traffic_delta_daily_counter_2017_3    odp.csmesh_agent odp.csdevice_traffic_delta_daily_counter_2017_4    odp.csmesh_cpe_devices_summary odp.csdevice_traffic_delta_daily_counter_2017_5    odp.csmesh_device_status_host_version odp.csdevice_traffic_delta_daily_counter_2017_6    ;do echo $t; cqlsh 96.118.61.34 -u cassandra -p cassandra --ssl -e "select * from $t where xpc_csid=$c " ; done ; }
+
+# grep cpe_mac on xpc tables: config data are created or restored after attach CPE or run api "/restore"
+gcpe_mac () {  m=$1;  for t in xpc.cpe xpc.moca_config xpc.mesh_agent_config xpc.radio_config xpc.ethernet_port_config xpc.radio_ssid_config xpc.hcpe_lan_config xpc.hcpe_port_forward_config xpc.device_mac_address_filter_config; do echo $t; date; cqlsh -u cassandra -p c@ss@n6R@ $(facter ipaddress) --ssl -e "select * from $t where cpe_mac='$m' " ; done ; }
+#[root@xpcdb-asb-2d-red ~]# gmac ACB3130356A2
+
+# grep xpc_csid on cs* tables of xpc
+gxpc_csid () { c=$1; [ -z "$1" ] && echo "No argument supplied";  for t in xpc.csmoca_config xpc.csmesh_agent_config xpc.csradio_config xpc.csethernet_port_config xpc.csradio_ssid_config xpc.cshcpe_lan_config xpc.cshcpe_port_forward_config xpc.csdevice_mac_address_filter_config; do echo $t; date; cqlsh -u cassandra -p c@ss@n6R@ $(facter ipaddress) --ssl -e "select * from $t where xpc_csid=$c " ; done ; }
+#[root@xpcdb-asb-2d-red ~]# gxpccsid 3ff41d77-7bea-451e-9642-64c0b0038ca2
+
+# ODP rules
+# echo y|bjp b_setbt.json ;        cPbt   $M2    $hostOR
+# echo y|bjp b_setgbt.json ;       cPgbt  $M2    $hostOR
+# echo y|bjp b_meshagentT.json &&  cPma   $M2    $hostOR
+# echo y|bjp b_xdnsT.json &&       cPxd   $M2    $hostOR
+# rule device level cPdl
+
+# XPC rules:
+# echo y|bjp b_pfrule.json ;       cPpf   $M2    $hostR
+# echo y|bjp b_mbrule.json ;       cPmb   $M2    $hostR
+# echo y|bjp b_mbrule.json ;       cPmb   $M2    $hostR
+
