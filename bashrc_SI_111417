@@ -82,7 +82,7 @@ blink () {     python -c 'from django.utils.termcolors import colorize; msg=" HE
 
 
 # cd cmds
-alias cdthum=' cd /Volumes && ls -ltr && ech2 "diskutil info <a storage>; for detailed info" '
+alias cdthum=' cd /Volumes && ls -ltr '
 alias cdapps=' cd /Applications/'
 alias cddesk=' cd $HOME/Desktop/'
 alias cddoc='  cd $HOME/Documents/'
@@ -267,9 +267,6 @@ alias os_dash=' echo "u:p=xpc_splunk:XPC_\$plunk123";open https://splunk.ccp.cab
 alias os_='     echo "u:p=xpc_splunk:XPC_\$plunk123";open https://splunk.ccp.cable.comcast.com/en-US/app/search/search '
 
 alias os_stoyv='echo "hlam01:LDAP"; open "https://splunk.ccp.cable.comcast.com/en-US/app/search/report?s=%2FservicesNS%2Fhlam01%2Fsearch%2Fsaved%2Fsearches%2Fstoyv" '
-
-# 1/ os_ Specific CPE:  index=smart_internet 044E5A9AE8CE request_end cluster=green|stats count  by status_code
-# 2/ os_ 30 mins follow-up monitor: given AS is the first DC: earliest=-30m index=smart_internet host=xpccore-as* request_end cluster=green|stats count  by status_code
 alias os_stogv='echo "hlam01:LDAP"; open "https://splunk.ccp.cable.comcast.com/en-US/app/search/report?s=%2FservicesNS%2Fhlam01%2Fsearch%2Fsaved%2Fsearches%2Fstogv" '
 
 #Jira; Conf; github; git pull; slack; outlook henry_lam@cc.c /NT ID ; magneto; #Howto change NTid pwd: 1/on wired 2/Open system pref > User & Groups > Change pwd  3/(still on wired network) logout/log in back/restart/wait/cross-finger
@@ -279,7 +276,7 @@ oop5h () {      h=$1; h=${h:-96.118.50.52}; ech2 "u:p=hlam01:ccLdap"; ech2 "$h @
 # open apps: /Applications/FaceTime.app/ /Applications/Photos.app/ /Applications/QuickTime\ Player.app/
 alias oAVrec=' open /Applications/QuickTime\ Player.app/ '
 alias te='     open -a textedit '
-#alias opy='   open    /Applications/PyCharm\ CE.app/ '
+alias opy='    open    /Applications/PyCharm\ CE.app/ '
 alias opc='    open -a /Applications/PyCharm\ CE.app '
 alias ocamera='open /Applications/Photo\ Booth.app/ '
 
@@ -307,7 +304,7 @@ alias cur4qa=' echo "available 4 qa to verify";   open https://ccp.sys.comcast.n
 alias curPoints='open https://ccp.sys.comcast.net/issues/?filter=85098'
 alias curSpr='   open https://ccp.sys.comcast.net/secure/RapidBoard.jspa?rapidView=2846&quickFilter=12617'
 alias tester_HL='open https://ccp.sys.comcast.net/issues/?filter=87671'
-alias bp11.2='   open https://jira-report.service.asb.devops.odpaws.comcast.net/jira-reports/sprint/17.11.2; ech2 "(UserID - devops Password - dNX7aJA4)" '
+
 alias oji='      open https://ccp.sys.comcast.net/browse/XPC '
 alias ojira='    open http://jira.csv.comcast.com/secure/Dashboard.jspa '
 alias ojf='      open https://ccp.sys.comcast.net/secure/ManageFilters.jspa?filterView=my' # open my Jira filters
@@ -389,7 +386,6 @@ alias pingdns='   dnsip|grep nameserver|rights; pingf `dnsip|grep nameserver|tai
 
 alias nslu='      nslookup '
 alias hostip='    cat /etc/hosts '
-# host ip using python HOST_IP = os.popen('ifconfig eth0 | grep "inet\ addr" | cut -d: -f2 | cut -d" " -f1').read().strip()
 
 # Networksetup
 # Steps to create shorcuts MacOSX1. an alias; 2. Automator: File>New>Service>nwu.workflow... Define a new service;  3.System Preferences > Keyboard > Shortcuts > Services 
@@ -470,8 +466,7 @@ alias llss='   ls -lShF '
 alias llt='    tree -L 1 '				# 4 long filenames
 alias tre1='   tree -L 1 '				# tree 1 level
 alias tre2='   tree -L 2 '				# tree 2 level
-alias ll0+='   find . -maxdepth 1    -size +0 -ls'	# all non-empty files
-alias ll0='    find . -maxdepth 1    -size  0 -ls'	# all     empty files
+alias lsp='    ls -p '
 alias pathname='greadlink -f '
 fpath () {     greadlink -f $1 ; }
 
@@ -538,8 +533,7 @@ alias cdvr='   cd $HOME/checkouts/hl/valid_respjson/; llr'
 
 cpwithtar () { src=$1; des=$2; cd $src ; tar cvf - ./* | (cd $des ; tar xvf - ) ; }
 
-### USE_PYTHON: influxdb, httplib2, pip
-alias instinfluxdb='sudo pip install influxdb --ignore-installed python-dateutil '
+### USE_PYTHON
 instMod () {    ech2 "Install module $1"; mod=$1; mod=${mod:-ipaddr}; pip2.7 install $mod ; } 
 pystestloop () { pyscript=$*; while read ; do python $pyscript ; done ; }
 pyh ()   {     python -c "help( '$1' )" ; }
@@ -605,9 +599,7 @@ alias w2h='     open https://goo.gl/maps/3mU5Nybps632'
 #alias w2dai='  open https://goo.gl/maps/CB8P52LSk8Q2 '
 #alias w2tem='  open https://goo.gl/maps/zPmk69q7NW82'
 
-alias people='  opes https://budget.my.salesforce.com/_ui/core/chatter/ui/ChatterPage?deepLinkType=listView&deepLinkInfo=people'
-alias timesh='  echo hlam001c; open             http://budget.cable.comcast.com'
-#alias timesh='  echo hlam001c; open -a "Safari" http://budget.cable.comcast.com'
+alias timesh='  echo hlam001c; open -a "Safari" http://budget.cable.comcast.com'
 alias adp='     echo adphenrylam save34; open http://myAccess.adp.com'
 alias omai='    opes http://mail.yahoo.com http://www.hotmail.com http://gmail.com https://www.linkedin.com/feed/ '
 alias e_v='     open https://goo.gl/kY9EoV '				
@@ -646,58 +638,59 @@ CCIS_ef="$HOME/devices/cpe/ccis_ef.json"
 CRA="$HOME/devices/smkRA.json"
 
 # Desk CPEs:
-M1="ACB3130356A2"       ;  I1="2001:0558:4000:001a:aeb3:13ff:fe03:56a2"  ; Rm1    () { now;sReboot $I1  I1 ; }
-M2="044E5A9AE8EC"       ;  I2="10.255.244.34"                            ; Rm2    () { now;sReboot $I2  I2 ; }
-M30="F44B2A77BBEF"      ;  I30="10.255.244.197"                          ; Rm30   () { now;sReboot $I30 I30 ; }
-M3="F44B2A77BE1A"       ;  I3="2001:0558:4000:001a:f64b:2aff:fe77:be1a"  ; Rm3    () { now;sReboot $I3  I3 ; }
-M4="9C34263F989A"       ;  I4="10.255.244.12"                            ; Rm4    () { now;sReboot $I4  I4 ; }
-M5="5C8FE0AE5B42"       ;  I5="10.255.244.52"                            ; Rm5    () { now;sReboot $I5  I5 ; }
-_M4="9C34263F989A"      ;  _I4="10.255.244.12"                           ; R_m4   () { now;sReboot $_I4 _I4 ; }
-_M5="5C8FE0AE5B42"      ;  _I5="10.255.244.52"                           ; R_m5   () { now;sReboot $_I5 _I5 ; }
-M6="F8A097EF091F"       ;  I6="2001:0558:4000:001a:faa0:97ff:feef:091f"  ; Rm6    () { now;sReboot $I6  I6 ; }
-M7="3C7A8A53DDF2"       ;  I7="10.255.244.53"                            ; Rm7  () { now;sReboot $I7  I7  ; }
-M6A="F8A097EF0CDA"      ;  I6A="2001:0558:4000:001a:faa0:97ff:feef:0cda" ; Rm6a   () { now;sReboot $I6A I6A ; }
+M1="ACB3130356A2"       ;  I1="2001:0558:4000:001a:aeb3:13ff:fe03:56a2"         ; Rm1    () { now;sReboot $I1  I1 ; }
+M2="044E5A9AE8EC"       ; I2="10.255.244.34"                                   ; Rm2    () { now;sReboot $I2  I2 ; }
+M30="F44B2A77BBEF"      ;  I30="10.255.244.197"                                 ; Rm30   () { now;sReboot $I30 I30 ; }
+M3="F44B2A77BE1A"       ;  I3="2001:0558:4000:001a:f64b:2aff:fe77:be1a"         ; Rm3    () { now;sReboot $I3  I3 ; }
+_M4="9C34263F989A"      ;  _I4="10.255.244.12"                                  ; R_m4   () { now;sReboot $I4  _I4 ; }
+_M5="5C8FE0AE5B42"      ;  _I5="10.255.244.52"                                  ; R_m5   () { now;sReboot $I5  _I5 ; }
+M6="F8A097EF091F"       ;  I6="2001:0558:4000:001a:faa0:97ff:feef:091f"         ; Rm6    () { now;sReboot $I6  I6 ; }
 
-# Red
-_Mssr="5C8FE0D3C508"	;  _Issr="10.255.244.15"	; R_ssr () {  now;sReboot $_Issr  _ssr ; } #telnet in failed..may need mso
-Mssr="3C7A8A376BCC"	;  Issr="10.255.244.114"	; Rssr () {   now;sReboot $Issr   ssr ; } 
+M6A="F8A097EF0CDA"      ;  I6A="2001:0558:4000:001a:faa0:97ff:feef:0cda"        ; Rm6a   () { now;sReboot $I6A I6A ; }
 
-_Mnrn="3C7A8A376B9A"	;  _Inrn="10.255.244.49"	; R_nrn  () { now;sReboot $_Inrn  _nrn   ; } 
-Mnrn="5C8FE0A1BC2A"	;  Inrn="10.255.244.61"   	; Rnrn   () { now;sReboot $Inrn   nrn   ; }
-#Mnrn="5C8FE0A1BE32"	;  Inrn="10.255.244.126"   	; Rnrn   () { now;sReboot $Inrn   nrn   ; }
 
-_Mn1rn="3C7A8A3328C8"	;  _In1rn="10.255.244.14"	; R_n1rn  () { now;sReboot $_In1rn  _n1rn  ; }
+# Sync:
+Mssy="5C8FE0CF3F2E"	;  Issy="10.255.244.238"	; Rssy () {   now;sReboot $Issy   ssy ; }
+Mssa="3C7A8A376BCC"     ;  Issa="10.255.244.114"	; Rssa () {   now;sReboot $Issa   ssa ; }
+
+#_Mssr="5C8FE0D3C508"	;  _Issr="10.255.244.15"	; R_ssr () {   now;sReboot $_Issr   _ssr ; } #telnet in failed..may need mso
+Mssr="5C8FE0D3C508"	;  Issr="10.255.244.15"		; Rssr () {   now;sReboot $Issr   ssr ; } #telnet in failed..may need mso
+
+# Red:
+#_Mnrn="3C7A8A376B9A"	;  _Inrn="10.255.244.49"	; R_nrn  () { now;sReboot $_Inrn  _nrn   ; }
+Mnrn=$_M4          	;  Inrn=$_I4           	        ; Rnrn   () { now;sReboot $Inrn   nrn   ; }
+
+#_Mn1rn="3C7A8A3328C8"	;  _In1rn="10.255.244.14"	; R_n1rn  () { now;sReboot $_In1rn  _n1rn  ; }
 Mn1rn="3C7A8A3328C8"	;  In1rn="10.255.244.14"	; Rn1rn  () { now;sReboot $In1rn  n1rn  ; }
 
-_Mnrn1="3C7A8A3346AA"	;  _Inrn1="10.255.244.109"	; R_nrn1 () { now;sReboot $_Inrn1 _nrn1  ; }
-Mnrn1="3C7A8A32A3E4"	;  Inrn1="2001:558:ff23:a:6527:cb38:5b1:7884" 	; Rnrn1  () { now;sReboot $Inrn1  nrn1  ; }
+#_Mnrn1="3C7A8A3346AA"	;  _Inrn1="10.255.244.109"	; R_nrn1 () { now;sReboot $_Inrn1 _nrn1  ; }
+Mnrn1=$_M5          	;  Inrn1=$_I5            	; Rnrn1  () { now;sReboot $Inrn1  nrn1  ; }
 
-_Mn1rn1="3C7A8A376B54"	;  _In1rn1="10.255.244.112"	; R_n1rn1 () { now;sReboot $_In1rn1 _n1rn1 ; }
+#_Mn1rn1="3C7A8A376B54"	;  _In1rn1="10.255.244.112"	; R_n1rn1 () { now;sReboot $_In1rn1 _n1rn1 ; }
 Mn1rn1="3C7A8A376B54"	;  In1rn1="10.255.244.112"	; Rn1rn1 () { now;sReboot $In1rn1 n1rn1 ; }
 
 Msrn="9C34263F989A"     ;  Isrn="10.255.244.12"         ; Rsrn   () { now;sReboot $Isrn   srn   ; }
 
-Rred () {      Rssr; Rnrn; Rn1rn; Rnrn1 ; }
-RRed () {      Rred;                     Rn1rn1 ; }
+Rred () {      Rnrn; Rssr; Rn1rn ; }
+RRed () {      Rred;             Rnrn1 ; }
 
-# Yellow
-Mssy="5C8FE0CF3F2E"     ;  Issy="10.255.244.238"        ; Rssy () {   now;sReboot $Issy   ssy ; }
+# Amber 
 Mstoy="14CFE2146492"	;  Istoy="10.255.244.85" 	; Rstoy  () { now;sReboot $Istoy  stoy  ; }
 Mstoyv="14CFE2146492"	;  Istoyv="10.255.244.85" 	; Rstoyv () { now;sReboot $Istoyv stoy  ; }
-
-# Amber
 Mnan="5C8FE0A1BC2A"	;  Inan="10.255.244.61"		; Rnan   () { now;sReboot $Inan   nan   ; } # telnet in failed..may need mso
-Mssa="3C7A8A376BCC"     ;  Issa="10.255.244.114"        ; Rssa () {   now;sReboot $Issa   ssa ; }
 
 # Green:
-Mstog="ACB3130362F2"	;  Istog="2001:0558:4000:001a:2eb3:13ff:fe03:62f2" ; Rstog  () { now;sReboot $Istog  stog  ; }
-Mstogv="044E5A9AE8CE"	;  Istogv="10.255.244.106"	                   ; Rstogv () { now;sReboot $Istogv stogv ; }
-Mssg="3C7A8A547AE6"     ;  Issg="10.255.244.68"		                   ; Rssg   () { now;sReboot $Issg   ssg   ; }
+Mstog="ACB3130362F2"	;  Istog="2001:0558:4000:001a:2eb3:13ff:fe03:62f2"	; Rstog  () { now;sReboot $Istog  stog  ; }
+Mstogv="044E5A9AE8CE"	;  Istogv="10.255.244.106"	                        ; Rstogv () { now;sReboot $Istogv stogv ; }
+Mssg="3C7A8A547AE6"     ;  Issg="10.255.244.68"		                        ; Rssg   () { now;sReboot $Issg   ssg   ; }
 
 # Cisco:
-Mcisr="F44B2A77BFBE"    ;  Icisr="10.255.244.24"			   ; Rcisr  () { now;sReboot $Icisr cisr ; } # telnet in failed..may need mso
-Mcisy="F44B2A77BE79"    ;  Icisy="2001:0558:4000:001a:764b:2aff:fe77:be79" ; Rcisy  () { now;sReboot $Icisy cisy ; }
-Mxb6="F8A097EEF795"	;  Ixb6="2001:0558:4000:001a:faa0:97ff:feee:f795"  ; Rxb6   () { now;sReboot $Ixb6  xb6  ; }
+Mcisr="F44B2A77BFBE"    ;  Icisr="10.255.244.24"				; Rcisr  () { now;sReboot $Icisr cisr ; } # telnet in failed..may need mso
+Mcisy="F44B2A77BE79"    ;  Icisy="2001:0558:4000:001a:764b:2aff:fe77:be79"	; Rcisy  () { now;sReboot $Icisy cisy ; }
+Mxb6="F8A097EEF795"	;  Ixb6="2001:0558:4000:001a:faa0:97ff:feee:f795"	; Rxb6   () { now;sReboot $Ixb6  xb6  ; }
+
+
+MAuprod="10868C6D5F1E"	;  IAuprod="2001:558:4000:1a:1286:8cff:fe6d:5f1e"	
 
 MVm="5C8FE07EE442"	;  IVm="10.255.244.93"	
 MVm2="14CFE2146802"	;  IVm2="10.255.245.117"	
@@ -705,7 +698,6 @@ MVmcis="F44B2A77BE79" 	;  IVmcis="2001:558:4000:1a:764b:2aff:fe77:be79"
 MVmpro="ACB31302F7B2" 	;  IVmpro="2001:558:4000:1a:2eb3:13ff:fe02:f7b2"
 
 MAu="5C8FE07EDE92"	;  IAu="10.255.244.58"	
-MAuprod="10868C6D5F1E"  ;  IAuprod="2001:558:4000:1a:1286:8cff:fe6d:5f1e" 
 
 MDan="9C34263FAA06"	;  IDan="10.255.244.151"
 
@@ -713,8 +705,6 @@ MMy="ACB313035F82"	;  IMy="10.255.244.39";
 MMy_prod="ACB31302BEF2"	;  IMy_prod="2001:558:4000:1a:2eb3:13ff:fe02:bef2";	 UM_prod="SI_XPC_UID18"	
 
 MKs_122="5C8FE07EE122"	;  IKs_122="10.255.244.89"
-MKevin="3C7A8A3933BC"	;  IKevin="10.255.244.155"
-MKunal="10868CE5972C"	;  IKunal="2001:558:4033:36:1286:8cff:fee5:972c"
 
 alias cpro_acct='open https://customertimeline.cable.comcast.com/#/account/8155100181702543'
 alias cpro='   pjson  $HOME/devices/cpe/cpro_a2.json | right: '
@@ -755,7 +745,7 @@ Mui () {       i=$1;        ech2 "My             UI: u:p=xpcstonecutter9@comcast
 Sui () {       i=$1;        ech2 "Staging/Yellow UI: u:p=xpcstonecutter5@comcast.net:Csv1050xPC";  open https://internet.staging.xfinity.com/ ; }
 alias Gui3='   ech2 "internet.xfinity.com Gui for M3: $M3 $I3"; Gui $I3'
 
-### Local UI: u:p=cusadmin:Xfinity; lui factory reset; open http://10.255.244.34/restore_reboot.php
+### Local UI: u:p=cusadmin:Xfinity
 lui4 () {      ech2 "Local UI: u:p=cusadmin:Xfinity"; open http://${1:-$I2} ; }
 lui_v6 () {    ech2 "Local UI: u:p=cusadmin:Xfinity"; open http://[${1:-$I2}] ; }
 lui    () {    i=$1; i=${i:-$I2}; ech2 "Local UI: u:p=cusadmin:Xfinity"; r=`echo $i|gip`; if [ $? -eq 0 ] ; then echo $i;open http://$i; else echo $i; open http://[$i] ; fi ; }
@@ -788,7 +778,7 @@ teli  () {     hterm ${2:-basic} "cpe_al && telnet ${1:-$I2}" ; }
 cpe_log="/rdklogs/logs/WEBPAlog.txt.0"
 
 alias tlwpa='  tail -n200 -f /rdklogs/logs/WEBPAlog.txt.0 '
-alias cpe_log_download='open https://sitools.sys.comcast.net/RDKBWebApplication/; ech2 "with Production CPE MACs only" ' 	
+alias cpe_log_download='open https://sitools.sys.comcast.net/RDKBWebApplication/'
 alias cpe_log_realtime='open https://prodlogs.teamccp.com/searchsuite/browselogfirst.action; ech2 "with WAN_MAC=MAC number + 2" '
 
 ### Non-xmanage: start magneto 051117
@@ -879,21 +869,18 @@ alias lbRAY='  dig red.awsxpc.comcast.net                          yellow.awsxpc
 nodee () {     for x in proxy consul core db sync sprkm sprkw hook que zoo rabbit redis lb rdkc; do echo;echo $x; cxi $1 |grep xpc$x- ; done ; }
 
 ### celery flower ; 1/to get IP, 2/of5 on dashboards and task, check for status="FAILURE", or chk if hob celery workers not running for RED, due to rabbit-hob-3d had its queue full
-of5 () {       i=${1:-$hostR}; ech2 "u:p=color:color or u:p=admin:xpc/odpadmin"; open http://$i:5555/tasks     ; }
+of5 () {       i=$1; ech2 "u:p=color:color or u:p=admin:xpc/odpadmin"; open http://$i:5555/dashboard ; }
 
 # celery flower:5555 xpc core 2d $ ean red xpccore 2; Flower:5555 odp core 1d $ eaN red odpcore 1;
 licf  () {     cxi $1 | grep -A1 xpccore-.*-2d ; }
 licfO () {     cxI $1 | grep -A1 odpcore-.*-1d ; }
 
-# celery flower (@2d, both Red envs), celery task test, celery worker: on red - asb - xpc: $echo "u:p= red/red"; open http://96.118.57.11:5555/tasks
-cwk () {       runh "dfn ${1:-red} cworker 1234" ; }
-ctt () {       runh "now && cPcelery ${1:-$hostR}" ; }
-cfr () {       h=${1:-$hostR}; ech3 CeleryFlower_5555; of5  $h; ech3 Celery_Task_Test; now && cPcelery $h ; }
-cfR () {       licf         ; for i in `licf        |gipo|a1line`; do ech2 $i; of5 $i; done ; cwk ${1:-red}; ctt ${2:-$hostR} ; }
-cfOR () {      licfO        ; for i in `licfO       |gipo|a1line`; do ech2 $i; of5 $i; done ; dfN ${1:-red} cworker 1234 ; }
+# celery flower: on red - asb - xpc: $echo "u:p= red/red"; open http://96.118.57.11:5555/tasks
+cfR () {       licf         ; for i in `licf        |gipo|a1line`; do ech2 $i; of5 $i; done ; t1 && cPcelery $hostR && t2 ; }
+cfOR () {      licfO        ; for i in `licfO       |gipo|a1line`; do ech2 $i; of5 $i; done ; }
 
 # celery flower Yellow
-cfY () {       licf   yellow; for i in `licf  yellow|gipo|a1line`; do ech2 $i; of5 $i; done ; open http://68.87.33.80:5555/tasks     ; t1 && cPcelery $hostY && t2 ; }
+cfY () {       licf   yellow; for i in `licf  yellow|gipo|a1line`; do ech2 $i; of5 $i; done ; open http://68.87.33.80:5555/dashboard ; t1 && cPcelery $hostY && t2 ; }
 cfOY () {      licfO  yellow; for i in `licfO yellow|gipo|a1line`; do ech2 $i; of5 $i; done ; }
 
 # celery flower Green 76.96.27.96:5555 or 76.96.26.193:5555
@@ -901,19 +888,20 @@ alias cfG='    ech2 "u:p=admin:xpcadmin for AS  "; open http://xpccore-as-01.sys
 alias cfOG='   ech2 "u:p=admin:odpadmin for AS  "; open http://odpcore-as-01.sys.comcast.net:5555/tasks'
 
 # broad celery flower:5555 u:p=admin/xpcadmin OR admin/odpadmin
-alias celeflower=' ech2 u:p=admin:xpcadmin; open http://68.87.33.80:5555/tasks    '
+alias celeflower=' ech2 u:p=admin:xpcadmin; open http://68.87.33.80:5555/dashboard'
 
 ### Env_App_NodeNum1234 ~ godx
-ean () {       e=$1; e=${e:-red}; a=$2; a=${a:-core}; d=$4; d=${d:-ch2h}; n=$3; n=${n:-24}; echo $e xpc $a $n :; cxi $e | egrep -A1 $a-$d.*-[$n]d ; }
-eaN () {       e=$1; e=${e:-red}; a=$2; a=${a:-core}; d=$4; d=${d:-ch2h}; n=$3; n=${n:-24}; echo $e xpc $a $n :; cxI $e | egrep -A1 $a-$d.*-[$n]d ; }
+ean () {       e=$1; e=${e:-red}; a=$2; a=${a:-core}; n=$3; n=${n:-24}; echo $e xpc $a $n :; cxi $e | egrep -A1 $a.*-[$n]d ; }
+eaN () {       e=$1; e=${e:-red}; a=$2; a=${a:-core}; n=$3; n=${n:-24}; echo $e xpc $a $n :; cxI $e | egrep -A1 $a.*-[$n]d ; }
 
-ipcR () {      n=$1; n=${n:-24}; d=$4; echo red_xpccore $n :; ean red    core    $n  $d| cred   ; }
-ipcY () {      n=$1; n=${n:-24}; d=$4; echo yel_xpccore $n :; ean yellow core    $n  $d| cyellow ; }
+ipcR () {      n=$1; n=${n:-24}; echo red_xpccore $n :; ean red    core    $n | cred   ; }
+#ipcA () {     n=$1; n=${n:-24}; echo amb_xpccore $n :; ean amber  core    $n | camber ; }
+ipcY () {      n=$1; n=${n:-24}; echo yel_xpccore $n :; ean yellow core    $n | cyellow ; }
 
 # utilities$ vih rdkb_auto_upgrade.py : def get_rdkb_last_successful_build(): u:p= base_url = https://xpcjenkins:rYxK8TeU)2@jenkins.ccp.xcal.tv/jenkins/job/ARRISXB3-Yocto-Build
 
 ### sitools
-# upgrade fw rdkb for cisco/XB6/Green/Production: use sitools: (Acct num + fw image)
+# upgrade fw rdkb for cisco/XB6/Green/Production: use sitools
 #alias ofwup_sitools='  echo "Use NTid to login, input: MAC, image, http/tfpt to proceed"; open https://sitools.sys.comcast.net/siweb/'
 alias sit_='   ech2 "sitools, u:p = hlam001c:NTid pwd" ; open https://sitools.sys.comcast.net/siweb/'            
 alias sit_wpa='ech2 "Input with cpe mac, make sure cpe online"; open https://sitools.sys.comcast.net/RDKBWebApplication/deviceLogs'
@@ -921,11 +909,8 @@ alias sit_spl='ech2 "Input with cpe mac"; open https://sitools.sys.comcast.net/S
 alias sii_api='ech2 "$OBJ"| tr " " "\n" ; open https://sitools.sys.comcast.net/api/api-docs'
 # Contact Karthik Sundaram: https://sitools.sys.comcast.net/api/api-docs/#!/WebPA/get_webpa_find_mac; https://sitools.sys.comcast.net/api/webpa/find/044E5A9AE8EC; 
 
-yn () { echo Are u sure?; read x; if [ $x != yes ]; then ech2 Exiting; else ech2 YES_GO; fi; ech3 "option_CtrlC_now_to_abort"; ptmr 10 ; }
-
 # jenkins job for latency report, runs everyday at 7am - https://jenkins.awsxpc.comcast.net/job/latency_test
 # script: utilities/latency.py aka sshDan d /root/webpa-restart; run $ ./latency.py 9C34263FAA06
-ptmr () {      s=$1; l=${2:-80}; now; (python ~/progressbar.py $s $l) | cred; blink ; }
 tmr () {       s=$1; s=${s:-5}; p="* * "; echo -n `date`; for i in `seq \$s`; do echo -n "$p"|cred; sleep 1; done; echo ; }
 tmer () {      s=$1; s=${s:-480}; now; ech2 "START WAITING $s SECONDS ... "; sleep $s ; echo -n "DONE $s SECONDS SLEEP... "; blink; cowT $2 |cgreen  ; } 
 timer () {     runh tmer $1 $2 ; }
@@ -935,10 +920,8 @@ odhm () {      m=$1; n=$2; n=${n:-reboot_}; echo "1GO: link Open; 2MAC=$m right?
 odh () {       now;runh "odhm $1 $2" ; }
 
 ### Manual sync test in ENV: 1/trigger a change on CPE (either snmpset new ssid, or local UI change) then 2/wait then check DB thru API call priv wifi 3/Splunk 4/cmc_cid match thru APIs webpa vs sync_info 5/RDK log aka webpa log aka cpe log
-ms_cpe    () { i=$1; i=${i:-$I2}; NEW_NAME="HLsync_sS_2g"; sSSID $i && ech2 "=== TRIGGER ==="; ssSSID $i $NEW_NAME|cred && ptmr 30 80 && sSSID $i ; }
-#ms_cpe    () { i=$1; i=${i:-$I2}; NEW_NAME="HLsync_sS_2g"; sSSID $i && ech2 "=== TRIGGER ==="; ssSSID $i $NEW_NAME|cred && tmer 30 60sec_spot_sync_sS_2g && sSSID $i ; }
-db_cloud () {  m=$1; m=${m:-$M2}; h=$2; h=${h:-$hostR}; b=`bmh $m $h|grep 200`; if [ $? -eq 0 ]; then ech2 "=== DB shows ==="; apw $m $h; smh $m $h; wp_syn $m; else ech2 "bmh failed onboard"; fi ; }
-#db_cloud () {  m=$1; m=${m:-$M2}; h=$2; h=${h:-$hostR}; b=`bmh $m $h|grep 200`; if [ $? -eq 0 ]; then ech2 "=== DB shows ==="; apw $m $h; smh $m $h; wp_syn $m; fi ; }
+ms_cpe    () { i=$1; i=${i:-$I2}; NEW_NAME="HLsync_sS_2g"; sSSID $i && ech2 "=== TRIGGER ==="; ssSSID $i $NEW_NAME|cred && tmer 30 60sec_spot_sync_sS_2g && sSSID $i ; }
+db_cloud () {  m=$1; m=${m:-$M2}; h=$2; h=${h:-$hostR}; b=`bmh $m $h|grep 200`; if [ $? -eq 0 ]; then ech2 "=== DB shows ==="; apw $m $h; smh $m $h; wp_syn $m; fi ; }
 
 ms_  () {      m=$1; m=${m:-$M2}; i=$2; i=${i:-$I2}; h=$3; h=${h:-$hostR}; ms_cpe $i && db_cloud $m $h ; }
 #ms_reset () {  m=$1; m=${m:-$M2}; i=$2; i=${i:-$I2}; RESET_NAME="HLsync_reset_2g"; ssSSID $i $RESET_NAME|cpink ; echo "red yellow"|cle $m  ; }
@@ -967,14 +950,10 @@ alias oOIDsnmp='open https://www.teamccp.com/confluence/display/SMARTINT/SNMP'
 # set/get ssid 2g/5g pwd: "snmpset -v2c -c hDaFHJG7 %s .1.3.6.1.4.1.17270.50.2.2.3.1.1.2.10001 s %s" ...10101
 sS_ssid () {      cip=$1; n=$2;snmpset -v2c -c hDaFHJG7      $cip .1.3.6.1.4.1.17270.50.2.2.2.1.1.3.10001  s "$n" ; }
 sS_ssid_v6 () {   cip=$1; n=$2;snmpset -v2c -c hDaFHJG7 udp6:$cip .1.3.6.1.4.1.17270.50.2.2.2.1.1.3.10001  s "$n" ; }
-sS_ssid_5g () {   cip=$1; n=$2;snmpset -v2c -c hDaFHJG7      $cip .1.3.6.1.4.1.17270.50.2.2.2.1.1.3.10101  s "$n" ; }
-sS_ssid_5g_v6 () { cip=$1;n=$2;snmpset -v2c -c hDaFHJG7 udp6:$cip .1.3.6.1.4.1.17270.50.2.2.2.1.1.3.10101  s "$n" ; }
 ssSSID () {       cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then      sS_ssid   $cip $2; else      sS_ssid_v6   $cip $2; fi ; }
 
 sG_ssid () {      cip=$1;      snmpget -v2c -c hDaFHJG7      $cip .1.3.6.1.4.1.17270.50.2.2.2.1.1.3.10001         ; }
 sG_ssid_v6 () {   cip=$1;      snmpget -v2c -c hDaFHJG7 udp6:$cip .1.3.6.1.4.1.17270.50.2.2.2.1.1.3.10001         ; }
-sG_ssid_5g () {   cip=$1;      snmpget -v2c -c hDaFHJG7      $cip .1.3.6.1.4.1.17270.50.2.2.2.1.1.3.10101         ; }
-sG_ssid_5g_v6 () { cip=$1;     snmpget -v2c -c hDaFHJG7 udp6:$cip .1.3.6.1.4.1.17270.50.2.2.2.1.1.3.10101         ; }
 sSSID () {        cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then      sG_ssid   $cip   ; else      sG_ssid_v6   $cip   ; fi ; }
 
 sS_UIenab () {    cip=$1;      snmpset -v2c -c hDaFHJG7      $cip  .1.3.6.1.4.1.4115.1.3.4.1.2.6.0   i  1 ; }
@@ -986,9 +965,9 @@ sG_UIenab_v6 () { cip=$1;      snmpget -v2c -c hDaFHJG7 udp6:$cip  .1.3.6.1.4.1.
 #sS_telnet_v6 () { cip=$1;     snmpset -v2c -c hDaFHJG7 udp6:$cip  1.3.6.1.4.1.1429.78.1.1001.1.0    i  1 ; }
 sS_enaTel () {    i=$1 pod=$2; snmpset -v2c -c hDaFHJG7 $i 1.3.6.1.4.1.4115.1.3.4.1.2.1.0 s $pod 1.3.6.1.4.1.4115.1.3.4.1.2.2.0 i 1 ; }   
 
-sS_factor () {    cip=$1;      snmpset -v2c -c hDaFHJG7      $cip  1.3.6.1.4.1.17270.50.2.1.1.1002.0 i  1 && tmer 600 SNMP_REBOOT_$2_$cip ; }
-sS_reboot () {    cip=$1;      snmpset -v2c -c hDaFHJG7      $cip  1.3.6.1.2.1.69.1.1.3.0            i  1 && tmer 600 SNMP_REBOOT_$2_$cip ; }
-sS_reboot_v6 () { cip=$1;      snmpset -v2c -c hDaFHJG7 udp6:$cip  1.3.6.1.2.1.69.1.1.3.0            i  1 && tmer 600 SNMP_REBOOT_$2_$cip ; }
+sS_factor () {    cip=$1;      snmpset -v2c -c hDaFHJG7      $cip  1.3.6.1.4.1.17270.50.2.1.1.1002.0 i  1 && tmer 600 SNMP_REBOOTi_$2_$cip ; }
+sS_reboot () {    cip=$1;      snmpset -v2c -c hDaFHJG7      $cip  1.3.6.1.2.1.69.1.1.3.0            i  1 && tmer 600 SNMP_REBOOTi_$2_$cip ; }
+sS_reboot_v6 () { cip=$1;      snmpset -v2c -c hDaFHJG7 udp6:$cip  1.3.6.1.2.1.69.1.1.3.0            i  1 && tmer 600 SNMP_REBOOTi_$2_$cip ; }
 sReboot () {      cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then runh sS_reboot $cip $2; else runh sS_reboot_v6       $cip $2; fi  ; }
 #sFactory () {     cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then runh sS_factor $cip $2; else runh sS_factor     udp6:$cip $2; fi  ; }
 #sRebootm () {     m=$1; cip=`getip $m`; sReboot $i && gowpa $m ; }  
@@ -1017,9 +996,10 @@ sR2G () {         cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then      sG
 sG_r5g () {       cip=$1;      snmpget -v2c -c hDaFHJG7      $cip .1.3.6.1.4.1.17270.50.2.2.7.1.1.1.10100                           ; }
 sR5G () {         cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then      sG_r5g    $cip   ; else      sG_r5g  udp6:$cip   ; fi ; }
 
-# cisco share sWPA, sFW, sWAN, get sSSID
-sc_factor () {    cip=$1;      snmpset -v2c -c hDaFHJG7      $cip  1.3.6.1.4.1.1429.77.1.3.18.0      i  1 && tmer 600 SNMP_REBOOT_$2_$cip ; }
-sc_reboot () {    cip=$1;      snmpset -v2c -c hDaFHJG7      $cip  .1.3.6.1.4.1.1429.77.1.3.17.0     i  1 && tmer 600 SNMP_REBOOT_$2_$cip ; }
+# cisco
+#share sWPA, sFW, sWAN, get sSSID
+sc_factor () {    cip=$1;      snmpset -v2c -c hDaFHJG7      $cip  1.3.6.1.4.1.1429.77.1.3.18.0      i  1 && tmer 600 SNMP_REBOOTi_$2_$cip ; }
+sc_reboot () {    cip=$1;      snmpset -v2c -c hDaFHJG7      $cip  .1.3.6.1.4.1.1429.77.1.3.17.0     i  1 && tmer 600 SNMP_REBOOTi_$2_$cip ; }
 scReboot () {     cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then runh sc_reboot $cip $2; else runh sc_reboot     udp6:$cip $2; fi  ; }
 #scFactory () {    cip=$1;      r=`echo $cip|gip`; if [ $? -eq 0 ] ; then runh sc_factor $cip $2; else runh sc_factor     udp6:$cip $2; fi  ; }
 
@@ -1056,7 +1036,6 @@ onb () {       m=$1; e=$2; ech2 "Onboard CPE $m to env $e."; cd; (python onboard
 # check if CPE mac is online thru webpa, and if onboard on any host/env
 getipv4 () {   m=$1; python $HOME/get_ipcpe_thru_webpa.py   $m |gc2 value ; }
 getipv6 () {   m=$1; python $HOME/get_ipv6cpe_thru_webpa.py $m |gc2 value ; }
-goWPA () {     m=$1; ech2 "Chk CPE (thru WebPA/SATtoken)"; line; bash ~/check_device_webpa_2.sh $m $2 ;ech2 ; }
 gowpa () {     m=$1; ech2 "Chk CPE (thru WebPA/SATtoken)"; line; bash ~/checkouts/xpc-testm/xpc-test/xpcfunctionaltest/utilities/check_device_webpa.sh $m;ech2 ; }
 
 olob () {      m=$1; ech2 "Check if ONLINE thru WebPA ..."; gowpa $m|cblue; ech2 "Check if ONBOARD ..."; now; cle $m ; }
@@ -1085,35 +1064,7 @@ alias cdcurls='cd    $HOME/checkouts/xpc-testm/xpc-test/testscripts/curlscripts;
 alias cdcerts='cd    $HOME/checkouts/xpc-testm/xpc-test/testscripts/signed_cert; ech2 Current branch is `cbr|ccyan`; ls; pwd '
 
 alias runat='  subl  $HOME/checkouts/xpc-test/boxertest_client/run_any.sh'
-
-#ssrcf="https://jenkins.awsxpc.comcast.net/view/All%20XPC%20Test%20jobs/job/smoketest-sync-on-red/configure"
-je_j="https://jenkins.awsxpc.comcast.net/view/All%20XPC%20Test%20jobs/job"
-jssr="$je_j/smoketest-sync-on-red"
-jnrn="$je_j/smoketest-n-on-red-n"
-jn1rn="$je_j/smoketest-n-1-on-red-n"
-jnrn1="$je_j/smoketest-n-on-red-n-1"          
-jn1rn1="$je_j/smoketest-n-1-on-red-n-1"
-
-jssy="$je_j/smoketest-sync-yellow"
-jstoyv="$je_j/smoketest-on-yellow-validation"
-jstoy="$je_j/smoketest-on-yellow"
-
-#ssrcf="https://jenkins.awsxpc.comcast.net/view/All%20XPC%20Test%20jobs/job/smoketest-sync-on-red"
-#nrncf="https://jenkins.awsxpc.comcast.net/view/All%20XPC%20Test%20jobs/job/smoketest-n-on-red-n/configure"
-#n1rncf="https://jenkins.awsxpc.comcast.net/view/All%20XPC%20Test%20jobs/job/smoketest-n-1-on-red-n/configure"
-#nrn1cf="https://jenkins.awsxpc.comcast.net/view/All%20XPC%20Test%20jobs/job/smoketest-n-on-red-n-1/configure"
-#n1rn1cf="https://jenkins.awsxpc.comcast.net/view/All%20XPC%20Test%20jobs/job/smoketest-n-1-on-red-n-1/configure"
-
-oyst () {      a=$1; open $jssy/$a $jstoy/$a $jstoyv/$a ; }
-orst () {      a=$1; open $jssr/$a $jnrn/$a  $jn1rn/$a  $jnrn1/$a $jn1rn1/$a ; }
-alias orcf='   orst "configure" '
-alias orch='   orst "jobConfigHistory" '
-alias orlb='   orst "lastBuild/consoleFull" '
-alias orbu='   orst "build" '
-alias orrb='   orst "lastCompletedBuild/rebuild" '
-
-
-alias onrn='   open https://jenkins.awsxpc.comcast.net/view/All%20XPC%20Test%20jobs/job/smoketest-n-on-red-n'
+alias onrn='   open https://jenkins.awsxpc.comcast.net/view/All%20XPC%20Test%20jobs/job/smoketest-n-on-red-n/'
 
 alias run0='   grep python2 $HOME/checkouts/xpc-test/boxertest_client/run_any.sh |grep -v "\#"|cpink && runat && lastbox && p && onrn ; hterm pro "msy"; runh "msy $M5 $I5 $hostA"; hterm basic "msy $M1 $I1 $hostY"; verR; verA; verY '
 
@@ -1152,13 +1103,12 @@ isA () {       m=$1; h=$2; u="http://$h:8080/api/v1/gateway-cpe/$m/association";
 cPcsid0 () {   h=$1; h=${h:-$hostR}; csid  $h ; } # empty
 
 ### create new csid (with  body) via curl POST API configset
-cPcsid () {    h=$1; h=${h:-$hostR}; u="http://$h:8080$a1c";    b=${2:-b_csid1.json}; ech2 $b; bjp $b && cP $u ; } # b_csid1.json
-cDcsid () {    c=$1; h=$2;           u="http://$h:8080$a1c/$c"; cDel $u ; }
-ach () {       c=$1; h=$2; h=${h:-$hostR};              aco0         $c  $h ; }
+cPcsid () {    h=$1; h=${h:-$hostR}; u="http://$h:8080$CSBU";     b=${2:-b_csid1.json}; ech2 $b; bjp $b && cP $u ; } # b_csid1.json
+cDcsid () {    c=$1; h=$2;           u="http://$h:8080$CSBU/$c";  cDel $u ; }
 
 ### func a, b, c, d, p, l, i, s, f, g, t, r, x for Asso, onB, Clean, Detach/Disasso, Clean, Purge/Delete CPE, Log, Info, Sync, forget, grep, tailgrep, resetClean, x
 amh () {       m=$1; m=${m:-$M2}; h=$2; h=${h:-$hostR}; isA          $m  $h ; }
-csid () {      h=$1; h=${h:-$hostR}; u="http://$h:8080$a1c"; ech2 "POST $u"; curl -s -X POST $u |pjson|cblue ; }
+csid () {      h=$1; h=${h:-$hostR}; u="http://$h:8080$CSBU"; ech2 "POST $u"; curl -s -X POST $u |pjson|cblue ; }
 aaa () {       m=$1; h=$2; c=$3; python $HOME/aaa.py                 $m  $h $c |cblue ; }
 bmh () {       m=$1; m=${m:-$M2}; h=$2; h=${h:-$hostR}; python $HOME/onboard.py $m  $h |cblue ; }
 cmh () {       m=$1; h=$2;       python $HOME/clean_ac.py            $m  $h    ; }
@@ -1166,28 +1116,25 @@ cmh0 () {      m=$1; h=$2;       python $HOME/clean_ac_emptycsid.py  $m  $h    ;
 dmh () {       m=$1; h=$2;       python $HOME/detach.py              $m  $h    ; }
 swapmhc () {   m=$1; h=$2; c=$3; python $HOME/swap_onb.py            $m  $h $c |cblue ; }
 pmh () {       m=$1; h=$2;       python $HOME/purge_cpe_frDB.py      $m  $h    ; }
-Fmh () {       m=$1; m=${m:-$M2}; h=$2; h=${h:-$hostR}; ho=$3; ho=${ho:-$hostOR}; ech3 CLEAN; cle0 $m; tmr 3; ech2 ONB; bmh $m $h; apl $m $h; ech3 DEVICE; ods $m $ho; nrx2 $m $h; crx $m $h; nro2 $m $ho; cro $m $ho; tmr 5; now; ech3 XPC_FORGETDEV; bjp b_forget.json && cPforget $m $h && ptmr 15; crx $m $h; cro $m $ho; ods $m $ho  ; }
-fmh () {       m=$1; m=${m:-$M2}; h=$2; h=${h:-$hostR};                           ech3 CLEAN; cle0 $m; tmr 3; ech3 ONB; bmh $m $h; apl $m $h; ech3 DEVICE;             nrx2 $m $h; crx $m $h; tmr 5;                          now; ech3 XPC_FORGETDEV; bjp b_forget.json && cPforget $m $h && ptmr 15; crx $m $h ; }
+Fmh () {       m=$1; m=${m:-$M2}; h=$2; h=${h:-$hostR}; ho=$3; ho=${ho:-$hostOR}; ech3 CLEAN; cle0 $m; tmr 3; ech2 ONB; bmh $m $h; apl $m $h; ech3 DEVICE; ods $m $ho; nrx2 $m $h; crx $m $h; nro2 $m $ho; cro $m $ho; tmr 5; now; ech3 XPC_FORGETDEV; bjp b_forget.json && cPforget $m $h && tmr 15; crx $m $h; cro $m $ho; ods $m $ho  ; }
+fmh () {       m=$1; m=${m:-$M2}; h=$2; h=${h:-$hostR};                           ech3 CLEAN; cle0 $m; tmr 3; ech3 ONB; bmh $m $h; apl $m $h; ech3 DEVICE;             nrx2 $m $h; crx $m $h; tmr 5;                          now; ech3 XPC_FORGETDEV; bjp b_forget.json && cPforget $m $h && tmr 15; crx $m $h ; }
 fmH () {       runh  fmh $1 $2 $3 ; }
 lmh () {       m=$1; m=${m:-$M2}; h=$3; h=${h:-$hostR}; i=$2; i=${i:-$I2}; teli $i; gmH ${4:-$m} $h; tmH $m $h ; }
-gmh () {       m=$1; m=${m:-$M2}; h=$2; h=${h:-$hostR}; ech3 Grep_xpc_log;        glxph $m       $h ; }
+gmh () {       m=$1; m=${m:-$M2}; h=$2; h=${h:-$hostR}; ech2 Grep_xpc_log;        glxph $m       $h ; }
 gmH () {       runh  gmh $1 $2  ; }
-tfh () {       h=$1; ech3 Tail_f_Log_Xpc; tlx  $h ; }
-tmh () {       m=$1; m=${m:-$M2}; h=$2; h=${h:-$hostR}; ech3 Grep_tail_f_xpc_log; ( tlxph $h )| grep -i $m ; } 
+tfh () {       h=$1; ech2 Tail_f_Log_Xpc; tlx  $h ; }
+tmh () {       m=$1; m=${m:-$M2}; h=$2; h=${h:-$hostR}; ech2 Grep_tail_f_xpc_log; ( tlxph $h )| grep -i $m ; } 
 tmH () {       hterm pro   " tmh $1 $2"  ; } 
 mhi () {       m=$1; h=$2; gowpa $m; rver $h; now ; }
-imh () {       m=$1; h=$2; ech3 Info_cpe;  amh $m $h; aci  $m $h; aga  $m $h; agd $m $h; acd  $m $h; mpf $m $h; mmb $m $h; echo; now ; }
-imh2 () {      m=$1; h=$2; ech3 Info_cpe;  amh $m $h; aci2 $m $h; aga  $m $h; agd $m $h; acd2 $m $h; mpf $m $h; mmb $m $h; echo; now ; }
-smh () {       m=$1; h=$2; ech3 Sync_info; amh $m $h; asi  $m $h; ech3 Sync_asc; asc  $m $h; now ; }
-rmh () {       m=$1; h=${2:-$hostR}; ech3 FACTORY_RESET; blink; cle0 $m; ech3 CleaningCPE_Ctrl_C_to_abort_now; ptmr 30; b=`bmh $m $h|grep 200`; if [ $? -eq 0 ]; then ech3 Starting; FacRes $m $h; ptmr 1000; else ech2 "bmh/FacRes failed"; fi; ech3 Done ; }
-snmh () {      m=$1; h=$2; ech3 Sync_Now;                asn  $m $h;             now ; }
-m2mh () {      m=$1; m=${m:-$M2}; h=$2; h=${h:-$hostR}; cle  $m && bmh $m $h && echo y|bjp b_pw_m2.json && cPpw $m $h &&  imh $m $h  ; }
+imh () {       m=$1; h=$2; ech2 Info_cpe;  amh $m $h; aci  $m $h; aga  $m $h; acd  $m $h; mpf $m $h; mmb $m $h; echo; now ; }
+imh2 () {      m=$1; h=$2; ech2 Info_cpe;  amh $m $h; aci2 $m $h; aga  $m $h; acd2 $m $h; mpf $m $h; mmb $m $h; echo; now ; }
+smh () {       m=$1; h=$2; ech2 Sync_info; amh $m $h; asi  $m $h; asc  $m $h; now ; }
+snmh () {      m=$1; h=$2; ech2 Sync_Now;                asn  $m $h;             now ; }
+m2mh () {      m=$1; m=${m:-$M2}; h=$2; h=${h:-$hostR}; cle0 $m && bmh $m $h && echo y|bjp b_pw_m2.json && cPpw $m $h &&  imh $m $h  ; }
 m3mh () {      m=$1; m=${m:-$M3}; h=$2; h=${h:-$hostR}; cle0 $m && bmh $m $h && echo y|bjp b_pw_m3.json && cPpw $m $h &&  imh $m $h  ; }
 m5mh () {      m=$1; m=${m:-$M5}; h=$2; h=${h:-$hostR}; cle0 $m && bmh $m $h && echo y|bjp b_pw_m5.json && cPpw $m $h &&  imh $m $h  ; }
-m6mh () {      m=$1; m=${m:-$M6}; h=$2; h=${h:-$hostR}; cle0 $m && bmh $m $h && echo y|bjp b_pw_m6.json && cPpw $m $h &&  imh $m $h  ; }
-xmh () {       m=$1; h=$2; n=$3; now; ech3 ONB; bmh $m $h; c=`amh $m $h|gc2 xpc_csid`; nrx2 $m $h; tmr 5; now; ech3 DETACH; dmh $m $h; ptmr 9; now; ech3 SWAP; swapmhc $n $h $c; ptmr 15; crx $n $h; now ; }
+xmh () {       m=$1; h=$2; n=$3; now; ech3 ONB; bmh $m $h; c=`amh $m $h|gc2 xpc_csid`; nrx2 $m $h; tmr 5; now; ech3 DETACH; dmh $m $h; tmr 9; now; ech3 SWAP; swapmhc $n $h $c; tmr 15; crx $n $h; now ; }
 xmH () {       runh  xmh $1 $2 $3 ; }
-zmh () {       m=$1; m=${m:-$M2}; h=$2; h=${h:-$hostR}; ech3 "Defaul/Reserved_GW_settings"; agd $m $h ; } # cpe t zero setting:
 
 # cirrent: amh $M2 $hostY; bmh ; apwa $M2 $hostY; apwa2 $M2 $hostY; awc $M2 $hostY; 
 # GET http://96.119.225.204:8080/api/v1/gateway-info?wan_ip=10.255.245.10&ssid_name=2gTest_SSID_Name&bssid=FC%3A51%3AA4%3A1A%3ABC%3AB3
@@ -1197,7 +1144,7 @@ zmh () {       m=$1; m=${m:-$M2}; h=$2; h=${h:-$hostR}; ech3 "Defaul/Reserved_GW
 alias ofwup='  open  https://jenkins.awsxpc.comcast.net/job/upgrade-rdkb/build?delay=0sec'
 alias ofw='    ech2 "u:p=hlam01/LDAP_pwd"; open  https://nexus.teamccp.com/nexus/content/repositories/arris_xb3/images/signing_stage/ArrisXB3-Yocto-Release/'
 alias ofw6='   ech2 "u:p=hlam01/LDAP_pwd"; open  https://nexus.teamccp.com/nexus/content/repositories/arris_xb6/images/signing_stage/ARRISXB6-Yocto-Release/'
-alias ofwc='   ech2 "u:p=hlam01/LDAP_pwd"; open  https://nexus.teamccp.com/nexus/content/repositories/cisco_xb3/images/signing_stage/CISCOXB3-Yocto-Release-2-1/155/' 
+alias ofwc='   ech2 "u:p=hlam01/LDAP_pwd"; open ihttps://nexus.teamccp.com/nexus/content/repositories/cisco_xb3/images/signing_stage/CISCOXB3-Yocto-Release-2-1/155/' 
 
 # scp image to Dan; scp image from Dan to TFTP
 i2d () {       img=$1; cd $HOME/Download; scp -r ./$img root@69.252.255.146:/ ; } 
@@ -1216,94 +1163,53 @@ sshchk () {    hks=$*; sshc $hks ; }
 
 ### sshcore ,  run cmds on ssh core nodes and other apps nodes                
 hostG="96.115.78.175"
+
 hostA="96.118.23.51"            # xpccore-hob-2d-amber
 hostA1="96.118.23.53"           # xpccore-hob-1d-amber 
 
 # host Red:                     asb-1/2d, hob-1/2d
-ahostR="96.118.57.11"           # xpccore-asb-2d-red
-ahostR1="96.118.57.10"          # xpccore-asb-1d-red
-ahostOR="96.118.61.32"          # odpcore-asb-2d-red
-ahostOR1="96.118.61.36"         # odpcore-asb-1d-red
+_hostR="96.118.57.11"           # xpccore-asb-2d-red
+_hostR1="96.118.57.10"          # xpccore-asb-1d-red
+_hostOR="96.118.61.32"          # odpcore-asb-2d-red
+_hostOR1="96.118.61.36"         # odpcore-asb-1d-red
 
-# Newton - red - hoc ch2h
-#hostR="96.118.147.40"           # xpccore-ch2h-2d-red
-#hostR1="96.118.147.38"          # xpccore-ch2h-1d-red
-#hostOR="96.118.145.122"         # odpcore-ch2h-2d-red
-#hostOR1="96.118.145.178"        # odpcore-ch2h-1d-red
-
-hostR="96.118.147.40"           # xpccore-ch2h-2d-red
-hostR1="96.118.147.38"          # xpccore-ch2h-1d-red
-hostOR="96.118.145.122"         # odpcore-ch2h-2d-red
-hostOR1="96.118.145.178"        # odpcore-ch2h-1d-red
-
-chostR="96.118.147.40"          # xpccore-ch2h-2d-red
-chostR1="96.118.147.38"         # xpccore-ch2h-1d-red
-chostOR="96.118.145.122"        # odpcore-ch2h-2d-red
-chostOR1="96.118.145.178"       # odpcore-ch2h-1d-red
-
-hhostR="96.118.253.104"         # xpccore-hoc-2d-red
-hhostR1="96.118.253.117"        # xpccore-hoc-1d-red
-hhostOR="96.118.251.154"        # odpcore-hoc-2d-red
-hhostOR1="96.118.251.161"       # odpcore-hoc-1d-red
+# Newton - red - ch2h
+hostR="96.118.147.40"		# xpccore-ch2h-2d-red
+hostR1="96.118.147.38"		# xpccore-ch2h-1d-red
+hostOR="96.118.145.122"	  	# odpcore-ch2h-2d-red
+hostOR1="96.118.145.178"	# odpcore-ch2h-1d-red
 
 # host Yellow                   ch2-2d; wcdxx-2d; asb-2d
-#_hostY="96.119.225.204"	# xpccore-ch2f-2d-yellow
-ahostOY="96.118.58.243"		# odpcore-asb-2d-yellow 
+_hostY="96.119.225.204"		# xpccore-ch2f-2d-yellow
+_hostOY="96.118.58.243"		# odpcore-asb-2d-yellow 
 hostY="96.118.157.113"          # xpccore-ch2h-2d-yellow
 hostOY="96.118.157.242"         # odpcore-ch2h-2d-yellow
-chostY="96.118.157.113"         # xpccore-ch2h-2d-yellow
-chostOY="96.118.157.242"        # odpcore-ch2h-2d-yellow
-hhostY="96.118.243.253"         # xpccore-hoc-4d-yellow 
-hhostOY="96.118.248.132"        # odpcore-hoc-2d-yelloww
 
 # host Orange
 hostOr='96.115.227.246'		# xpccore-asd-4d-orange
 hostOr1='96.115.255.130'	# xpccore-asd-1d-orange
-hostOOr='96.115.229.14'         # odpcore-asd-4d-orange
+hostOOr='96.115.229.14'	        # odpcore-asd-4d-orange
 hostOOr1='96.115.228.251'       # odpcore-asd-1d-orange
 
 # nodes hook, kafka, zoo, sync
-hkR="96.118.252.178"	        # xpchook-hoc-2d-red
-kkR="96.118.253.120"	        # xpcque-hoc-2d-red
-zoR="96.118.253.142"	        # xpczoo-hoc-2d-red
-syR="96.118.253.124"		# xpcsync-hoc-2d-red
-swR="96.118.253.141"	        # xpcsprkw-hoc-2d-red
-smR="96.118.253.136"    	# xpcsprkm-hoc-2d-red
-cwR="96.118.251.152"    	# xpccworker-hoc-2d-red
-rbR="96.118.253.135"    	# xpcrabbit-hoc-2d-red
-
-chkR="96.118.147.37"            # xpchook-ch2h-2d-red
-ckkR="96.118.147.17"            # xpcque-ch2h-2d-red
-czoR="96.118.146.160"           # xpczoo-ch2h-2d-red
-csyR="96.118.147.44"            # xpcsync-ch2h-2d-red
-cswR="96.118.144.94"            # xpcsprkw-ch2h-2d-red
-csmR="96.118.144.53"            # xpcsprkm-ch2h-2d-red
-ccwR="96.118.145.115"           # xpccworker-ch2h-2d-red
-crbR="96.118.147.54"            # xpcrabbit-ch2h-2d-red
+hkR="96.118.27.121"
+kkR="96.118.27.149"
+zoR="96.118.27.247"
+syR="96.118.27.245"
+swR="96.118.27.234"
 
 # nodes redis
-hredisR="96.118.253.144"      	# xpcredis-hoc-2d-red
-hredisY="96.118.247.155"	# xpcredis-hoc-2d-yellow
-hredisOR="96.118.250.234"       # odpredis-hoc-2d-red
-hredisOY="96.118.248.246"       # odpredis-hoc-2d-yellow
-
-redisR="96.118.146.110"         # xpcredis-ch2h-2d-red
-redisY="96.118.159.199"         # xpcredis-ch2h-2d-yellow
+redisR="96.118.146.110"      	# xpcredis-ch2h-2d-red
+redisY="96.118.159.199"		# xpcredis-ch2h-2d-yellow
 
 # DB  nodes                     Red: hob-1/2d; asb; Yellow: ch2-2d; asb
-dbR="96.118.253.143"            # xpcdb-hoc-2d-red
-dbR1="96.118.253.158"           # xpcdb-hoc-1d-red
-dbOR="96.118.251.169"           # odpdb-hoc-2d-red                
-dbOR1="96.118.251.240"          # odpdb-hoc-1d-red               
-dbY="96.118.242.138"            # xpcdb-hoc-2d-yellow
-dbOY="96.118.248.254"           # odpdb-hoc-2d-yellow
+dbR="96.118.146.152"            # xpcdb-ch2h-2d-red
+dbR1="96.118.146.116"           # xpcdb-ch2h-1d-red
+dbOR="96.118.145.243"           # odpdb-ch2h-2d-red                
+dbOR1="96.118.147.152"          # odpdb-ch2h-1d-red               
 
-cdbR="96.118.146.152"           # xpcdb-ch2h-2d-red
-cdbR1="96.118.146.116"          # xpcdb-ch2h-1d-red
-cdbOR="96.118.145.243"          # odpdb-ch2h-2d-red                
-cdbOR1="96.118.147.152"         # odpdb-ch2h-1d-red
-cdbY="96.118.159.207"           # xpcdb-ch2h-2d-yellow
-cdbOY="96.118.158.169"          # odpdb-ch2h-2d-yellow
+dbY="96.118.159.207"            # xpcdb-ch2h-2d-yellow
+dbOY="96.118.158.169"           # odpdb-ch2h-2d-yellow
 
 sshhk    () {  ssh -i $HOME/.ssh/xpc-openstack-key.txt    root@${1:-$hkR} ; }
 sshkk    () {  ssh -i $HOME/.ssh/xpc-openstack-key.txt    root@${1:-$kkR} ; }
@@ -1313,13 +1219,11 @@ sshsprkw () {  ssh -i $HOME/.ssh/xpc-openstack-key.txt    root@${1:-$swR} ; }
 sshredis () {  ssh -i $HOME/.ssh/xpc-openstack-key.txt    root@${1:-$redisR} ; }
 
 sshdbph () {   ssh -i $HOME/.ssh/id_rsa               hlam001c@${1:-$dbR} ; } #ech2 "CLI: nodetool status; to debug DB" 
-
-#sshdb  () {   ssh -i $HOME/.ssh/xpc-openstack-key.txt    root@${1:-$dbR} ; } #ech2 "CLI: nodetool status; to debug DB" 
 sshdb   () {   ssh                                             ${1:-$dbR} ; } #ech2 "CLI: nodetool status; to debug DB" 
+#sshdb   () {   ssh -i $HOME/.ssh/xpc-openstack-key.txt    root@${1:-$dbR} ; } #ech2 "CLI: nodetool status; to debug DB" 
 alias sshdbOR=' sshdb $dbOR'
-
-alias sshdbY='  sshdb $dbY'
 alias sshdbOY=' sshdb $dbOY'
+alias sshdbY='  sshdb $dbY'
 
 # Steps to see DC behind Red GSLB: sshprivh red.awsxpc.comcast.net; xpclb-ch2h-2d-red /etc/haproxy/haproxy.cfg ; grep core; OR 1/dig $rlb; 2/sshph to ea lb node ip; 3/grep node on haproxy.cfg
 
@@ -1328,10 +1232,6 @@ alias sshdbOY=' sshdb $dbOY'
 sshcor  () {   coreip=$1; coreip=${coreip:-$hostR};  ssh -i $HOME/.ssh/xpc-openstack-key.txt    root@$coreip ; }
 sshcore () {   coreip=$1; coreip=${coreip:-$hostR};  ssh -i $HOME/.ssh/xpc-openstack-key.txt clduser@$coreip ; }
 sshcx () {     coreip=$1; coreip=${coreip:-$hostR};  ssh -i $HOME/.ssh/xpc-openstack-key.txt   xplat@$coreip ; }
-alias sshR='   ssh $hostR'
-alias sshR1='  ssh $hostR1'
-alias sshOR='  ssh $hostOR'
-alias sshOR1=' ssh $hostOR1'
 
 alias sshxplat='ssh -i $HOME/.ssh/id_rsa xplat@odpredis-as-01q.sys.comcast.net'
 sshprivh () {  coreip=$1; coreip=${coreip:-odpredis-as-01q.sys.comcast.net};  ssh -i $HOME/.ssh/id_rsa hlam001c@$coreip ; }
@@ -1340,7 +1240,6 @@ sshprivx () {  coreip=$1; coreip=${coreip:-odpredis-as-01q.sys.comcast.net};  ss
 sshcorh () {   hterm novel "sshcor    $1" ; }
 sshph () {     hterm ocean "sshprivh  ${1:-$hostR}" ; }
 
-run    () {    coreip=$1; coreip=${coreip:-$hostR};  ssh                                    hlam001c@$coreip -t "hostname; $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14 $15" ; }
 runph  () {    coreip=$1; coreip=${coreip:-$hostR1n};ssh -i $HOME/.ssh/id_rsa               hlam001c@$coreip -t "hostname; $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14 $15" ; }
 runcor  () {   coreip=$1; coreip=${coreip:-$hostR};  ssh -i $HOME/.ssh/xpc-openstack-key.txt    root@$coreip -t "hostname; $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14 $15" ; }
 runcore () {   coreip=$1; coreip=${coreip:-$hostR};  ssh -i $HOME/.ssh/xpc-openstack-key.txt clduser@$coreip -t "hostname && $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14 $15" ; }
@@ -1348,17 +1247,16 @@ runcore () {   coreip=$1; coreip=${coreip:-$hostR};  ssh -i $HOME/.ssh/xpc-opens
 # host name thru connectiton to core node, or grep on hiera/ of repos
 hnhi () {      h=$1; r=`echo $h|gip`; if [ $? -eq 0 ] ; then grinhi -B1 $h ; else grinhi -A1 $h; fi ; }
 hnph () {      h=$1; h=${h:-$hostR}; runph   $h "hostname" | cpink ; hnhi $h | cgreen ; }
-hncohi () {    h=$1; h=${h:-$hostR}; run     $h "hostname" | cpink ; hnhi $h | cgreen ; }
-hnco () {      h=$1; h=${h:-$hostR}; run     $h "hostname" | cpink ; }
-#hnco () {     h=$1; h=${h:-$hostR}; runcore $h "hostname" | cpink ; }
+hncohi () {    h=$1; h=${h:-$hostR}; runcore $h "hostname" | cpink ; hnhi $h | cgreen ; }
+hnco () {      h=$1; h=${h:-$hostR}; runcore $h "hostname" | cpink ; }
 
 # dse - cassandra - db
 startdse="     sudo service dse    start "
 servicedse="   sudo service dse    status"
 
 servicepup="   sudo service puppet status"
-serviceAR () { d=$1; (for i in `ean red    core 1234 $d |gipo|a1line`;   do echo;echo $i; runph  $i "df;uptime;supervisorctl status all;" ; done)|cred ; }
-serviceAY () { d=$1; (for i in `ean yellow core 1234 $d |gipo|a1line`;   do echo;echo $i; runph  $i "df;uptime;supervisorctl status all;" ; done)|cyellow ; }
+alias serviceAR='(for i in `ean red    core 1234|gipo|a1line`;   do echo;echo $i; runph  $i "df;uptime;supervisorctl status all;" ; done)|cred'
+alias serviceAY='(for i in `ean yellow core 1234|gipo|a1line`;   do echo;echo $i; runph  $i "df;uptime;supervisorctl status all;" ; done)|cyellow'
 
 ### SHA # get the latest SHA, by API version
 sha1 () {      rp=$1; rp=${rp:-xap}; echo "@ `date` : "|cblue; cd $HOME/checkouts/$rp; echo -n "The lastest SHA: "; echo -n "/$rp/ <*`cbr`> : "|cpink; git log -p -1 | egrep -o "commit [0-9a-f]{7}" |cut -c8-14 ; }
@@ -1368,27 +1266,33 @@ coresha () {   coreip=$1; coreip=${coreip:-96.118.57.13}; ssh -i $HOME/.ssh/xpc-
 csha () {      coreip=$1; coreip=${coreip:-96.118.57.13}; ssh -i $HOME/.ssh/xpc-openstack-key.txt clduser@$coreip -t "echo `seq  -f = -s '' 20 `; date; hostname; yum info xap      " | tee -a $HOME/logs/snn.log ; }
 
 # get the latest SHA  from github versus current on Red/A/Y hosts
-g_c () {       cdxa; git pull 2> /dev/null; commit=$1; commit=${commit:-1}; gc=`git log -p -$commit | egrep -o "commit [0-9a-f]{7}" |cut -c8-14`; echo "GitHub xap repos: SHA=$gc"; echo; for i in `ean red    core 24 $2|gipo|a1line` ; do echo -n red_core_$i: SHA=; cc=`curl -s $i:8080/api/v1/version|pjson|grep commit|tr ',\"' ' '|cut -d. -f4`; echo  $cc ; [ $gc != $cc ] && echo ">>>> NOT_matched `date` <<< " && echo ; done ; }
-g_cY () {      cdxa;git pull 2> /dev/null;                                  gc=`git log -p -1       | egrep -o "commit [0-9a-f]{7}" |cut -c8-14`; echo "GitHub xap repos: SHA=$gc"; echo; for i in `ean yellow core 24 $2|gipo|a1line` ; do echo -n yel_core_$i: SHA=; cc=`curl -s $i:8080/api/v1/version|pjson|grep commit|tr ',\"' ' '|cut -d. -f4`; echo  $cc ; [ $gc != $cc ] && echo ">>>> NOT_matched `date` <<< " && echo ; done ; }
+g_c () {       cdxa; git pull 2> /dev/null; commit=$1; commit=${commit:-1}; gc=`git log -p -$commit | egrep -o "commit [0-9a-f]{7}" |cut -c8-14`; echo "GitHub xap repos: SHA=$gc"; echo; for i in `ean red    core 24|gipo|a1line` ; do echo -n red_core_$i: SHA=; cc=`curl -s $i:8080/api/v1/version|pjson|grep commit|tr ',\"' ' '|cut -d. -f4`; echo  $cc ; [ $gc != $cc ] && echo ">>>> NOT_matched `date` <<< " && echo ; done ; }
+g_cY () {      cdxa;git pull 2> /dev/null;                                  gc=`git log -p -1       | egrep -o "commit [0-9a-f]{7}" |cut -c8-14`; echo "GitHub xap repos: SHA=$gc"; echo; for i in `ean yellow core 24|gipo|a1line` ; do echo -n yel_core_$i: SHA=; cc=`curl -s $i:8080/api/v1/version|pjson|grep commit|tr ',\"' ' '|cut -d. -f4`; echo  $cc ; [ $gc != $cc ] && echo ">>>> NOT_matched `date` <<< " && echo ; done ; }
 
 ### get version SHA
 gOver () {     h=$1; u="http://$h:8080/api/v1/operational/version"; ech2 "GET $u"; curl -s -X GET $u|pjson ; }
-gverO () {     h=$1; echo -n " $h: "; curl -s -X GET http://$h:8080/api/v1/operational/version|pjson|gc2 commit ; }
-gver () {      h=$1;                  curl -s -X GET http://$h:8080/api/v1/version|pjson|gc2 commit ; }
+gverO () {     h=$1; curl -s -X GET http://$h:8080/api/v1/operational/version|pjson|gc2 commit ; }
+gver () {      h=$1; curl -s -X GET http://$h:8080/api/v1/version|pjson|gc2 commit ; }
+
 gver2 () {     h=$1; u="http://$h:8080/api/v1/version"; echo $u; curl -s -X GET $u ; ech2 ; }
 
-verOR () {     for i in `eaN red    core-[a] $4|gipo|a1line`  `eaN red   core 13 $4|gipo|a1line` ; do echo -n "ODP_red_core_$i: "; gverO $i; done; }
-verOY () {     for h in `eaN yellow core     $4|gipo|a1line`  `eaN yellow core 13 $4|gipo|a1line`; do echo -n "ODP_yel_core_$h: "; gverO $h; done; }
+ver24R () {    for h in `ean red    core-[ahc] 24|gipo|a1line` ; do echo -n "Red_core_$h: ";     gver $h ;       done ; }
+ver24Y () {    for h in `ean yellow core-[cw] 24|gipo|a1line` ; do echo -n "Yel_core_$h: ";     gver $h ;       done ; }
+
+verOR () {     for i in `eaN red    core-[a]|gipo|a1line`  `eaN red   core 13|gipo|a1line` ; do echo -n "ODP_red_core_$i: "; gverO $i; done; }
+verOY () {     for h in `eaN yellow core|gipo|a1line`  `eaN yellow core 13|gipo|a1line`; do echo -n "ODP_yel_core_$h: "; gverO $h; done; }
 
 verog () {     open https://xpcapi-si.xpc.comcast.net/api/v1/version; }
 verOG () {     for d in as ch2 ho; do ech2 "Grn odplb $d"; open https://odplb-$d-01.sys.comcast.net/api/v1/version; done; verog ; }
 
-verR () {      d=$1; ech3 "Red N $d"; for i in `ean red    core 24 $d|gipo1`; do grinhi -B1 $i; gver $i ; done ; ech3 "Red N-1 $d"; for i in `ean red core 13 $d|gipo1`; do grinhi -B1 $i; gver $i ; done ; } 
-verOr () {     for i in `ean orange core 1234|gipo1`; do                       rver $i ; done ; }
-verY () {      d=$1; for i in `ean yellow core 24 $d|gipo1`; do grinhi -B1 $i; gver $i ; done ; } 
+ver13R () {    for h in $lic13R;do echo -n "Red13_core_$h: ";   gver $h ;       done ; }
+ver13Y () {    for h in $lic13Y;do echo -n "Yel13_core_$h: ";   gver $h ;       done ; }
 
-# ver hot fix on Red N-1:
-verR1 () {     h=$1; h=${h:-$hostR1}; runph  $h "rpm -qa|grep --color xap.*;tail /var/log/yum.log|tail -1|grep --color xap.*;"; now ; }
+#verY () {     ver24Y;  ver13Y ; }
+#verR () {     ver24R;  ver13R ; }
+verR () {      for i in `ean red    core-[ch]+.[c2] 24|gipo1`; do echo -n "Red_N_core_Newton_$i: "; gver $i ; done; for i in `ean red core-[ch]+.[c2]  13|gipo1`; do echo -n "Red_N-1_core_Newton_$i: "; gver $i ; done ; } 
+verOr () {     for i in `ean orange core 1234|gipo1`; do rver $i ; done ; }
+verY () {      for i in `ean yellow core 1234|gipo1`; do rver $i ; done ; }
 
 verg () {      open  https://xpcapi-si.xpc.comcast.net/api/v1/version ; }
 verG () {      for d in as ch2 ho; do ech2 "Grn xpclb $d"; open https://xpclb-$d-01.sys.comcast.net/api/v1/version; done; verg ; }
@@ -1400,41 +1304,42 @@ verN1 () {     verY;   verOY ; }
 vern () {      gver    $hostR ; }
 vern1() {      gver    $hostY ; }
 
-varl () {      h=$1; h=${h:-$hostR}; runcor $h     "tail /var/log/yum.log;" ; now ; }			# use /var/log/yum.log
-rver () {      h=$1; h=${h:-$hostR}; ech2 $h; runph   $h "rpm -qa | grep -Eio --color xap.* ;" ; } 	# use this `rpm -qa | grep xap`
-alias rverY='  rver $hostY'
-
+#varl () {      h=$1; h=${h:-$hostR}; runcor $h     "tail /var/log/yum.log;" ; now ; }
+#alias varY='   varl $hostY'
 # get current SHA at N, N-1: [xap]$ git pull && git log -n1; curl http://$hostR:8080/api/v1/version;echo
 snn1 () {      sha1  xap ; echo "Code level   N : `vern`"|cred; echo "Code level N-1 : `vern1`"|camber  ; }
-snn2 () {      (newxa && snn1 ) | tee -a $HOME/logs/snn.log; cdxa; runh fgitp; runh "cdxtm;fgitp" ; }
-snn3 () {      (newxa && snn1 ) | tee -a $HOME/logs/snn.log; ech3 Version; verR; ech3 Service_df_supervisorctl; runh serviceAR; ech3 SNMP_FW_CPE_Red; fwcR; ech3 Celery_Flower; cfR; now; ech3 Sync1_SparkM; s1_sparkm; ech3 Manual_Sync; msy; ech3 XPC_Red_Splunk; os_rx ; }
+snn2 () {      (newxa && snn1 && varY) | tee -a $HOME/logs/snn.log; cdxa; runh fgitp; cdxtm; runh fgitp ; }
+snn3 () {      (newxa && snn1 && varY) | tee -a $HOME/logs/snn.log; ech3 Version; verR; ech3 Service_df_supervisorctl; serviceAR; ech3 SNMP_FW_CPE_Red; fwcR; ech3 Celery_Flower; cfR; now; ech3 Sync1_SparkM; s1_sprkm; ech3 Manual_Sync; msy; ech3 XPC_Red_Splunk; os_rx ; }
 
 # use this `rpm -qa | grep xap`
 rver () {      h=$1; h=${h:-$hostR}; ech2 $h; runph   $h "rpm -qa | grep -Eio --color xap.* ;" ; }
 alias xapR='   runph  $hostR "rpm -qa | grep xap;" '
 alias rverY='  rver $hostY'
 
+# ver hot fix on Red N-1:
+verR1 () {     h=$1; h=${h:-$hostR1}; runph  $h "rpm -qa|grep --color xap.*;tail /var/log/yum.log|tail -1|grep --color xap.*;"; now ; }
+
 alias oswag_webpa='open https://swagger.webpa.comcast.net/'
 
 ### API
-a1c="/api/v1/gateway-configset"
-a1m="/api/v1/gateway-cpe"
+tCPEBU="/api/v1/tools/gateway-cpe"
+iCPEBU="/api/v1/internal/gateway-cpe"
+oCPEBU="/api/v1/operational/gateway-cpe"
+nCPEBU="/api/v1/notification/gateway-cpe"
+sCPEBU="/api/v1/sns/gateway-cpe"
 
-a1tm="/api/v1/tools/gateway-cpe"
-a1im="/api/v1/internal/gateway-cpe"
-a1nm="/api/v1/notification/gateway-cpe"
-a1sm="/api/v1/sns/gateway-cpe"
+CSBU="/api/v1/gateway-configset"
+CPEBU="/api/v1/gateway-cpe"
 
-a1om="/api/v1/operational/gateway-cpe"
-a1oc="/api/v1/operational/gateway-configset"
+oCSBU="/api/v1/operational/gateway-configset"
 
-a2dm="/api/v2/device/mac"
 a2o="/api/v2/operational"
-a2oc="/api/v2/operational/gateway-configset"
-a2om="/api/v2/operational/gateway-cpe"
+a2dm="/api/v2/device/mac"
+CSo2="/api/v2/operational/gateway-configset"
+CPEo2="/api/v2/operational/gateway-cpe"
 
 # Green lb XPC
-# open $gho$a1m/$M3/webpa_stat
+# open $gho$CPEBU/$M3/webpa_stat
 glb="https://xpcapi-si.xpc.comcast.net"
 glb2="https://xpcanalytics.gslb2.comcast.com"
 
@@ -1460,7 +1365,6 @@ ylbo="https://odpyellowuiorch.odpaws.comcast.net"
 #ylbhob="https://96.118.16.138"				# xpclb-hob-1d-yellow
 #ylbhoc="https://96.118.244.9" 				# xpclb-hoc-1d-yellow
 #ylbwc="https://96.118.165.223"				# xpclb-wcdcc-1d-yellow
-
 ylbch="https://96.119.225.48"                           # xpclb-ch2f-2d-yellow
 ylbch2h="https://96.119.225.48"                         # xpclb-ch2h-2d-yellow
 ylbhob="https://96.118.16.139"                          # xpclb-hob-2d-yellow
@@ -1482,8 +1386,6 @@ rlbho1="https://96.118.27.130"                          # xpclb-hob-1d-red
 ### Webpa
 wpa="https://api.webpa.comcast.net:8090"
 W2 () {        x=$1; a=$2; open $x/api/v2/device/mac/$m/config ; } # /stat  
-# webpa reboot: xpc-4582: https://api.webpa.comcast.net:8090/api/v2/device/mac:5C8FE07EDE92/config?names=Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.RPC.RebootPendingNotification 
-# then: 2/ tail -f /app/logs/hooks/webserver.log | grep -i reboot; 3//app/logs/hooks/producer.log; 3/kafka:  tail -f /app/logs/kafka/hcpe_events_db.log | grep -i rms ; 
 
 ### Green ODP APIs= AO; DO=Direct node ODP API; GO=Green ODP API; 
 AO () {        eo=$1;  a="$2"; a=${a:-version};        open $eo/api/v1/operational/$a ; }
@@ -1491,8 +1393,8 @@ DO () {        h=$1; e="http://$h:8080"; a=$2; a=${a:-version}; u="$e/api/v1/ope
 GO2 () {       a="$1"; a=${a:-version};                open $glbo/api/v2/operational/$a ; }
 GO () {        a="$1"; a=${a:-version};                open $glbo/api/v1/operational/$a ; }
 YO () {        a="$1"; a=${a:-version};                AO   $ylbo                    $a ; }
-GOc () {       a="$1"; a=${a:-association};            open $glbo$a1oc/$a ; }
-GOm () {       m=$1;   a="$2";                         open $glbo$a1om/$m/$a ;                       echo "association meshagent meshstatus xdns_content_filtering" ; }
+GOc () {       a="$1"; a=${a:-association};            open $glbo$CSo1/$a ; }
+GOm () {       m=$1;   a="$2";                         open $glbo$CPEo1/$m/$a ;                       echo "association meshagent meshstatus xdns_content_filtering" ; }
 GOd () {       m=$1;   a=$2;                           open $glbo$CPEo1/$m/devices/$a ;               echo "identity summary device_management_group_configuration device_management* traffic_data/group_limits/activity traffic_data?start_time= &end_time= " ; } 
 GOds  () {     m=$1;                                   open $glbo$CPEo1/$m/devices/summary; }                                 # ods, summary w/ filters : ?start_time= or ?device_type= ?acceleration=false
 GOid () {      m=$1;                                   open $glbo$CPEo1/$m/devices/interface_data; }                          # interface_data : i_d/latest i_d/latest?device_mac
@@ -1509,176 +1411,153 @@ verylb () {    for l in $ylb,ylb $ylbch,ylbch $ylbhob,ylbas $ylbhoc,ylbhoc $ylbw
 verglb () {    for l in $glb,glb $glbch,glbch $glbas,glbas  $glbho,glbho   $glbwc,glbwc;   do ech2 $l; AX ${l%,*}; done ; }
 
 DX () {        h=$1; e="http://$h:8080"; a=$2; a=${a:-version}; u="$e/api/v1/$a"; echo $u; open $u ; } 
-GX    () {     AX $glb   $1 ; }				# GX; GX version; GX    common/sat; sat?source=redis; =local; =current; =current&verbose;
+GX    () {     AX $glbas $1 ; }				# GX; GX version; GX    common/sat; sat?source=redis; =local; =current; =current&verbose;
 GX_as () {     AX $glbas $1 ; }				# GX_as;          GX_as common/sat; GX_as tools/gateway-cpe/$M2/ping_internet
 GX_ch () {     AX $glbch $1 ; }				#                                   GX_ch internal/gateway-cpe/$M1/cmc_cid;
 GX_ho () {     AX $glbho $1 ; }
 GX_wc () {     AX $glbwc $1 ; }
 GX_dc () {     GX_as $1; GX_ch $1; GX_ho $1; GX_wc $1; GX $1 ; }
 
-GXc () {       c=$1; a=$2; a=${a:-association};       u="$glb$a1c/$c/$a"; echo $u; open $u ; }  # echo "association configuration/ webpa_stat gateways device_class wifi_personalN" 
-AXm () {       e=$1; m=$2; a=$3; a=${a:-association}; u="$e$a1m/$m/$a";  echo $u; open $u ; }  # echo "association configuration/ webpa_stat gateways device_class wifi_personalN" 
+GXc () {       c=$1; a=$2; a=${a:-association};       u="$glb$CSBU/$c/$a"; echo $u; open $u ; }  # echo "association configuration/ webpa_stat gateways device_class wifi_personalN" 
+AXm () {       e=$1; m=$2; a=$3; a=${a:-association}; u="$e$CPEBU/$m/$a";  echo $u; open $u ; }  # echo "association configuration/ webpa_stat gateways device_class wifi_personalN" 
 GXm () {       m=$1; a=$2; AXm  $glb $m $a ; }
 Gamh () {      m=$1;       GXm       $m association ; }
 
-GXgic () {     c=$1; a=$2;       u="$glb$a1c/$c/configuration?group_id=$a"; echo $u; open $u ; }  # echo "pw pl ga pf mb wc bm mm pwa pws hw hs ci r2 r5 cd pns pws mc sd sr tr wr" 
-AXgi () {      e=$1; m=$2; a=$3; u="$e$a1m/$m/configuration?group_id=$a";  echo $u; open $u ; }  # echo "pw pl ga pf mb wc bm mm pwa pws hw hs ci r2 r5 cd pns pws mc sd sr tr wr" 
+GXgic () {     c=$1; a=$2;       u="$glb$CSBU/$c/configuration?group_id=$a"; echo $u; open $u ; }  # echo "pw pl ga pf mb wc bm mm pwa pws hw hs ci r2 r5 cd pns pws mc sd sr tr wr" 
+AXgi () {      e=$1; m=$2; a=$3; u="$e$CPEBU/$m/configuration?group_id=$a";  echo $u; open $u ; }  # echo "pw pl ga pf mb wc bm mm pwa pws hw hs ci r2 r5 cd pns pws mc sd sr tr wr" 
 GXgI () {      m=$1; a=$2;                       AXgi $glb $m group_$a     ; }		# Gaga=GXgi $M1 all;  Gaca=GXgi $M1 cpe_action; Gapws=GXgi $M1 private_wifi_statistics;
 GXgii () {     m=$1; a=$2; inf="_information";   AXgi $glb $m group_$a$inf ; }		# Gaci=GXgii $M1 cpe; Gaaci=GXgii $M1 adv_cpe;  Gacd=GXgii $M1 connected_device;      Gaxwi=GXgii $M1 xfinity_wifi_summary;
 GXgi    () {   m=$1; a=$2; con="_configuration"; AXgi $glb $m group_$a$con ; }		# Gawc=GXgi $M1 wan;  Gar2=GXgi $M1 radio_2g;   Gamm=GXgi $M1 moca_mode;              Gahsm=GXgi $M1 home_security_wifi; Gaxw=GXgi $M1 xfinity_wifi
 Gapw () {      m=$1; GXgi     $m       private_wifi               ; } 
 
-GXctc () {           c=$1; a=$2; u="$glb$a1c/$c/configuration_table/$a"; echo $u; open $u ; echo "pf mb" ; }
-AXct () {      e=$1; m=$2; a=$3; u="$e$a1m/$m/configuration_table/$a";  echo $u; open $u ; echo "pf mb" ; } 
+GXctc () {           c=$1; a=$2; u="$glb$CSBU/$c/configuration_table/$a"; echo $u; open $u ; echo "pf mb" ; }
+AXct () {      e=$1; m=$2; a=$3; u="$e$CPEBU/$m/configuration_table/$a";  echo $u; open $u ; echo "pf mb" ; } 
 Gmpf () {      m=$1; AXct $glb $m portforwarding_configuration ; }
 Gmmb () {      m=$1; AXct $glb $m mac_address_binding_configuration ; }
 # celery test: for all asynchronous calls like apply_and_associate; http://96.118.147.40:8080/docs/#!/celery/Xpc_Celery_Task_Test_POST
 cPcelery () { h=${1:-$hostR}; u="http://$h:8080/api/celery/celery_task_test"; b=${2:-b_empty.json}; ech2 $b; echo y|bjp $b && cP $u ; } # b_empty.json
 # need some authorization: flower_header_auth: cGcelerytask () { h=$1; t=$2; u="http://$h:5555/task/$t"; cG $u ; }
 
-# sync API: syncsidcmc == cmc_cid... using Internal API: ia1m
+# sync API: syncsidcmc == cmc_cid... using Internal API: iCPEBU
 cPpi () {     m=$1; h=$2; u="http://$h:8080/api/v1/tools/gateway-cpe/$m/ping_internet";  ech2 "POST $u"; curl -s -X POST $u -H 'content-type: application/json'       |cpink ; echo ; }
 asn () {      m=$1; h=$2; u="http://$h:8080/api/v1/tools/gateway-cpe/$m/syncnow";        ech2 "POST $u"; curl -s -X POST $u -H 'content-type: application/json' |pjson|cpink ; echo ; }
 acc () {      m=$1; h=$2; u="http://$h:8080/api/v1/internal/gateway-cpe/$m/cmc_cid";     ech2 "GET  $u"; curl -s -X GET  $u |pjson|ccyan ; }
 asc () {      m=$1; h=$2; u="http://$h:8080/api/v1/internal/gateway-cpe/$m/synccsidcmc"; ech2 "GET  $u"; curl -s -X GET  $u |pjson|ccyan ; }
-asi () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/sync_info";                         ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }
+asi () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/sync_info";                         ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }
 
 # rules pf + mb, configuration_table
-mpf () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration_table/portforwarding_configuration_table";       ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-mmb () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration_table/mac_address_binding_configuration_table";  ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-cpf () {      c=$1; h=$2; u="http://$h:8080$a1c/$c/configuration_table/portforwarding_configuration_table";        ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-cmb () {      c=$1; h=$2; u="http://$h:8080$a1c/$c/configuration_table/mac_address_binding_configuration_table";   ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+mpf () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration_table/portforwarding_configuration_table";       ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+mmb () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration_table/mac_address_binding_configuration_table";  ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+cpf () {      c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration_table/portforwarding_configuration_table";        ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+cmb () {      c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration_table/mac_address_binding_configuration_table";   ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
 
-ainP () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/initialization"; ech2 "POST $u"; curl -s -X POST $u |pjson|cpink ; }
-cPin () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/initialization"; b=${3:-b_empty.json}; ech2 $b; echo y|bjp $b && cP $u ; } # b_empty.json
+ainP () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/initialization"; ech2 "POST $u"; curl -s -X POST $u |pjson|cpink ; }
+cPin () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/initialization"; b=${3:-b_empty.json}; ech2 $b; echo y|bjp $b && cP $u ; } # b_empty.json
 
 #syncnotification: run once, copy the cid, put in the body for 2nd run: https://96.118.57.13:8080/api/v1/notification/gateway-cpe/044E5A9AE8EC/syncnotification
 cPsyno () {   m=$1; h=$2; u="http://$h:8080/api/v1/notification/gateway-cpe/$m/syncnotification"; ech2 "NOTE: 1/empty body OR 2/Onb + Run twice + Need right CID in b_cmccid.json"; b=${3:-b_empty.json}; ech2 $b; bjp $b && cP $u ; } # b_empty.json
 
-aws () {      m=$1; h=$2; h=${h:-$hostR}; u="http://$h:8080$a1m/$m/webpa_stat"; ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }      
-adc () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/device_class";               ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }   
-agw () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/gateways";                   ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }      
-agd () {      m=$1; h=${2:-$hostR}; u="http://$h:8080$a1m/$m/gateway_default_cpe_setting";ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }      
-awp () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/wifi_personalization";       ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }      
+aws () {      m=$1; h=$2; h=${h:-$hostR}; u="http://$h:8080$CPEBU/$m/webpa_stat"; ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }      
+adc () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/device_class";               ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }   
+agw () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/gateways";                   ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }      
+agd () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/gateway_default_cpe_setting";ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }      
+awp () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/wifi_personalization";       ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }      
 
 # configuration?group_id=
-aco0 () {     c=$1; h=$2; u="http://$h:8080$a1c/$c/configuration";                                             ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-aco () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration";                                             ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+aco0 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration";                                              ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+aco () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration";                                             ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
 
-aca () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_cpe_action";                   ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-cPca () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_cpe_action";                   b=${3:-b_acaEnable_cloudui.json}; ech2 $b; bjp $b && cP $u; date ; } # b_acaEnable_cloudui.json
-FacRes () {   m=$1; h=$2; cd; cPca $m $h b_acaFactoryReset.json ; }
-cDca () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_cpe_action";                   cD $u ; }
+aca () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_cpe_action";                   ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+cPca () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_cpe_action";                   b=${3:-b_acaEnable_cloudui.json}; ech2 $b; bjp $b && cP $u ; } # b_acaEnable_cloudui.json
+cDca () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_cpe_action";                   cD $u ; }
 
-aga0 () {     c=$1; h=$2; u="http://$h:8080$a1c/$c/configuration?group_id=group_all";                          ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-aga () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_all";                          ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-aga2 () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_all&refresh";                  ech2 "GET $u"; curl -s -X GET $u |pjson|cred  ; }
+aga0 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_all";                           ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+aga () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_all";                          ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+aga2 () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_all&refresh";                  ech2 "GET $u"; curl -s -X GET $u |pjson|cred  ; }
 
-aci0 () {     c=$1; h=$2; u="http://$h:8080$a1c/$c/configuration?group_id=group_cpe_information";              ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-aci () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_cpe_information";              ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-aci2 () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_cpe_information&refresh";      ech2 "GET $u"; curl -s -X GET $u |pjson|cred  ; }
+aci0 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_cpe_information";               ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+aci () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_cpe_information";              ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+aci2 () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_cpe_information&refresh";      ech2 "GET $u"; curl -s -X GET $u |pjson|cred  ; }
 
-aaci () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_adv_cpe_information";             ech2 "GET  $u"; curl -s -X GET $u |pjson|cblue ; }
-axwi () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_xfinity_wifi_summary_information";ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }
+aaci () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_adv_cpe_information";             ech2 "GET  $u"; curl -s -X GET $u |pjson|cblue ; }
+axwi () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_xfinity_wifi_summary_information";ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }
 
-axw () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_xfinity_wifi_configuration";      ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }
-cPxw () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_xfinity_wifi_configuration";      b=${3:-b_xfiWifi.json}; ech2 $b; bjp $b && cP $u ; } # b_xfiWifi.json
+axw () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_xfinity_wifi_configuration";      ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }
+cPxw () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_xfinity_wifi_configuration";      b=${3:-b_xfiWifi.json}; ech2 $b; bjp $b && cP $u ; } # b_xfiWifi.json
 
-agt () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_gre_tunnel_configuration";        ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }
-cPgt () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_gre_tunnel_configuration";        b=${3:-b_greTunnel.json}; ech2 $b; bjp $b && cP $u ; } # b_greTunnel.json
+agt () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_gre_tunnel_configuration";        ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }
+cPgt () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_gre_tunnel_configuration";        b=${3:-b_greTunnel.json}; ech2 $b; bjp $b && cP $u ; } # b_greTunnel.json
 
-acidef () {   m=$1; h=$2; u="http://$h:8080$a1m/$m/gateway_default_cpe_setting";                                  ech2 "GET $u"; curl -s -X GET $u |pjson|cgreen ; }
+acidef () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/gateway_default_cpe_setting";                                  ech2 "GET $u"; curl -s -X GET $u |pjson|cgreen ; }
 
-acd () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_connected_device_information";    ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-acd2 () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_connected_device_information&refresh";        ech2 "GET $u"; curl -s -X GET $u |pjson|cred  ; }
+acd () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_connected_device_information";    ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+acd2 () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_connected_device_information&refresh";        ech2 "GET $u"; curl -s -X GET $u |pjson|cred  ; }
 
-abm0 () {     c=$1; h=$2; u="http://$h:8080$a1c/$c/configuration?group_id=group_bridge_mode_configuration";       ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-abm () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_bridge_mode_configuration";       ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-wp_bm () {    m=$1; o="Device.X_CISCO_COM_DeviceControl.LanManagementEntry.1.LanMode";                            wp_  $m   $o ; }
-cPbm () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_bridge_mode_configuration";       b=${3:-b_bridgeF.json}; ech2 $b; echo y|bjp $b && cP $u ; } # b_bridgeF.json
+abm0 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_bridge_mode_configuration";        ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+abm () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_bridge_mode_configuration";       ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+wp_bm () {    m=$1; o="Device.X_CISCO_COM_DeviceControl.LanManagementEntry.1.LanMode";                              wp_  $m   $o ; }
+cPbm () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_bridge_mode_configuration";       b=${3:-b_bridgeF.json}; ech2 $b; echo y|bjp $b && cP $u ; } # b_bridgeF.json
 
-apns () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_private_network_ethernet_statistics";         ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+apns () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_network_ethernet_statistics";         ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
 
-ahsm2 () {    m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_home_security_wifi_configuration&refresh";    ech2 "GET $u"; curl -s -X GET $u |pjson|cred  ; }
-ahsm () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_home_security_wifi_configuration";            ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-ahsc () {     c=$1; h=$2; u="http://$h:8080$a1c/$c/configuration?group_id=group_home_security_wifi_configuration";             ech2 "GET $u"; curl -s -X GET $u |pjson|cpink ; }
-cPhsc () {    c=$1; h=$2; u="http://$h:8080$a1c/$c/configuration?group_id=group_home_security_wifi_configuration";  b=${3:-b_hs.json}; ech2 $b; bjp $b && cP $u ; } # b_hs.json
-cPhs () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_home_security_wifi_configuration"; b=${3:-b_hs.json}; ech2 $b; bjp $b && cP $u ; } # b_hs.json  
-
-
-ahwm () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_home_wifi_hotspot_configuration";  ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-cPhw () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_home_wifi_hotspot_configuration";  b=${3:-b_hotspotT.json}; ech2 $b; bjp $b && cP $u ; } # b_hotspotT.json
-cDhw () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_home_wifi_hotspot_configuration";  cD $u ; }
-
-apws () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_private_wifi_statistics";                     ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-apwa () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_private_wifi_advanced_configuration";         ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-apwa2 () {    m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_private_wifi_advanced_configuration&refresh"; ech2 "GET $u"; curl -s -X GET $u |pjson|cred  ; }
-
-apw0 () {     c=$1; h=$2; u="http://$h:8080$a1c/$c/configuration?group_id=group_private_wifi_configuration";   ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }
-apw () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_private_wifi_configuration";   ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }
-cPpw () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_private_wifi_configuration";   cP $u ; } # b_pw.json
-cPpwc () {    c=$1; h=$2; u="http://$h:8080$a1c/$c/configuration?group_id=group_private_wifi_configuration";   cP $u ; } # b_pw.json
-cDpw () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_private_wifi_configuration";   cD $u ; }
-
-amc0 () {     c=$1; h=$2; u="http://$h:8080$a1c/$c/configuration?group_id=group_mesh_configuration";           ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-amc  () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_mesh_configuration";           ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-
-apl0 () {     c=$1; h=$2; u="http://$h:8080$a1c/$c/configuration?group_id=group_private_lan_configuration";    ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-apl () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_private_lan_configuration";    ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-cPpl () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_private_lan_configuration";    b=${3:-b_pl.json}; ech2 $b; bjp $b && cP $u ; } # b_pl.json
-cDpl () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_private_lan_configuration";    cD $u ; }
+ahsm2 () {    m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_home_security_wifi_configuration&refresh";    ech2 "GET $u"; curl -s -X GET $u |pjson|cred  ; }
+ahsm () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_home_security_wifi_configuration";            ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+ahsc () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_home_security_wifi_configuration";             ech2 "GET $u"; curl -s -X GET $u |pjson|cpink ; }
+cPhsc () {    c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_home_security_wifi_configuration";  b=${3:-b_hs.json}; ech2 $b; bjp $b && cP $u ; } # b_hs.json
+cPhs () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_home_security_wifi_configuration"; b=${3:-b_hs.json}; ech2 $b; bjp $b && cP $u ; } # b_hs.json  
 
 
-ar20 () {     c=$1; h=$2; u="http://$h:8080$a1c/$c/configuration?group_id=group_radio_2g_configuration";       ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-ar2 () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_radio_2g_configuration";       ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-cPr2 () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_radio_2g_configuration";       cP $u ; }
+ahwm () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_home_wifi_hotspot_configuration";  ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+cPhw () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_home_wifi_hotspot_configuration";  b=${3:-b_hotspotT.json}; ech2 $b; bjp $b && cP $u ; } # b_hotspotT.json
+cDhw () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_home_wifi_hotspot_configuration";  cD $u ; }
 
-ar50 () {     c=$1; h=$2; u="http://$h:8080$a1c/$c/configuration?group_id=group_radio_5g_configuration";       ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-ar5 () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_radio_5g_configuration";       ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-cPr5 () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_radio_5g_configuration";       cP $u ; }
+apws () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_wifi_statistics";                     ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+apwa () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_wifi_advanced_configuration";         ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+apwa2 () {    m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_wifi_advanced_configuration&refresh"; ech2 "GET $u"; curl -s -X GET $u |pjson|cred  ; }
+
+apw0 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_private_wifi_configuration";    ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }
+apw () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_wifi_configuration";   ech2 "GET  $u"; curl -s -X GET  $u |pjson|cblue ; }
+cPpw () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_wifi_configuration";   cP $u ; } # b_pw.json
+cPpwc () {    c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_private_wifi_configuration";    cP $u ; } # b_pw.json
+cDpw () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_wifi_configuration";   cD $u ; }
+
+amc0 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_mesh_configuration";            ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+amc  () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_mesh_configuration";           ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+
+apl0 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_private_lan_configuration";     ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+apl () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_lan_configuration";    ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+cPpl () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_lan_configuration";    b=${3:-b_pl.json}; ech2 $b; bjp $b && cP $u ; } # b_pl.json
+cDpl () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_lan_configuration";    cD $u ; }
 
 
-amm0 () {     c=$1; h=$2; u="http://$h:8080$a1c/$c/configuration?group_id=group_moca_mode_configuration";      ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-amm () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_moca_mode_configuration";      ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-cPmm () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_moca_mode_configuration";      b=${3:-b_mocaT.json}; ech2 $b; bjp $b && cP $u ; } # b_mocaT.json
+ar20 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_radio_2g_configuration";        ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+ar2 () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_radio_2g_configuration";       ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
 
-awc0 () {     c=$1; h=$2; u="http://$h:8080$a1c/$c/configuration?group_id=group_wan_configuration";            ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-awc () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_wan_configuration";            ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-awc2 () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_wan_configuration&refresh";    ech2 "GET $u"; curl -s -X GET $u |pjson|cred  ; }
+ar50 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_radio_5g_configuration";        ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+ar5 () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_radio_5g_configuration";       ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
 
-apf0 () {     c=$1; h=$2; u="http://$h:8080$a1c/$c/configuration?group_id=group_port_forwarding_configuration";ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-apf () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_port_forwarding_configuration";ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+amm0 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_moca_mode_configuration";       ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+amm () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_moca_mode_configuration";      ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+cPmm () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_moca_mode_configuration";      b=${3:-b_mocaT.json}; ech2 $b; bjp $b && cP $u ; } # b_mocaT.json
 
-#asd () {     m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_ssid_scan_data";               ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+awc0 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_wan_configuration";             ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+awc () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_wan_configuration";            ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+awc2 () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_wan_configuration&refresh";    ech2 "GET $u"; curl -s -X GET $u |pjson|cred  ; }
 
-asr () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_network_devices_status_report_configuration"; ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-atr () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_network_devices_traffic_report_configuration";ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
-awr () {      m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_interface_devices_wifi_report_configuration"; ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+apf0 () {     c=$1; h=$2; u="http://$h:8080$CSBU/$c/configuration?group_id=group_port_forwarding_configuration"; ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+apf () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_port_forwarding_configuration";ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
 
-# 17 groups = 2 group_cpe +  15 group_*_configuration (= 2radio +2mode +1gre +3report +1privLan +2privWifi +1homeSec +1XfiWifi +1wan +1portFwd); For Wifi: 2priv +1lan +1xfi +1report; 
-#group_bridge_mode_configuration 
-#group_cpe_action 
-#group_cpe_information 
-#group_gre_tunnel_configuration 
-#group_home_security_wifi_configuration 
-#group_interface_devices_wifi_report_configuration 
-#group_moca_mode_configuration 
-#group_network_devices_status_report_configuration 
-#group_network_devices_traffic_report_configuration 
-#group_port_forwarding_configuration 
-#group_private_lan_configuration 
-#group_private_wifi_advanced_configuration 
-#group_private_wifi_configuration 
-#group_radio_2g_configuration 
-#group_radio_5g_configuration 
-#group_wan_configuration 
-#group_xfinity_wifi_configuration
+#asd () {     m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_ssid_scan_data";               ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+
+asr () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_network_devices_status_report_configuration"; ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+atr () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_network_devices_traffic_report_configuration";ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
+awr () {      m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_interface_devices_wifi_report_configuration"; ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; }
 
 # 9 core grps, 23-16 all 23 paths/XPC api shortcuts: run in 16 secs $ i
 coregrps="apw apl ar2 ar5 aci ahsm mpf awc"
 aall () {     now; for a in apw apl ar2 ar5 aci ahsm mpf awc   aga mmb abm amm apwa apws ahwm aaci acd apns apws amc  asr atr awr; do echo $a; $a $M2 $hostR; done ; } 
 
-### ODP v1 APIs: oa1m
+### ODP v1 APIs: oCPEBU
 DHL="5440ADE5515E"; DST="B0DF3A0BF1F6"; DM1="111111111111"
 odi () {      m=$1; h=$2; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/devices/identity"                ; ech2 "GET  $u"; curl -s -X GET  $u -H 'content-type: application/json' |pjson|cpink ; }
 ods () {      m=$1; h=$2; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/devices/summary"                 ; ech2 "GET  $u"; curl -s -X GET  $u -H 'content-type: application/json' |pjson|cpink ; }
@@ -1698,7 +1577,6 @@ cPma () {     m=$1; h=$2; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/me
 cDma () {     m=$1; h=$2; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/meshagent"                       ; cD $u ; }
 
 # Cujo fingerprint
-# curl -H "Content-Type: application/json" -X POST -d '{"enabled": true}' https://96.115.78.225/api/v1/operational/gateway-cpe/ACB3130356A2/fingerprint_agent
 ofa () {      m=$1; h=$2; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/fingerprint_agent"               ; ech2 "GET  $u"; curl -s -X GET  $u -H 'content-type: application/json' |pjson|cpink ; }
 cPfa () {     m=$1; h=$2; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/fingerprint_agent"               ; b=${3:-b_fprintT.json}; ech2 $b; bjp $b && cP $u ; } # b_fprintT.json
 
@@ -1714,7 +1592,7 @@ cPgbt () {    m=$1; h=$2;                     u="http://$h:8080/api/v1/operation
 cDgbt () {    m=$1; h=$2;                     u="http://$h:8080/api/v1/operational/gateway-cpe/$m/devices/device_management_group_configuration";    cD $u ; }
 
 obt () {      m=$1; h=$2; d=$3; d=${d:-$DM1}; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/devices/$d/device_management_configuration";       ech2 "GET  $u"; curl -s -X GET   $u     |pjson|cpink ; }
-cPbt () {     m=$1; h=$2; d=$3; d=${d:-$DM1}; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/devices/$d/device_management_configuration";       b=${3:-b_bt_set.json}; ech2 $b; bjp $b && cP $u ; } # b_bt_set.json
+cPbt () {     m=$1; h=$2; d=$3; d=${d:-$DM1}; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/devices/$d/device_management_configuration";       cP $u ; } # b_bt_set.json
 cDbt () {     m=$1; h=$2; d=$3; d=${d:-$DM1}; u="http://$h:8080/api/v1/operational/gateway-cpe/$m/devices/$d/device_management_configuration";       cD $u ; }
 
 # traffic
@@ -1737,17 +1615,17 @@ gp_Y () {     m=$1; m=${m:-$M2}; gp_Q $m $hostY ; }
 # POST only  aca 
 # GET  only  aci apws awr  awc  asr atr apne
 ### GET_POST $M $hostE:
-gp_abm () {   m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_bridge_mode_configuration";        ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "bridge_mode_enabled": false} ' |pjson ; }
-gp_amm () {   m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_moca_mode_configuration";          ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "moca_enabled":true} '          |pjson ; }
-gp_apl () {   m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_private_lan_configuration";        ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "ip_address": "192.168.1.1", "netmask": "255.255.255.0" } ' |pjson ; }
-#gp_apwa () { m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_private_wifi_advanced_configuration";         ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "wifi_passphrase_2g": "Password1_gp_apwa" }' |pjson ; }
-gp_apw () {   m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_private_wifi_configuration";       ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "wifi_passphrase_2g": "Password1_gp_apw" }' |pjson ; }
+gp_abm () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_bridge_mode_configuration";        ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "bridge_mode_enabled": false} ' |pjson ; }
+gp_amm () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_moca_mode_configuration";          ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "moca_enabled":true} '          |pjson ; }
+gp_apl () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_lan_configuration";        ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "ip_address": "192.168.1.1", "netmask": "255.255.255.0" } ' |pjson ; }
+#gp_apwa () { m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_wifi_advanced_configuration";         ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "wifi_passphrase_2g": "Password1_gp_apwa" }' |pjson ; }
+gp_apw () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_private_wifi_configuration";       ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "wifi_passphrase_2g": "Password1_gp_apw" }' |pjson ; }
 
-gp_ar2 () {   m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_radio_2g_configuration";           ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "radio_enabled": true, "channel": 2 }'     |pjson ; }
-gp_ar5 () {   m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_radio_5g_configuration";           ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "radio_enabled": true, "channel": -1 }'    |pjson ; }
+gp_ar2 () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_radio_2g_configuration";           ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "radio_enabled": true, "channel": 2 }'     |pjson ; }
+gp_ar5 () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_radio_5g_configuration";           ech2 "GET $u"; curl -s -X GET $u |pjson|cblue ; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "radio_enabled": true, "channel": -1 }'    |pjson ; }
 
-gp_ahsm () {  m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_home_security_wifi_configuration"; ech2 "GET $u"; curl -s -X GET $u |pjson|cblue; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "wifi_passphrase_2g": "Password1_gp" }' |pjson ; }
-gp_apf () {   m=$1; h=$2; u="http://$h:8080$a1m/$m/configuration?group_id=group_port_forwarding_configuration";    ech2 "GET $u"; curl -s -X GET $u |pjson|cblue; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "portforward_enabled": false }'         |pjson ; }
+gp_ahsm () {  m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_home_security_wifi_configuration"; ech2 "GET $u"; curl -s -X GET $u |pjson|cblue; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "wifi_passphrase_2g": "Password1_gp" }' |pjson ; }
+gp_apf () {   m=$1; h=$2; u="http://$h:8080$CPEBU/$m/configuration?group_id=group_port_forwarding_configuration";    ech2 "GET $u"; curl -s -X GET $u |pjson|cblue; now; sleep 5; curl -s -X POST $u -H 'content-type: application/json'  -d '{ "portforward_enabled": false }'         |pjson ; }
 
 # List, pick or vi b.json
 bjll () {             cd; ls     b*json ; }
@@ -1765,7 +1643,6 @@ cPost () {    u="$1"; j=$2; ech2 "POST   $u";  ech2 $j;      curl -s -X POST   $
 cP () {       u="$1";       ech2 "POST   $u";cd; cat b.json; curl -s -X POST   $u -H "Content-Type: application/json"  -d @b.json | pjson | cblue ; }
 
 # DELETE, rePOST, GET, forget, then re GET
-cPutpf () {   m=$1; h=$2; u="http://$h:8080/api/v1/gateway-cpe/$m/configuration_table/portforwarding_configuration_table";        cPut $u ; } # b_pfrule.json
 cDpf () {     m=$1; h=$2; u="http://$h:8080/api/v1/gateway-cpe/$m/configuration_table/portforwarding_configuration_table";        cDel $u ; }
 cDmb () {     m=$1; h=$2; u="http://$h:8080/api/v1/gateway-cpe/$m/configuration_table/mac_address_binding_configuration_table";   cDel $u ; }
 
@@ -1791,13 +1668,9 @@ cGcsid () {   c=$1; h=$2; u="http://$h:8080/api/v1/gateway-configset/$c";   cG $
 # learn info of csid: csid2cpemac csidif () {   c=$1; h=$2; cGcsid $c $h ; }
 
 ### check smkt sync failed at 1_SparkMaster + 2_Hook + 3_Kafka + (assumed OK at 4_WebPA + 5_RDKB)
-#s1_Sparkm () { c=$1; c=${c:-red}; ech2 $c; cxi_ $c |grep -A4 sprkm-|egrep -ni "is_active|sprkm-|ip|ch2f|hob|asb|wcdcc" ; ech2 "Verify spark master sync... active true and false" ; ech2 "@@@ get ip ... to run ow8 next" ; }
-#s1_sprkm () {  c=$1; c=${c:-red}; s=`ean $c sprkm 1234|gipo|a1line`; for i in $s; do line;ech2 $i; ow8 $i; done ; }
+s1_Sparkm () { c=$1; c=${c:-red}; ech2 $c; cxi_ $c |grep -A4 sprkm-|egrep -ni "is_active|sprkm-|ip|ch2f|hob|asb|wcdcc" ; ech2 "Verify spark master sync... active true and false" ; ech2 "@@@ get ip ... to run ow8 next" ; }
+s1_sprkm () {  c=$1; c=${c:-red}; s=`ean $c sprkm 1234|gipo|a1line`; for i in $s; do line;ech2 $i; ow8 $i; done; s1_Sparkm $c ; }
 ow8 () {       i=$1; u="http://$i:8080"; ech2 "verify spark master sync...$u... state: S/B Running, on app id"; opes $u; curl -is $u|egrep -i "runn|waiting" ; }
-
-lsmR="96.118.144.128 96.118.144.53 96.118.253.126 96.118.253.136"
-lsmY="96.118.159.183 96.118.159.179 96.118.244.21 96.118.244.22"
-s1_sparkm () { l=${1:-$lsmR}; for i in $l; do line; hnco $i; ow8 $i; done ; }
 
 # sync at 2_Hook
 hkWeb="/app/logs/hooks/webserver.log"
@@ -1853,7 +1726,7 @@ remSat () {    eh=$1; runcore $eh  curl -s localhost:8080/api/v1/common/sat     
 # $ ipr red ; #get a "redis-" host: ex: 96.118.25.55; then $ rcli 96.118.25.55 keys sat*; then $ rcli 96.118.25.55 get  sat_token_2     01704061800
 rcli () {      rh=$1; c2=$2; c3=$3; c4=$4; c5=$5; c6=$6; runcor $rh "/app/redis/bin/redis-cli  $c2 $c3 $c4 $c5 $c6;"  ; }
 
-### SNS endpoints: sa1m to notif per changes within CPE. egrep "event|_change"; using /api/v1/sns/gateway-cpe/$m/notifications
+### SNS endpoints: sCPEBU to notif per changes within CPE. egrep "event|_change"; using /api/v1/sns/gateway-cpe/$m/notifications
 #sns1. SSID Change 
 #sns2. PWD change 
 #sns3. SSID Hide/Unhide 
@@ -1883,34 +1756,24 @@ cGwl () {      m=$1; cG http://ec2-54-213-77-81.us-west-2.compute.amazonaws.com/
 #### Graphana: URL:http://96.119.229.177:8080/dashboard/db/qa-metrics-red; u:p=admin:root12345
 alias ographana=' echo "URL:http://96.119.229.177:8080/dashboard/db/qa-metrics-red; u:p=admin:root12345"; open http://96.119.229.177:8080/dashboard/db/qa-metrics-red '
 
-### LB, SparkM nodes, checks out of mem:  df -h; uptime; top; [db] nodetool status [db} service dse status;
-# Check red app=( core, db, cworker, sprkm, lb, proxy, hook, redis )  
-supn () {      e=${1:-red}; a=$2; l=$3; for i in `ean $e $a $l $4|gc2 ip|a1line`   ; do ech2 "===== $i:"; run    $i "supervisorctl status all;" ; done ; }
-
-#dfn () {      e=$1; a=$2; l=$3; for i in `ean $e $a $l|gc2 ip|a1line`   ; do ech2 "===== $i:"; runcor $i "df;uptime;" ; done ; }
-dfn () {       e=${1:-red}; a=$2; l=$3; for i in `ean $e $a $l $4|gc2 ip|a1line`   ; do ech2 "===== $i:"; run    $i "df;uptime;supervisorctl status all;" ; done ; }
-dfN () {       e=${1:-red}; a=$2; l=$3; for i in `eaN $e $a $l $4|gc2 ip|a1line`   ; do ech2 "===== $i:"; run    $i "df;uptime;" ; done ; }
-
-dfnph () {     e=${1:-red}; a=$2; l=$3; for i in `ean $e $a $l $4|gc2 ip|a1line`   ; do ech2 "===== $i:"; runph  $i "df;uptime;" ; done ; }
-dfNph () {     e=${1:-red}; a=$2; l=$3; for i in `eaN $e $a $l $4|gc2 ip|a1line`   ; do ech2 "===== $i:"; runph  $i "df;uptime;" ; done ; }
-
-dbn () {       e=${1:-red}; for i in `ean $e db 1234 $4|gc2 ip|a1line` ; do ech2 "===== $i:"; run    $i "service dse status;nodetool status;" ; done ; }
-dbN () {       e=${1:-red}; for i in `eaN $e db 1234 $4|gc2 ip|a1line` ; do ech2 "===== $i:"; run    $i "service dse status;nodetool status;" ; done ; }
-
 ### DB cassandra cql_u:p=cassandra:cassandra    cassandra:c@ss@n6R@    xpcuser:ye!!eNV     odpuser2:Y3LLeNV # DB debugging: use nodetool
-dbnode () {    n=$1; n=${n:-$dbR}; run    $n   "nodetool status;" ; }
-dblogrm () {   n=$1;               runcor $n   "rm -f /app/db/commitlog/*.log; du -sh; df -h;"  ; }
+dbnode () {    n=$1; n=${n:-$dbR}; runcor $n   "nodetool status;" ; }
+rmdblogs () {  n=$1;               runcor $n   "rm -f /app/db/commitlog/*.log; du -sh; df -h;"  ; }
 
-alias cq='     echo "cqlsh \$(facter ipaddress) -u cassandra -p cassandra --ssl -e " ; echo '
-alias cqlRef=' open https://docs.datastax.com/en/dse/5.1/cql/cql/cql_reference/cql_commands/cqlCommandsTOC.html'
+alias cass='   echo "cqlsh \$(facter ipaddress) -u cassandra -p cassandra --ssl -e " ; echo '
+alias cql_='   open https://docs.datastax.com/en/dse/5.1/cql/cql/cql_reference/cql_commands/cqlCommandsTOC.html'
 
-### Grep field name in DB table
-gft  () {      egrep -i "$1" $2 $3 $4 $HOME/Help/cassandra_db/table*.txt ; }
-gftx () {      egrep -i "$1" $2 $3 $4 $HOME/Help/cassandra_db/tablexpc.txt ; }
-gfto () {      egrep -i "$1" $2 $3 $4 $HOME/Help/cassandra_db/tableodp.txt ; }
+### LB, SparkM nodes, checks out of mem:  df -h; uptime; top; [db] nodetool status [db} service dse status;
+nodetooln () { e=$1;             for i in `ean $e db 1234|gc2 ip|a1line` ; do ech2 "===== $i:"; runcor $i "service dse status;nodetool status;" ; done ; }
+nodetoolN () { e=$1;             for i in `eaN $e db 1234|gc2 ip|a1line` ; do ech2 "===== $i:"; runcor $i "service dse status;nodetool status;" ; done ; }
 
-# grep a field name within json response
-gfj () {       cdsts; egrep -rin "$1" $2 $3 $4 expected_json_response/* ; cd; bjs $* ; }
+supn () {      e=$1; a=$2; l=$3; for i in `ean $e $a $l|gc2 ip|a1line`   ; do ech2 "===== $i:"; runcor $i "supervisorctl status all;" ; done ; }
+
+dfn () {       e=$1; a=$2; l=$3; for i in `ean $e $a $l|gc2 ip|a1line`   ; do ech2 "===== $i:"; runcor $i "df;uptime;" ; done ; }
+dfN () {       e=$1; a=$2; l=$3; for i in `eaN $e $a $l|gc2 ip|a1line`   ; do ech2 "===== $i:"; runcor $i "df;uptime;" ; done ; }
+
+dfnph () {     e=$1; a=$2; l=$3; for i in `ean $e $a $l|gc2 ip|a1line`   ; do ech2 "===== $i:"; runph  $i "df;uptime;" ; done ; }
+dfNph () {     e=$1; a=$2; l=$3; for i in `eaN $e $a $l|gc2 ip|a1line`   ; do ech2 "===== $i:"; runph  $i "df;uptime;" ; done ; }
 
 ### Find file in repos
 fin  () {      f=$1; find ./ -name *$f* ; }
@@ -1919,50 +1782,59 @@ finxt () {     cdxt; fin   $1 ; }
 
 ### Grep trings in repos
 grin  () {     egrep -rin "$1" $2 $3 $4 $5 $6 $7 $8 $9 * ; }
-grinxa  () {   cdxa; grin  $*  ; }
-grinxt  () {   cdxt; grin  $*  ; }
+fgxa  () {     cdxa; grin  $*  ; }
+fgxt  () {     cdxt; grin  $*  ; }
 
-grind () {     cd ~/Documents/si; egrep -rin "$*" * ; pdfgrep -rin  auto $1 * ; }
+grind () {     cd ~/Documents/si; egrep -rin "$*" * ; pdfgrep -rin --color auto $1 * ; }
 grinsp () {    cdsplunk         ; egrep -rin "$*" * ; }
-grinhi () {    egrep -rih "$1" $2 $3 $4  $HOME/checkouts/p*/hiera/* ; }
+#grinhi () {    egrep -rin "$1" $2 $3 $4  $HOME/checkouts/powercloud*/hiera/* ; }
+grinhi () {    egrep -rin "$1" $2 $3 $4  $HOME/checkouts/p*/hiera/* ; }
+
+# grep a field name within json response
+gfj () {       cd $HOME/checkouts/xap/smoketests/test_xpc/xpc_tests/expected_json_response; egrep -rin "$1" $2 $3 $4 * ; cd; bjs $* ; }
+
+### Grep field name in DB table
+gft  () {      egrep -i "$1" $2 $3 $4 $HOME/Help/cassandra_db/table*.txt ; }
+gftx () {      egrep -i "$1" $2 $3 $4 $HOME/Help/cassandra_db/tablexpc.txt ; }
+gfto () {      egrep -i "$1" $2 $3 $4 $HOME/Help/cassandra_db/tableodp.txt ; }
 
 ### Vi setting in code repos : ~/checkouts/xap/src/settings/odp_settings.py
 alias visettings=' vi      ~/checkouts/xap/src/settings/xpc_settings.py'
 
 ### Grep code/pattern/flags:  
 # Grep flag XPC
-gfX () {       e=${1:-red}; f=$2; l=$3; l=${l:-1234}; d=$4; for i in `ean $e core $l $d|gipo|a1line`; do echo $i; run    $i "grep -rin $f /app/xpc/*;"           ; done ; }
-gfx () {       e=${1:-red}; f=$2; l=$3; l=${l:-1234}; d=$4; for i in `ean $e core $l $d|gipo|a1line`; do echo $i; run    $i "grep -rin $f /app/xpc/*;" | grep "="; done ; }
-gfxph () {     e=${1:-red}; f=$2; l=$3; l=${l:-1234}; d=$4; for i in `ean $e core $l $d|gipo|a1line`; do echo $i; runph  $i "grep -rin $f /app/xpc/*;" | grep "="; done ; }
+gfX () {       e=$1; f=$2; l=$3; l=${l:-1234}; for i in `ean $e core $l|gipo|a1line`; do echo $i; runcor $i "grep -rin $f /app/xpc/*;"           ; done ; }
+gfx () {       e=$1; f=$2; l=$3; l=${l:-1234}; for i in `ean $e core $l|gipo|a1line`; do echo $i; runcor $i "grep -rin $f /app/xpc/*;" | grep "="; done ; }
+gfxph () {     e=$1; f=$2; l=$3; l=${l:-1234}; for i in `ean $e core $l|gipo|a1line`; do echo $i; runph  $i "grep -rin $f /app/xpc/*;" | grep "="; done ; }
 
 gfxph1 () {    h=$1; f=$2; runph  $h "grep -rin $f /app/xpc/*;" ; }
-gfx1 () {      h=$1; f=$2; run    $h "grep -rin $f /app/xpc/*;" ; }
+gfx1 () {      h=$1; f=$2; runcor $h "grep -rin $f /app/xpc/*;" ; }
 gfxR () {      gfx1 $hostR   "$*" ; } 
 gfxR1 () {     gfx1 $hostR1  "$*" ; } 
 gfxY () {      gfx1 $hostY   "$*" ; } 
 
 # Grep flag ODP
-gfo () {       e=${1:-red}; f=$2; l=$3; l=${l:-1234}; for i in `eaN $e core $l $4|gipo|a1line`; do echo $i; run    $i "grep -rin $f /app/xap/*;" | grep "="; done ; }       
-gfoph () {     e=${1:-red}; f=$2; l=$3; l=${l:-1234}; for i in `eaN $e core $l $4|gipo|a1line`; do echo $i; runph  $i "grep -rin $f /app/xap/*;" | grep "="; done ; }       
+gfo () {       e=$1; f=$2; l=$3; l=${l:-1234}; for i in `eaN $e core $l|gipo|a1line`; do echo $i; runcor $i "grep -rin $f /app/xap/*;" | grep "="; done ; }       
+gfoph () {     e=$1; f=$2; l=$3; l=${l:-1234}; for i in `eaN $e core $l|gipo|a1line`; do echo $i; runph  $i "grep -rin $f /app/xap/*;" | grep "="; done ; }       
 
 gfoph1 () {    h=$1; f=$2; runph  $h "grep -rin $f /app/xap/*;" ; }
-gfo1 () {      h=$1; f=$2; run    $h "grep -rin $f /app/xap/*;" ; }
+gfo1 () {      h=$1; f=$2; runcor $h "grep -rin $f /app/xap/*;" ; }
 gfoR () {      gfo1 $hostOR   "$*" ; }
 gfoR1 () {     gfo1 $hostOR1  "$*" ; }
 gfoY () {      gfo1 $hostOY   "$*" ; }
 
 ### Grep code or configuration on server ip, pattern/flags:  gconf $hostR ODP_DB_CALL_OPTIMIZATION_ENABLED
-gco () {       h=$1; h=${h:-$hostOR}; run    $h  "egrep -rin '$2 $3 $4 $5 $6 $7 $8 $9'  /app/xap/*;" ; }
+gco () {       h=$1; h=${h:-$hostOR}; runcor $h  "egrep -rin '$2 $3 $4 $5 $6 $7 $8 $9'  /app/xap/*;" ; }
 gcoph () {     h=$1; h=${h:-$hostOR}; runph  $h  "egrep -rin '$2 $3 $4 $5 $6 $7 $8 $9'  /app/xap/*;" ; }
 
-gcx () {       h=$1; h=${h:-$hostR};  run    $h  "egrep -rin '$2 $3 $4 $5 $6 $7 $8 $9'  /app/xpc/*;" ; }
+gcx () {       h=$1; h=${h:-$hostR};  runcor $h  "egrep -rin '$2 $3 $4 $5 $6 $7 $8 $9'  /app/xpc/*;" ; }
 gcxph () {     h=$1; h=${h:-$hostR};  runph  $h  "egrep -rin '$2 $3 $4 $5 $6 $7 $8 $9'  /app/xpc/*;" ; }
 
 # grep log XPC+ODP ;  cd at an env host AXPC="/app/logs/api/xpc.log"; /app/logs/api/uwsgi_xpc.log;
-glog () {      h=$1; h=${h:-$hostR};  run    $h  "egrep -rin '$2 $3 $4 $5 $6 $7 $8 $9'  /app/logs/*;" ; }
+glog () {      h=$1; h=${h:-$hostR};  runcor $h  "egrep -rin '$2 $3 $4 $5 $6 $7 $8 $9'  /app/logs/*;" ; }
 
-glx   () {     m=$1; h=$2; run    $h  grep --color -i $m /app/logs/api/xpc.log ; }
-tlx   () {           h=$1; run    $h  tail -n100 -f      /app/logs/api/xpc.log ; }
+glx   () {     m=$1; h=$2; runcor $h  grep --color -i $m /app/logs/api/xpc.log ; }
+tlx   () {           h=$1; runcor $h  tail -n100 -f      /app/logs/api/xpc.log ; }
 glxph () {     m=$1; h=$2; runph  $h  grep --color -iE "\$m\|500\|\^E " /app/logs/api/xpc.log ; }
 tlxph () {           h=$1; runph  $h  tail -n100 -f      /app/logs/api/xpc.log ; }
 
@@ -1981,24 +1853,18 @@ alias seedupa='conv|grep -ioE "CPE_MAC=............|CMMAC=............"|sed '/=/
 alias grepp='  pdfgrep --color auto '
 
 # Flip IPv6 to IPv4: tvworks: 10.253.86.138 aka opstools-mv.cvs-a.ula.comcast.net
-flip_v6_to_v4 () { i=$1; echo "u:p = tvworks:tvworks"; echo "flipToIPv4.s ipv6 then reset"; ssh tvworks@opstools-mv.cvs-a.ula.comcast.net -t "./flipToIPv4.sh $i;"  ; }
+flip_v6_to_v4 () { i=$1; echo "u:p = tvworks:tvworks"; echo "flipToIPv4.s ipv6 then reset"; sshcor tvworks@opstools-mv.cvs-a.ula.comcast.net -t "./flipToIPv4.sh $i;"  ; }
 # tunnel: /api/v1/operational/internal/gateway-cpe/$CPE/tunnel?names=Device.X_Comcast_com_ParentalControl.ManagedDevices.Device.
-# XPC API:   GET http://96.118.253.117:8080/api/v1/internal/gateway-cpe/044E5A9AE8EC/tunnel?names=Device.DeviceInfo.X_RDKCENTRAL-COM_ConfigureWiFi,Device.DeviceInfo.X_RDKCENTRAL-COM_CloudUIEnable
-# WebPA API: GET https://api.webpa.comcast.net:8090/api/v2/device/mac:5c8fe07ed532/config?names=Device.DeviceInfo.X_RDKCENTRAL-COM_ConfigureWiFi,Device.DeviceInfo.X_RDKCENTRAL-COM_CloudUIEnable,Device.DeviceInfo.X_CISCO_COM_FirmwareName
 otn () {      m=$1; h=$2; o=$3; o=${o:-Device.DeviceInfo.X_COMCAST-COM_WAN_IP}; u="http://$h:8080/api/v1/internal/gateway-cpe/$m/tunnel?names=$o"      ; ech2 "GET $u"; curl -s -X GET $u -H 'content-type: application/json' |pjson|cpink ; }
 
 #fw_cpes_st () { ( now; for i in 10.255.244.238  10.255.244.114  10.255.244.15 10.255.244.126 10.255.244.14 10.255.244.109 10.255.244.112 10.255.244.166 10.255.244.61 2001:0558:4000:001a:2eb3:13ff:fe03:62f2 10.255.244.106 10.255.244.68 10.255.244.24  2001:0558:4000:001a:764b:2aff:fe77:be79  2001:0558:4000:001a:faa0:97ff:feee:f795 ; do line;ech2 $i; sFW $i; done;line ) | tee -a $HOME/logs/FW_CPEs_Smoketest.log ; }
 fwc_st () { (  now; for i in Mssy,$Issy Mssa,$Issa Mssr,$Issr  Mnrn,$Inrn  Mnrn1,$Inrn1 Mn1rn,$In1rn Mn1rn1,$In1rn1 Msrn,$Isrn  Mstoy,$Istoy Mstog,$Istog   Mstogv,$Istogv Mssg,$Issg  Mcisr,$Icisr Mcisy,$Icisy Mxb6,$Ixb6 ; do line; ech2 $i; k=${i%,*}; v=${i#*,}; sFW $v; done;line ) | tee -a $HOME/logs/FW_CPEs_Smoketest.log ; }
-
-fwcR () { (    now; for i in Mssr,$Issr   Mnrn,$Inrn Mn1rn,$In1rn    Mnrn1,$Inrn1 Mn1rn1,$In1rn1 Msrn,$Isrn; do line;ech2 $i; k=${i%,*}; v=${i#*,}; sFW $v; done; line ) | tee -a $HOME/logs/FW_CPEs_Red.log ; }
-fwcY () { (    now; for i in Mstoy,$Istoy Mssy,$Issy Mstoyv,$Istoyv; do line;ech2 $i; k=${i%,*}; v=${i#*,}; sFW $v; done; line ) | tee -a $HOME/logs/FW_CPEs_Yellow.log ; }
-fwcG () { (    now; for i in Mstog,$Istog Mssy,$Issg Mstoyg,$Istogv; do line;ech2 $i; k=${i%,*}; v=${i#*,}; sFW $v; done; line ) | tee -a $HOME/logs/FW_CPEs_Green.log ; }
-
-fwc () { (     now; for i in M1,$I1 M2,$I2 M3,$I3 M4,$I4 M5,$I5 M6,$I6 M30,$I30 M7,$I7 ; do line;ech2 $i; k=${i%,*}; v=${i#*,}; sFW $v; done; line ) | tee -a $HOME/logs/FW_CPEs.log ; }
+fwcR () { (    now; for i in Mnrn,$Inrn Mssr,$Issr Mnrn1,$Inrn1 Mn1rn,$In1rn Mn1rn1,$In1rn1 Msrn,$Isrn; do line;ech2 $i; k=${i%,*}; v=${i#*,}; sFW $v; done; line ) | tee -a $HOME/logs/FW_CPEs_Red.log ; }
+fwc () { (     now; for i in M1,$I1 M2,$I2 M3,$I3 M5,$I5 M6,$I6 M30,$I30 ; do line;ech2 $i; k=${i%,*}; v=${i#*,}; sFW $v; done; line ) | tee -a $HOME/logs/FW_CPEs.log ; }
 
 D_WAN="Device.DeviceInfo.X_COMCAST-COM_WAN_IP"     
 D_FW="Device.DeviceInfo.X_CISCO_COM_FirmwareName"
-wpfwcR () { (  now; for m in $Mssr $Mnrn $Mn1rn $Mnrn1 $Mn1rn1 ; do line;ech2 $m; wp_ $m Device.DeviceInfo.X_CISCO_COM_FirmwareName; done; line ) | tee -a $HOME/logs/WPFW_CPEs_Red.log ; }
+wpfwcR () { (  now; for m in $Mnrn $Mssr $Mnrn1 $Mn1rn $Mn1rn1 ; do line;ech2 $m; wp_ $m Device.DeviceInfo.X_CISCO_COM_FirmwareName; done; line ) | tee -a $HOME/logs/WPFW_CPEs_Red.log ; }
 
 # XPC rules
 nrxpf () {     m=$1; h=$2; h=${h:-$hostR};   b=$3; b=${b:-b_pfrule.json};     echo y|bjp $b; tmr 3; cPpf   $m  $h; now ; }
@@ -2020,15 +1886,13 @@ cro () {       m=$1; h=$2;       obt   $m $h; tmr 3; oma   $m $h; tmr 3; oxd   $
 nro2 () {      m=$1; h=$2;       cDbt  $m $h; cDma $m $h; tmr 5; nro $m $h; tmr 5; cro $m $h ; }
 
 # run smoketest local:
-# psto () {    t=${1:-xpc_tests/sanity}; h=${2:-$hostR};  m=${3:-$M2}; i=${4:-$I2}; s="smoketest-odp.py" ; }
-# hlam001c@cacsvlo-16686:~/checkouts/xpc-test/boxertest_client$ python2.7 smoketest-odp.py --log INFO --scheme http --host 96.118.16.126:8080 --webpa https://api.webpa.comcast.net:8090 --mac 044E5A9AE8EC --cpe_ip 10.255.244.34 --service xap --api_prefix /api/v2 --enable_report True --suites v2/sanity_scheduler
-pss  () {      t=${1:-sync_lite}; h=${2:-red};     m=${1:-$M2}; i=${2:-$I2}; s="smoketest-xpc.py --log INFO --scheme https --host $h.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac $m  --cpe_ip $i   --suites sync/$t"; cdrunat; python2.7 $s ; }
-pst () {       t=${1:-xpc_tests/sanity}; h=${2:-$hostR};  m=${3:-$M2}; i=${4:-$I2}; s="smoketest-xpc.py --log INFO --scheme http --host $h:8080   --webpa https://api.webpa.comcast.net:8090 --mac $m  --cpe_ip $i  --save_influxdb True --smoketest_header X-Xpc-Test=smoketests-nb-N --xpc_other_host_url 96.118.147.38:8080  --env_name red  --suites $t"; cdrunat; python2.7 $s ; }
-pst1 () {      t=${1:-xpc_tests/sanity}; h=${2:-$hostR1}; m=${3:-$M2}; i=${4:-$I2}; s="smoketest-xpc.py --log INFO --scheme http --host $h:8080   --webpa https://api.webpa.comcast.net:8090 --mac $m  --cpe_ip $i  --smoketest_header X-Xpc-Test=smoketests-nb-n-1 --env_name ${5:-red} --suites $t"; cdrunat; python2.7 $s ; }
-pstY() {       t=${1:-sanity}; h=${2:-$hostY};  m=${3:-$M2}; i=${4:-$I2}; s="smoketest-xpc.py --log INFO --scheme http --host $h:8080   --webpa https://api.webpa.comcast.net:8090 --mac $m  --cpe_ip $i   --suites xpc_tests/$t"; cdrunat; python2.7 $s ; }
+pss  () {      t=${1:-sanity}; h=${2:-red};     m=${1:-$M2}; i=${2:-$I2}; s="smoketest-xpc.py --log INFO --scheme https --host $h.awsxpc.comcast.net --webpa https://api.webpa.comcast.net:8090 --mac $m  --cpe_ip $i  --suites sync/$t"; cdrunat; python2.7 $s ; }
+pst () {       t=${1:-sanity}; h=${2:-$hostR};  m=${3:-$M2}; i=${4:-$I2}; s="smoketest-xpc.py --log INFO --scheme http --host $h:8080   --webpa https://api.webpa.comcast.net:8090 --mac $m  --cpe_ip $i  --smoketest_header X-Xpc-Test=smoketests-nb-N --xpc_other_host_url 96.118.57.10:8080 --suites xpc_tests/$t"; cdrunat; python2.7 $s ; }
+pst1 () {      t=${1:-sanity}; h=${2:-$hostR1}; m=${3:-$M2}; i=${4:-$I2}; s="smoketest-xpc.py --log INFO --scheme http --host $h:8080   --webpa https://api.webpa.comcast.net:8090 --mac $m  --cpe_ip $i  --smoketest_header X-Xpc-Test=smoketests-nb-n-1 --suites xpc_tests/$t"; cdrunat; python2.7 $s ; }
+pstY() {       t=${1:-sanity}; h=${2:-$hostY};  m=${3:-$M2}; i=${4:-$I2}; s="smoketest-xpc.py --log INFO --scheme http --host $h:8080   --webpa https://api.webpa.comcast.net:8090 --mac $m  --cpe_ip $i  --suites xpc_tests/$t"; cdrunat; python2.7 $s ; }
 
-pstltbm () {   t=${1:-get}; h=${2:-$hostR};  m=${3:-$M2}; i=${4:-$I2}; s="smoketest-xpc.py --log INFO --scheme http --host $h:8080   --webpa https://api.webpa.comcast.net:8090 --mac $m  --cpe_ip $i  --smoketest_header X-Xpc-Test=smoketests-nb-N --env_name ${5:-red} --suites latency/test_case_latency_bridge_mode/test_case_latency_bridge_mode_method_$t.boxersuite"; cdrunat; python2.7 $s ; }
-pstltmm () {   t=${1:-get}; h=${2:-$hostR};  m=${3:-$M2}; i=${4:-$I2}; s="smoketest-xpc.py --log INFO --scheme http --host $h:8080   --webpa https://api.webpa.comcast.net:8090 --mac $m  --cpe_ip $i  --smoketest_header X-Xpc-Test=smoketests-nb-N --env_name ${5:-red} --suites latency/test_case_latency_moca_mode/test_case_latency_moca_mode_method_$t.boxersuite"; cdrunat; python2.7 $s ; }
+pstltbm () {   t=${1:-get}; h=${2:-$hostR};  m=${3:-$M2}; i=${4:-$I2}; s="smoketest-xpc.py --log INFO --scheme http --host $h:8080   --webpa https://api.webpa.comcast.net:8090 --mac $m  --cpe_ip $i  --smoketest_header X-Xpc-Test=smoketests-nb-N --suites latency/test_case_latency_bridge_mode/test_case_latency_bridge_mode_method_$t.boxersuite"; cdrunat; python2.7 $s ; }
+pstltmm () {   t=${1:-get}; h=${2:-$hostR};  m=${3:-$M2}; i=${4:-$I2}; s="smoketest-xpc.py --log INFO --scheme http --host $h:8080   --webpa https://api.webpa.comcast.net:8090 --mac $m  --cpe_ip $i  --smoketest_header X-Xpc-Test=smoketests-nb-N --suites latency/test_case_latency_moca_mode/test_case_latency_moca_mode_method_$t.boxersuite"; cdrunat; python2.7 $s ; }
 
 # CUJO: http://96.118.61.37:8080/api/v1/operational/gateway-cpe/9C34263F9ADE/devices/DDDD5555DDDD/fingerprint_feedback; 200=in odp.device_fingerprint table; or 400 is not in
 # Steps to have new CPE, check sWPA $I for fabric.webpa.comcast.net; save file, json, Mx, Ix, mXif; olob, msy: ok_wpa_api_snmp; 5 item m i u p fw; enable telnet: teli ; local ui: u:p; onb && awc get WAN ip;
@@ -2052,10 +1916,4 @@ pstltmm () {   t=${1:-get}; h=${2:-$hostR};  m=${3:-$M2}; i=${4:-$I2}; s="smoket
 # Steps to telnet to XB6 Arris u:p=admin:POD
 # Steps/option to FW upgrade; 1/je job: jefwup="upgrade-rdkb"; 2/Kevin 3/SItools; 4/CLIs ssh+snmp+Dan's script
 # Steps to clone Jenkins job: 1.New Job 2.Name it "smoketest-red-newton" 3.Copy from "smoketest-n-on-red-n" 4.save 5.Configure: add new CPE + XPC_INSTANCE + other_host + Advanced:new folder=/opt/smoketest-red-newton
-
-# curl -X PATCH 'https://api.webpa.comcast.net:8090/api/v2/device/mac:044E5A9AE8EC/config?names=Device.DeviceInfo.X_RDKCENTRAL-COM_ConfigureWiFi'  -H 'authorization: Bearer eyJraWQiOiJzYXQtcHJvZC1rMS0xMDI0IiwiYWxnIjoiUlMyNTYifQ.eyJqdGkiOiJmMjNhNmExMy1hYmU2LTRmMmYtOGI2Yi1iN2QzYTNlZTc5ZjIiLCJpc3MiOiJzYXRzLXByb2R1Y3Rpb24iLCJzdWIiOiJ4MTpwcm9kOnhwYzowOTA4OWMiLCJpYXQiOjE1MTE4MjAxMzksIm5iZiI6MTUxMTgyMDEzOSwiZXhwIjoxNTExOTA2NTQyLCJ2ZXJzaW9uIjoiMS4wIiwiYWxsb3dlZFJlc291cmNlcyI6eyJhbGxvd2VkUGFydG5lcnMiOlsiY29tY2FzdCJdfSwiY2FwYWJpbGl0aWVzIjpbIngxOndlYnBhOmFwaTpkZXZpY2UvLiovY29uZmlnXFxiOmFsbCIsIngxOndlYnBhOmFwaTpkZXZpY2UvLiovY29uZmlnXFxiOmdldCIsIngxOndlYnBhOmFwaTpkZXZpY2UvLiovc3RhdFxcYjpnZXQiLCJ4MTp3ZWJwYTphcGk6aG9va1xcYjpwb3N0IiwieDE6d2VicGE6YXBpOmhvb2tzXFxiOmdldCJdLCJhdWQiOltdfQ.SPapxA-Z3JwpDkCyd2of29OyR9z5poL9ePbwYrVOM1bSAZD6_6nr7APDMB7rHStaN36LbN6P4L1stMKY-TKyza6Rn51iw6LKr1EXY6g1wnFUg7GaG5aSHOfv_EJnIH4HQ-mAbnWrGZ8JiGd_PUbfgdK7X1SJ5VqAUoSAdCB9cH4'   -H 'content-type: application/json'    -d '{"parameters":[ {"name":"Device.DeviceInfo.X_RDKCENTRAL-COM_ConfigureWiFi","value": "true", "dataType":3} ]}'
-
-# XPC-4691: $ bjp b_r5_neg.json; cPr5 $M6 $hhostR //replace M2 M3 //expect 400 (of 552)
-
-# Amogh; traffic drops: fail sync: https://etwiki.sys.comcast.net/display/SMARTINT/XPC+Runbook#XPCRunbook-Identifyingdropsinreportsandnotification
 

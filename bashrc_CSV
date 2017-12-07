@@ -525,12 +525,14 @@ alias cdmotest='cd $HOME/checkouts/smartconnect/test/integration'
 
 
 ### TIG_COMMANDS
+#   brew install tig; tig --help; tig //current branch;
+#   tig  grep hlam; --all //allbranches; develop //a specific branch; ; test..develop //diff between; 
+#   tig  refs             //all references like branches, remotes and tags
+#   git  show |tig ; git log | tig;
+#   tig  blame file ; tig master ; tig test..master; tig myFile; tig v0.0.3:README
+alias t1w='       tig --all  --since=1.week -- '
 
-# $ brew install tig; tig --help; tig //current branch;
-# $ tig grep hlam; --all //allbranches; develop //a specific branch; ; test..develop //diff between; i
 # on specific file: tig US733009-dotcom-support..develop -- smartconnect.js //revisions bw 2 dates of a specific file; blame file //history of changes; tig --all  --since=1.week -- rfNoiseCalls.js //any line changed in last (1) week
-# tig refs //all references like branches, remotes and tags
-# $ git show |tig; git log | tig;
 
 ### GIT_COMMANDS
 
@@ -2081,6 +2083,14 @@ csvView () {       f=$1; sed -e 's/,,/, ,/g' $f | column -s, -t | less -#5 -N -S
 #ivrHmis { ; }
 #ivrHext { ; }
 #csvSed () {       sed -e 's/,,/, ,/g'    | column -s, -t | less -#5 -N -S ; }
+#csvLines () {      wc -l $* ; }
+#csvCommaCount () { csvf=$1; perl -ne 'print tr/,//, "\n"' < $csvf      | sort -u ; }
+#csvSumHorizon () { csvf=$1; perl -ne '@a=split(/,/);  $b=0; foreach $r (1..$#a){ $b+=$a[$r] } print "$a[0],$b\n"' -f $csvf ; }
+
+csvCol () {        python $HOME/proj/py/csvcolumn.py $1 ; }
+csvFields () {     f=$1; col=$2; col=${col:-35}; r=$3; r=${r:-3}; for i in `seq $col`; do echo -ne "FIELD $i:  \t"; head -n $r $f |cut -d"," -f $i; done ; }
+csvHdup () {       f=$1; head -1 $f | UCtr |tr ',' '\n'|sort|uniq -d ; }
+csvView () {
 
 # $csvCommaCOunt to get 15;  for i in `seq 15`; do echo -ne "$i:  \t"; head vod-credit-limit.csv|cutc -f $i; done
 # prod_rules$ for i in `seq 7`; do echo -ne "$i:  \t"; head xray_enrich.csv|cutc -f $i; done
