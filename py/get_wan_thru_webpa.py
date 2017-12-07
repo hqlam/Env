@@ -1,5 +1,6 @@
 #!/usr/local/bin/python2.7
 import os, sys, requests, time,json
+#import pdb ; pdb.set_trace()
 
 mac     = sys.argv[1]
 webpa   = "https://api.webpa.comcast.net:8090"
@@ -17,9 +18,6 @@ print       sat_token
 
 # 2/2 Use access token ad mac to get Firmwarename
 headers = {"Authorization": "Bearer " + sat_token}
-#config  = "/Device.DeviceInfo.X_COMCAST-COM_WAN_IP"
-#m       = "mac:" + mac
-#url     = webpa + '/api/v2/device/' + m + config
 url     = "https://api.webpa.comcast.net:8090" + '/api/v2/device/' + "mac:" + mac + "/config?names=Device.DeviceInfo.X_COMCAST-COM_WAN_IP"
 print url
 resp = json.loads(requests.get(url, headers=headers).text)

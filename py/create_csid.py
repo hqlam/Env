@@ -9,10 +9,10 @@ requests.packages.urllib3.disable_warnings()
 cert_path = './client.pem'
 host      = sys.argv[1] + ":8080"
 
+# 1/ generate new empty csid (empty body) 		[csid0]
 api       = '/api/v1/gateway-configset'
 url       = "http://" + host  + api 
-print url
-
+print "POST ", url
 resp = json.loads(requests.post(url,cert = cert_path,verify = False).text)
 
 # verify

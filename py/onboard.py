@@ -12,14 +12,14 @@ cert_path = './client.pem'
 mac       = sys.argv[1]
 host      = sys.argv[2] + ":8080"
 
-# 1/2: extract the csid
+# 1/2: create  the csid
 api       = '/api/v1/gateway-configset'
 url       = "http://" + host  + api 
 print url
 resp = json.loads(requests.post(url,cert = cert_path,verify = False).text)
 csid   = resp["data"]["xpc_csid"]
 
-# 2/2: onboarding the csid
+# 2/2: onboarding the CPE mac to the ENV host with the csid
 api    = '/api/v1/gateway-configset/'
 action = '/configset?action=apply_and_associate'
 url    = "http://" + host + api + csid + '/gateway-cpe/' + mac + action

@@ -8,7 +8,7 @@ cert_path = './client.pem'
 mac       = sys.argv[1]
 host      = sys.argv[2] + ":8080"
 
-# 1/2 [amh] get csid (mac, host)
+# 1/2 [amh] get csid (mac, host)			[amh]
 api  = '/api/v1/gateway-cpe/'
 url  = "http://" + host  + "/api/v1/gateway-cpe/" + mac + '/association'
 print  "GET   ", url
@@ -17,7 +17,7 @@ csid = resp["data"]["xpc_csid"]
 print  csid
 
 
-# 2/2 [detach] [disassociate] del asso (mac, host, csid)
+# 2/2 [detach] [disassociate] del asso (mac, host, csid)  [dmh]
 api  = '/api/v1/gateway-configset/'
 url  = "http://" + host + "/api/v1/gateway-configset/" + csid + '/gateway-cpe/' + mac + '/association'
 print "DELETE ", url

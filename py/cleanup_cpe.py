@@ -9,12 +9,19 @@ cert_path = './client_new.pem'
 #cert_path = '/etc/xpc/xpc_client.pem'
 
 flavor = {
-	"amber" :  "96.119.228.186",             # Amber HAP
-	#"perf" :   "96.118.60.80",              # Perf HAP
-	"red" :    "red.awsxpc.comcast.net",     # Red HAP
-	"green" :  "xpcapi-si.xpc.comcast.net",  # Green HAP
-	"yellow" : "96.119.225.209",             # Yellow HAP
+#	"amber" : "96.119.228.186", # Amber HAP
+#	"perf" : "96.118.60.80",  # Perf HAP
+#	"orange" : "96.118.56.22",  # Orange HAP
+	"red" : "red.awsxpc.comcast.net", # Red HAP
+#	"green" : "96.114.241.133",  # Green HAP
+	"green" : "xpcapi-si.xpc.comcast.net",  # Green HAP
+	#"yellow" : "96.119.225.209",  # Yellow HAP
+	"yellow" : "96.118.244.9"    # Yellow HAP
+#	"blue" : "68.87.33.79"  # Staging HAP
 	}
+#"perf" : "96.118.60.65:8080",
+#"yellow" : "96.119.225.205:8080",
+#        "green" : "68.87.37.11:8080",
 
 def check_association(env, cpe):
 	url = 'https://' + env + '/api/v1/gateway-cpe/' + cpe + '/association'
@@ -50,8 +57,8 @@ if __name__ == '__main__':
 				found.append(k)
 			print "================================"
 		except ConnectionError:
-			print "Environment not reachable"
-	print "*** CPE FOUND IN *** ", found
+			print "Environemnt not reachable"
+	print "CPE found in ", found
 
 	prompt = "which environment you want to delete your CPE : "
 	environment = raw_input(prompt).split(" ")
